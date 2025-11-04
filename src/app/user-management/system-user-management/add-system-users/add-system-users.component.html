@@ -1,0 +1,201 @@
+<div class="main-container">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="breadcrumb-container">
+      <!-- Breadcrumb Navigation -->
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">
+          <li class="breadcrumb-item has-dropdown">
+            <a routerLink="#" class="text-decoration-none">User Management</a>
+          </li>
+          <li class="breadcrumb-item has-dropdown">
+            <i class="ph ph-caret-right"></i>
+            <a
+              [routerLink]="['/../user-management/system-users']"
+              class="text-decoration-none"
+              >System User</a
+            >
+          </li>
+          <!-- Active Page  -->
+          <li class="breadcrumb-item active" aria-current="page">
+            <i class="ph ph-caret-right"></i>
+            <span id="active-iphone-breadcrumb">{{ title }}</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <div class="sub-container">
+    <span class="fw-semibold font-16px">{{ page_title }}</span>
+    <form [formGroup]="systemUserForm">
+      <div class="row mt-4 no-left-padding">
+        <div class="col-3">
+          <mat-label>System User Code</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <input
+              type="text"
+              matInput
+              placeholder="0"
+              formControlName="userId"
+              readonly
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-3">
+          <mat-label>System User Category</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <mat-select placeholder="Select" formControlName="userCategory">
+              <mat-option value="ADMIN">ADMIN</mat-option>
+              <mat-option value="USER">USER</mat-option>
+              <mat-option value="OPERATOR">OPERATOR</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-3">
+          <mat-label>User Name</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <input
+              type="text"
+              matInput
+              placeholder="Enter User Name"
+              formControlName="username"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-3">
+          <mat-label>Password</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <input
+              type="password"
+              matInput
+              placeholder="Enter Password"
+              formControlName="password"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-3">
+          <mat-label>NIC</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <input
+              type="text"
+              matInput
+              placeholder="Enter NIC"
+              formControlName="nic"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-3">
+          <mat-label>User Role</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <mat-select
+              placeholder="Select"
+              multiple
+              formControlName="userRole"
+            >
+              <!-- move *ngFor here and bind with [value] -->
+              <mat-option *ngFor="let role of roles" [value]="role.roleId">
+                {{ role.roleName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+
+        <div class="col-3">
+          <mat-label>Contact Number</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <input
+              type="text"
+              matInput
+              placeholder="Enter Contact Number"
+              formControlName="contact"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-3">
+          <mat-label>Email</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <input
+              type="email"
+              matInput
+              placeholder="Enter Email"
+              formControlName="email"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-3">
+          <mat-label>Employee ID</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <input
+              type="text"
+              matInput
+              placeholder="Enter Employee ID"
+              formControlName="empId"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-3">
+          <mat-label>Full Name</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <input
+              type="text"
+              matInput
+              placeholder="Enter Full Name"
+              formControlName="fullName"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="col-3">
+          <mat-label>City</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <input
+              type="text"
+              matInput
+              placeholder="Enter City"
+              formControlName="city"
+            />
+          </mat-form-field>
+        </div>
+
+        <div class="d-flex flex-column flex-grow-1">
+          <mat-label>Address</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <textarea matInput formControlName="address"></textarea>
+          </mat-form-field>
+        </div>
+
+        <mat-divider class="mt-2 mb-4"></mat-divider>
+        <mat-slide-toggle formControlName="status" class="mb-3"
+          >Status</mat-slide-toggle
+        >
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <div class="d-flex">
+          <button
+            class="btn btn-default me-2"
+            [routerLink]="['/../user-management/system-users']"
+          >
+            <i class="ph ph-arrow-bend-up-left"></i>Back
+          </button>
+          <button class="btn btn-default" (click)="reset()" [hidden]="isView">
+            <i class="ph ph-clock-counter-clockwise"></i>Reset
+          </button>
+        </div>
+        <button
+          class="btn btn-primary"
+          (click)="addSystemUser()"
+        >
+          <i class="ph ph-floppy-disk"></i>Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

@@ -1,0 +1,49 @@
+<div class="mat-modal-content container-min-width">
+  <div class="d-flex justify-content-between align-items-center">
+    <h4 class="modal-title fw-semibold " mat-dialog-title>{{title}}</h4>
+    <!-- <a href="javascript:void(0)" mat-dialog-close class="close-icon">
+      <i class="ph ph-x"></i>
+    </a> -->
+  </div>
+
+  <mat-dialog-content>
+    <div class="input-group p-1">
+      <mat-label>User Role Code</mat-label>
+      <mat-form-field appearance="outline" class="w-100 input-sm">
+        <input matInput [placeholder]="userRoleCode || 'AUTO'" name="userRoleCode" disabled>
+      </mat-form-field>
+    </div>
+
+    <div class="input-group p-1">
+      <mat-label>User Role Name</mat-label>
+      <mat-form-field appearance="outline" class="w-100 input-sm">
+        <input matInput [(ngModel)]="userRoleName" name="userRoleName" placeholder="Enter User Role Name"
+               required
+               pattern="^[a-zA-Z0-9\s]+$"
+               #userRoleNameField="ngModel">
+        <mat-error *ngIf="userRoleNameField.errors?.['required'] && userRoleNameField.touched" class="mt-2">
+          User Role Name is required.
+        </mat-error>
+
+        <mat-error *ngIf="userRoleNameField.errors?.['pattern'] && userRoleNameField.touched" class="mt-2">
+          Special characters are not permitted.
+        </mat-error>
+      </mat-form-field>
+    </div>
+
+    <div class="status-toggle mt-3 p-1">
+      <mat-slide-toggle [(ngModel)]="status" name="status">Status</mat-slide-toggle>
+    </div>
+  </mat-dialog-content>
+
+  <mat-dialog-actions>
+    <div class="d-flex p-2 justify-content-between w-100">
+      <div>
+        <button class="btn btn-default d-flex" *ngIf="data.option != 'edit'" mat-dialog-close>Cancel</button>
+        <button class="btn btn-default d-flex" *ngIf="data.option === 'edit'" (click)="resetUserRole()" ><i class="ph ph-clock-counter-clockwise"></i>Reset</button>
+      </div>
+      <button [disabled]="userRoleNameField.invalid || (data.option === 'edit' && !isEdited())" class="btn btn-primary" (click)="saveUserRole()">
+        <i class="ph ph-floppy-disk " *ngIf="data.option === 'edit'"></i>{{submitButton}}</button>
+    </div>
+  </mat-dialog-actions>
+</div>

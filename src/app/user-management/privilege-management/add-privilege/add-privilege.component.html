@@ -1,0 +1,190 @@
+<div class="main-container">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="breadcrumb-container">
+      <!-- Breadcrumb Navigation -->
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">
+          <!-- Active Page  -->
+          <li class="breadcrumb-item has-dropdown">
+            <a href="#" class="text-decoration-none">User Management</a>
+          </li>
+          <li class="breadcrumb-item has-dropdown">
+            <i class="ph ph-caret-right"></i>
+            <a  [routerLink]="['/../user-management/user-privileges']" class="text-decoration-none">Privileges Management</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            <i class="ph ph-caret-right"></i>
+            <span id="privileges-management-breadcrumb">New Privilege</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <div class="sub-container">
+    <div class="search-container">
+      <div class="search-header">
+        <div class="search-result-count">
+          <span class="fw-semibold font-16px">Search User Privilege</span>
+        </div>
+      </div>
+
+
+      <div class="row mt-4 no-left-padding">
+        <div class="col-3">
+          <mat-label>User Role</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <mat-select [(value)]="selectedUserRole" (selectionChange)="onRoleSelected()">
+              <div *ngFor="let role of roles">
+                <mat-option value="{{role.roleId}}">{{role.roleName}}</mat-option>
+              </div>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+      <hr>
+
+      <div class="row mt-4 align-items-center no-left-padding">
+        <div class="col-3">
+          <mat-label>Page</mat-label>
+          <!-- Page -->
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <mat-select [(value)]="selectedPage" (selectionChange)="onPageSelected()" [disabled]="pagesDroDown">
+              <div *ngFor="let page of pages">
+                <mat-option value="{{page}}">{{page}}</mat-option>
+              </div>
+            </mat-select>
+          </mat-form-field>
+        </div>
+<!--        <div class="col-3">-->
+<!--          <mat-label>Section</mat-label>-->
+<!--          &lt;!&ndash; Section &ndash;&gt;-->
+<!--          <mat-form-field appearance="outline" class="w-100 input-sm">-->
+<!--            <mat-select [(value)]="selectedSection" (selectionChange)="onSectionSelected()">-->
+<!--              <div *ngFor="let section of sections">-->
+<!--                <mat-option value="{{section}}">{{section}}</mat-option>-->
+<!--              </div>-->
+<!--            </mat-select>-->
+<!--          </mat-form-field>-->
+<!--        </div>-->
+<!--        <div class="col-3">-->
+<!--          <mat-label>Task</mat-label>-->
+<!--          &lt;!&ndash; Task &ndash;&gt;-->
+<!--          <mat-form-field appearance="outline" class="w-100 input-sm">-->
+<!--            <mat-select [(value)]="selectedTask" (selectionChange)="onTaskSelected()">-->
+<!--              <div *ngFor="let task of tasks">-->
+<!--                <mat-option value="{{task}}">{{task}}</mat-option>-->
+<!--              </div>-->
+<!--            </mat-select>-->
+<!--          </mat-form-field>-->
+<!--        </div>-->
+      </div>
+
+<!--      <div class="main-container">-->
+
+          <div class="row mt-4 no-left-padding" *ngIf="viewContent">
+            <div class="col-md-12">
+              <div class="card p-1 mb-3">
+                <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+                  <!-- Leaf node template -->
+                  <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+                    <div
+                      class="d-flex align-items-center gap-3 p-2 rounded hover-bg w-100"
+                      [ngClass]="{ 'bg-neutral-50': node.level === 0 }"
+                    >
+                      <!-- Tree icon -->
+                      <span class="tree-icon d-flex align-items-center justify-content-center" style="width: 24px;">
+                  <i class="ph fs-5"></i>
+                </span>
+
+                      <!-- Node label -->
+                      <span class="flex-grow-1">{{ node.name }}</span>
+
+                      <!-- Material Switch + Static "Status" -->
+                      <div class="d-flex align-items-center gap-1" (click)="$event.stopPropagation()">
+                        <mat-slide-toggle color="primary" [checked]="node.permissionStatus" (change)="togglePermission(node)"></mat-slide-toggle>
+                        <span class="text-muted small me-5">Status</span>
+                      </div>
+
+                      <!-- Button group -->
+                      <div class="btn-group d-flex align-items-center" role="group" (click)="$event.stopPropagation()">
+                        <button type="button" class="btn btn-sm btn-outline-secondary">
+                          <i class="ph ph-note-pencil"></i>
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-outline-secondary"
+                          [disabled]="node.level === 0 || node.level === 1"
+                        >
+                          <i class="ph ph-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </mat-tree-node>
+
+                  <!-- Expandable node template -->
+                  <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+                    <div
+                      class="d-flex align-items-center gap-3 p-2 rounded hover-bg w-100"
+                      [ngClass]="{ 'bg-neutral-50': node.level === 0 }"
+                    >
+                      <!-- Tree icon -->
+                      <span
+                        class="tree-icon d-flex align-items-center justify-content-center"
+                        (click)="treeControl.toggle(node)"
+                        style="cursor: pointer; width: 24px;"
+                      >
+                  <i
+                    class="ph fs-5"
+                    [ngClass]="
+                      treeControl.isExpanded(node)
+                        ? 'ph-caret-down'
+                        : 'ph-caret-right'
+                    "
+                  ></i>
+                </span>
+
+                      <!-- Node label -->
+                      <span class="flex-grow-1">{{ node.name }}</span>
+
+                      <!-- Material Switch + Static "Status" -->
+                      <div class="d-flex align-items-center gap-1" (click)="$event.stopPropagation()">
+                        <mat-slide-toggle color="primary" [checked]="node.permissionStatus" (change)="toggleParentPermission(node)"></mat-slide-toggle>
+                        <span class="text-muted small me-5">Status</span>
+                      </div>
+
+                      <!-- Button group -->
+                      <div class="btn-group d-flex align-items-center" role="group" (click)="$event.stopPropagation()">
+                        <button type="button" class="btn btn-sm btn-outline-secondary">
+                          <i class="ph ph-note-pencil"></i>
+                        </button>
+                        <button
+                          type="button"
+                          class="btn btn-sm btn-outline-secondary"
+                          [disabled]="node.level === 0 || node.level === 1"
+                        >
+                          <i class="ph ph-trash"></i>
+                        </button>
+                      </div>
+                    </div>
+                  </mat-tree-node>
+                </mat-tree>
+              </div>
+            </div>
+            <div class="d-flex justify-content-between">
+              <button class="btn btn-secondary btn-outline" (click)="resetFilters()">
+                <i class="ph ph-clock-counter-clockwise"></i>Reset
+              </button>
+              <button class="btn btn-primary" (click)="onSubmit()">
+                <i class="ph ph-floppy-disk"></i>Save
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+    </div>
+
+
+<!--</div>-->
+

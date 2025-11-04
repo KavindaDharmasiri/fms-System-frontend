@@ -1,0 +1,214 @@
+<div class="main-container">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="breadcrumb-container">
+      <!-- Breadcrumb Navigation -->
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">
+          <li class="breadcrumb-item has-dropdown">
+            <i class="ph ph-user-circle-gear me-1"></i>
+            <a class="text-decoration-none" routerLink="#">Configurations</a>
+          </li>
+          <!-- Active Page  -->
+          <li aria-current="page" class="breadcrumb-item active">
+            <i class="ph ph-caret-right"></i> <span id="active-iphone-breadcrumb">Rule Group</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+    <div class="d-flex gap-2">
+
+    </div>
+    <div class="d-flex gap-2">
+      <button [routerLink]="'/configurations/rule-group/new-rule-group'" class="btn btn-primary">
+        <i class="ph ph-plus"></i>New Rule Group
+      </button>
+    </div>
+  </div>
+  <div class="sub-container">
+    <div class="search-container">
+      <div class="search-header">
+        <div class="search-result-count">
+          <span class="fw-semibold font-16px">Search Rule Group </span>
+        </div>
+        <div (click)="toggleFilter()" class="filter-toggle d-flex align-items-center gap-2">
+          <i class="ph ph-sliders slider-icon"></i>
+          <span class="fw-semibold font-14px">{{ isFilterOpen ? "Close Filters" : "Apply Filters" }}</span>
+        </div>
+
+      </div>
+
+      <form [class.open]="isFilterOpen" [formGroup]="ruleGroupFilter" class="filter-container">
+
+        <div class="row g-3 no-left-padding">
+
+          <div class="col-md-3">
+            <mat-label>Rule Group ID</mat-label>
+            <mat-form-field appearance="outline" class="w-100 input-sm">
+              <input formControlName="ruleGroupId" matInput placeholder="Enter Group Rule ID" type="text"/>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-label>Rule Group Name</mat-label>
+            <mat-form-field appearance="outline" class="w-100 input-sm">
+              <input formControlName="groupName" matInput placeholder="Enter Group Rule Name" type="text"/>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-label>Payment Network</mat-label>
+            <mat-form-field appearance="outline" class="w-100 input-sm">
+              <mat-select formControlName="paymentNetworkId" placeholder="All">
+                <mat-option [value]="null">All</mat-option>
+                <mat-option *ngFor="let paymentNetwork of paymentNetworks" [value]="paymentNetwork.paymentNetworkId">
+                  {{ paymentNetwork.networkName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-label>Rule</mat-label>
+            <mat-form-field appearance="outline" class="w-100 input-sm">
+              <mat-select formControlName="ruleGroupRuleId" placeholder="All">
+                <mat-option [value]="null">All</mat-option>
+                <mat-option *ngFor="let rule of allRules" [value]="rule.efmsRuleId">
+                  {{ rule.ruleName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-label>User Role</mat-label>
+            <mat-form-field appearance="outline" class="w-100 input-sm">
+              <mat-select formControlName="ruleGroupRoleId" placeholder="All">
+                <mat-option [value]="null">All</mat-option>
+                <mat-option *ngFor="let role of allRoles" [value]="role.roleId">
+                  {{  role.roleName }}
+                </mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-label>Status</mat-label>
+            <mat-form-field appearance="outline" class="w-100 input-sm">
+              <mat-select formControlName="status" placeholder="All">
+                <mat-option [value]="null">All</mat-option>
+                <mat-option value="Active">Active</mat-option>
+                <mat-option value="Inactive">Inactive</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+
+        <mat-divider class="mt-2 mb-4"></mat-divider>
+
+        <div class="d-flex justify-content-between gap-2">
+          <button (click)="handleReset()" class="btn btn-secondary btn-outline btn-sm">
+            <i class="ph ph-clock-counter-clockwise"></i>Reset
+          </button>
+          <button (click)="handleSearch()" class="btn btn-primary btn-sm">
+            <i class="ph ph-magnifying-glass"></i>Search
+          </button>
+        </div>
+
+
+        <!--        <div class="d-flex justify-content-between">-->
+        <!--          <button class="btn btn-secondary btn-outline btn-sm" (click)="handleReset()">-->
+        <!--            <i class="ph ph-clock-counter-clockwise"></i>Reset-->
+        <!--          </button>-->
+        <!--          <button class="btn btn-primary btn-sm" (click)="handleSearch()">-->
+        <!--            <i class="ph ph-magnifying-glass"></i>Search-->
+        <!--          </button>-->
+        <!--        </div>-->
+
+      </form>
+      <div class="table-container mt-3">
+
+        <div class="mat-table">
+          <table [dataSource]="ruleGroupList" class="custom-table" mat-table>
+            <ng-container matColumnDef="paymentNetworkId">
+              <th *matHeaderCellDef mat-header-cell>Payment Network</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.paymentNetwork.networkName }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="ruleGroupId">
+              <th *matHeaderCellDef mat-header-cell>Rule Group ID</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.ruleGroupId }}</td>
+            </ng-container>
+            <ng-container matColumnDef="groupName">
+              <th *matHeaderCellDef mat-header-cell>Rule Group Name</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.groupName }}</td>
+            </ng-container>
+            <ng-container matColumnDef="acquirer_bin">
+              <th *matHeaderCellDef mat-header-cell>No of rules</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.ruleCount }}</td>
+            </ng-container>
+            <ng-container matColumnDef="status">
+              <th *matHeaderCellDef mat-header-cell>Status</th>
+              <td *matCellDef="let element" mat-cell>
+                <div class="flex-1">
+                  <span *ngIf="element.status == 'ACTIVE'" class="badge bg-green">ACTIVE</span>
+                  <span *ngIf="!element.status || element.status == 'INACTIVE'"
+                        class="badge badge-warning">INACTIVE</span>
+                </div>
+              </td>
+            </ng-container>
+            <!--            <ng-container matColumnDef="tran_amount">-->
+            <!--              <th mat-header-cell *matHeaderCellDef>Transaction Amount</th>-->
+            <!--              <td mat-cell *matCellDef="let element">-->
+            <!--                {{ element.tran_amount }}</td>-->
+            <!--            </ng-container>-->
+            <!--            <ng-container matColumnDef="currency">-->
+            <!--              <th mat-header-cell *matHeaderCellDef>Currency</th>-->
+            <!--              <td mat-cell *matCellDef="let element">-->
+            <!--                {{ element.currency }}</td>-->
+            <!--            </ng-container>-->
+            <!--            <ng-container matColumnDef="merchant_name">-->
+            <!--              <th mat-header-cell *matHeaderCellDef>Merchant Name</th>-->
+            <!--              <td mat-cell *matCellDef="let element">-->
+            <!--                {{ element.merchant_name }}</td>-->
+            <!--            </ng-container>-->
+            <ng-container matColumnDef="action">
+              <th *matHeaderCellDef mat-header-cell>Action</th>
+              <td *matCellDef="let element" class="text-center" mat-cell>
+
+                <div aria-label="Basic outlined example" class="btn-group" role="group">
+                  <button [routerLink]="'/configurations/rule-group/view-rule-group/'+element.ruleGroupId" class="btn btn-secondary btn-outline btn-sm flex-1" title="View"
+                          type="button">
+                    <i class="ph ph-eye"></i>
+                  </button>
+                  <button [routerLink]="'/configurations/rule-group/edit-rule-group/'+element.ruleGroupId" class="btn btn-secondary btn-outline btn-sm flex-1" title="View"
+                          type="button">
+                    <i class="ph ph-pencil"></i>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+
+            <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+            <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+          </table>
+          <mat-paginator
+            (page)="onPageChange($event)"
+            [length]="totalRecords"
+            [pageIndex]="pageIndex"
+            [pageSizeOptions]="[5, 10, 20]"
+            [pageSize]="pageSize"
+            showFirstLastButtons
+          >
+          </mat-paginator>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+</div>
+
+

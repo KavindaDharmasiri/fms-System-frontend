@@ -1,0 +1,204 @@
+<div class="main-container">
+  <div class="sub-container">
+    <div class="row">
+      <span class="fw-semibold font-16px">Table</span>
+
+      <div class="row mat-4">
+        <div class="col-md-12">
+          <p>
+            You can use this classes with the table or mat-table class
+            <span class="text-red">
+              table-border | table-header-color | table-striped
+            </span>
+          </p>
+          <p>Example</p>
+          <table class="table table-border table-header-color table-striped">
+            <thead>
+              <tr>
+                <th scope="col">No</th>
+                <th scope="col">First</th>
+                <th scope="col">Last</th>
+                <th scope="col">Gender</th>
+                <th scope="col"></th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">1</th>
+                <td>Mark</td>
+                <td>Otto</td>
+                <td>Male</td>
+                <td class="text-center">
+                  <button class="btn btn-primary btn-icon-only">
+                    <i class="ph ph-eye"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">2</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>Male</td>
+                <td class="text-center">
+                  <button class="btn btn-primary btn-icon-only">
+                    <i class="ph ph-eye"></i>
+                  </button>
+                </td>
+              </tr>
+              <tr>
+                <th scope="row">3</th>
+                <td>Jacob</td>
+                <td>Thornton</td>
+                <td>Male</td>
+                <td class="text-center">
+                  <button class="btn btn-primary btn-icon-only">
+                    <i class="ph ph-eye"></i>
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="col-md-12 mt-4">
+          <h5>
+            Mat Table
+            <a href="https://material.angular.io/components/table/api"
+              >(Source Link)</a
+            >
+          </h5>
+          <div class="mat-table">
+            <table mat-table [dataSource]="dataSource">
+              <ng-container matColumnDef="position">
+                <th mat-header-cell *matHeaderCellDef>No.</th>
+                <td mat-cell *matCellDef="let element">
+                  {{ element.position }}
+                </td>
+              </ng-container>
+              <ng-container matColumnDef="name">
+                <th mat-header-cell *matHeaderCellDef>Name</th>
+                <td mat-cell *matCellDef="let element">{{ element.name }}</td>
+              </ng-container>
+              <ng-container matColumnDef="weight">
+                <th mat-header-cell *matHeaderCellDef>Weight</th>
+                <td mat-cell *matCellDef="let element">{{ element.weight }}</td>
+              </ng-container>
+              <ng-container matColumnDef="symbol">
+                <th mat-header-cell *matHeaderCellDef>Symbol</th>
+                <td mat-cell *matCellDef="let element">{{ element.symbol }}</td>
+              </ng-container>
+              <ng-container matColumnDef="action">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let element" class="text-center">
+                  <button class="btn btn-primary btn-icon-only">
+                    <i class="ph ph-eye"></i>
+                  </button>
+                </td>
+              </ng-container>
+              <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+              <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+            </table>
+            <mat-paginator
+              [pageSizeOptions]="[5, 10, 20]"
+              showFirstLastButtons
+            ></mat-paginator>
+          </div>
+        </div>
+
+        <div class="col-md-12 mt-4">
+          <h5>
+            Mat Table Expandable
+            <a href="https://material.angular.io/components/table/api">(Source Link)</a>
+          </h5>
+          <div class="mat-table">
+            <table mat-table [dataSource]="dataSource" multiTemplateDataRows>
+              <!-- Column Definitions -->
+              @for (column of columnsToDisplayWithExpand; track column) {
+              <ng-container matColumnDef="{{ column }}">
+                <th mat-header-cell *matHeaderCellDef>
+                  {{ column === "expand" ? "" : column }}
+                </th>
+                <td mat-cell *matCellDef="let element">
+                  @if (column === 'expand') {
+                  <button
+                    mat-icon-button
+                    aria-label="expand row"
+                    [attr.aria-expanded]="isExpanded(element)"
+                    (click)="toggleRow(element); $event.stopPropagation()"
+                  >
+                    @if (isExpanded(element)) {
+                    <!-- Replace Material Icon with Phosphor Caret Up -->
+                    <i class="ph-caret-up font-20px"></i>
+                    } @else {
+                    <!-- Replace Material Icon with Phosphor Caret Down -->
+                    <i class="ph-caret-down font-20px"></i>
+                    }
+                  </button>
+                  } @else {
+                  {{ element[column] }}
+                  }
+                </td>
+              </ng-container>
+              }
+
+              <!-- Expanded Content -->
+              <ng-container matColumnDef="expandedDetail">
+                <td
+                  mat-cell
+                  *matCellDef="let element"
+                  [attr.colspan]="columnsToDisplayWithExpand.length"
+                >
+                  <div
+                    class="example-element-detail"
+                    [@detailExpand]="isExpanded(element) ? 'expanded' : 'collapsed'"
+                  >
+                    <div class="expanded-content card-like">
+                      <!-- First Row -->
+                      <div class="description-row">
+                        <span class="description">{{ element.description }}</span>
+                        <mat-slide-toggle
+                          [(ngModel)]="element.isActive2"
+                          aria-label="Toggle first active state"
+                          class="toggle-compact"
+                        >
+                          {{ element.isActive ? "Active" : "Inactive" }}
+                        </mat-slide-toggle>
+                      </div>
+                      <!-- Second Row -->
+                      <div class="description-row">
+                        <span class="description">{{ element.description2 }}</span>
+                        <mat-slide-toggle
+                          [(ngModel)]="element.isActive2"
+                          aria-label="Toggle second active state"
+                          class="toggle-compact"
+                        >
+                          {{ element.isActive2 ? "Active" : "Inactive" }}
+                        </mat-slide-toggle>
+                      </div>
+                    </div>
+                  </div>
+                </td>
+              </ng-container>
+
+              <!-- Row Definitions -->
+              <tr mat-header-row *matHeaderRowDef="columnsToDisplayWithExpand"></tr>
+              <tr
+                mat-row
+                *matRowDef="let element; columns: columnsToDisplayWithExpand"
+                class="example-element-row"
+                [class.example-expanded-row]="isExpanded(element)"
+                (click)="toggleRow(element)"
+              ></tr>
+              <tr
+                mat-row
+                *matRowDef="let row; columns: ['expandedDetail']"
+                class="example-detail-row"
+              ></tr>
+            </table>
+            <mat-paginator [pageSizeOptions]="[5, 10, 20]" showFirstLastButtons></mat-paginator>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

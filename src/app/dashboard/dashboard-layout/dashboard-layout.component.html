@@ -1,0 +1,152 @@
+<div class="p-4">
+  <!-- Header Section -->
+  <div class="dashboard-header">
+    <div class="d-flex justify-content-between align-items-start">
+      <div class="d-flex align-items-center gap-3">
+        <div class="dashboard-icon rounded p-2 d-flex align-items-center justify-content-center" style="width: 48px; height: 48px;">
+          <i class="ph ph-shield-check" style="font-size: 24px;"></i>
+        </div>
+        <div>
+          <h1 class="h3 fw-bold mb-1">Fraud Detection Dashboard</h1>
+          <p class="mb-0 opacity-75">Real-time overview of transaction activity and rule performance.</p>
+        </div>
+      </div>
+      <div class="d-flex gap-2">
+        <button class="btn btn-outline-primary btn-modern d-flex align-items-center gap-2">
+          <i class="ph ph-download"></i>
+          Export Report
+        </button>
+        <button class="btn btn-primary btn-modern d-flex align-items-center gap-2">
+          <i class="ph ph-plus"></i>
+          New Rule
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-3">
+      <div class="stats-card">
+        <p class="text-muted mb-2">Total Transactions</p>
+        <div class="stat-value">{{stats.totalTransactions | number}}</div>
+        <p class="stat-change positive mb-0 d-flex align-items-center gap-1">
+          <i class="ph ph-arrow-up"></i>
+          +{{stats.totalTransactionsChange}}%
+        </p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="stats-card">
+        <p class="text-muted mb-2">Blocked Transactions</p>
+        <div class="stat-value">{{stats.blockedTransactions | number}}</div>
+        <p class="stat-change negative mb-0 d-flex align-items-center gap-1">
+          <i class="ph ph-arrow-down"></i>
+          {{stats.blockedTransactionsChange}}%
+        </p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="stats-card">
+        <p class="text-muted mb-2">Fraud Rate</p>
+        <div class="stat-value">{{stats.fraudRate}}%</div>
+        <p class="stat-change positive mb-0 d-flex align-items-center gap-1">
+          <i class="ph ph-arrow-up"></i>
+          +{{stats.fraudRateChange}}%
+        </p>
+      </div>
+    </div>
+    <div class="col-md-3">
+      <div class="stats-card">
+        <p class="text-muted mb-2">Value at Risk</p>
+        <div class="stat-value">${{stats.valueAtRisk | number}}</div>
+        <p class="stat-change negative mb-0 d-flex align-items-center gap-1">
+          <i class="ph ph-arrow-down"></i>
+          {{stats.valueAtRiskChange}}%
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Charts and Rules Section -->
+  <div class="row g-4 mb-4">
+    <div class="col-lg-8">
+      <div class="chart-card">
+        <div class="card-header">
+          <div class="d-flex justify-content-between align-items-center">
+            <div>
+              <h5>Transaction Volume</h5>
+              <p class="text-muted mb-0">Last 30 Days</p>
+            </div>
+            <div class="d-flex gap-3">
+              <div class="legend-item">
+                <span class="legend-dot primary"></span>
+                Total
+              </div>
+              <div class="legend-item">
+                <span class="legend-dot danger"></span>
+                Fraudulent
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="card-body">
+          <div class="chart-placeholder">
+            <p>Chart Placeholder - Integrate with ng2-charts</p>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="col-lg-4">
+      <div class="rules-card">
+        <div class="card-header">
+          <h5>Active Fraud Rules</h5>
+        </div>
+        <div class="card-body">
+          <div *ngFor="let rule of fraudRules" class="rule-item">
+            <div class="d-flex justify-content-between align-items-center">
+              <div>
+                <div class="rule-name">{{rule.name}}</div>
+                <div class="rule-triggers">Triggers: {{rule.triggers}}</div>
+              </div>
+              <mat-slide-toggle [checked]="rule.active" (change)="toggleRule(rule)"></mat-slide-toggle>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Transaction Feed -->
+  <div class="transaction-table">
+    <div class="card-header">
+      <h5>Real-Time Transaction Feed</h5>
+    </div>
+    <div class="table-responsive">
+      <table class="table">
+        <thead>
+          <tr>
+            <th>Transaction ID</th>
+            <th>Timestamp</th>
+            <th>Amount</th>
+            <th>Merchant</th>
+            <th>Location</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let transaction of recentTransactions">
+            <td class="transaction-id">{{transaction.id}}</td>
+            <td>{{transaction.timestamp | date:'short'}}</td>
+            <td class="fw-medium">${{transaction.amount | number:'1.2-2'}}</td>
+            <td>{{transaction.merchant}}</td>
+            <td>{{transaction.location}}</td>
+            <td>
+              <span class="status-badge" [ngClass]="getStatusClass(transaction.status)">{{transaction.status}}</span>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

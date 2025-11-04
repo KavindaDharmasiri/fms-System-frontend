@@ -1,0 +1,137 @@
+<div class="main-container">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="breadcrumb-container">
+      <!-- Breadcrumb Navigation -->
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">
+          <li class="breadcrumb-item has-dropdown">
+            <i class="ph ph-user-circle-gear me-1"></i>
+            <a routerLink="#" class="text-decoration-none">Configurations</a>
+          </li>
+          <!-- Active Page  -->
+          <li class="breadcrumb-item" aria-current="page">
+            <i class="ph ph-caret-right"></i>
+            <a routerLink="/configurations/rule-group" class="text-decoration-none">Rule Group</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            <i class="ph ph-caret-right"></i> <span id="active-iphone-breadcrumb1">View Rule Group</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <div class="sub-container">
+<!--    <form [formGroup]="ruleGroupForm" class="row g-2">-->
+<!--      <div class="col-3">-->
+<!--        <mat-label>Select</mat-label>-->
+<!--        <mat-form-field appearance="outline" class="w-100 input-sm">-->
+<!--          <mat-select [(value)]="dropdownSingal">-->
+<!--            <mat-option value="option1">Active</mat-option>-->
+<!--            <mat-option value="option2">Inactive</mat-option>-->
+<!--          </mat-select>-->
+<!--        </mat-form-field>-->
+<!--      </div>-->
+<!--      <div class="col-md-3">-->
+<!--        <mat-label>Element Id</mat-label>-->
+<!--        <mat-form-field appearance="outline" class="w-100 input-sm disabled">-->
+<!--          <input type="text" matInput placeholder="344242342" class="disabled" />-->
+<!--        </mat-form-field>-->
+<!--      </div>-->
+<!--      <div class="col-md-3">-->
+<!--        <mat-label>Element Name</mat-label>-->
+<!--        <mat-form-field appearance="outline" class="w-100 input-sm">-->
+<!--          <input type="text" matInput placeholder="Enter Element Name " />-->
+<!--        </mat-form-field>-->
+<!--      </div>-->
+<!--    </form>-->
+    <form [formGroup]="ruleGroupForm" class="row g-2">
+      <div class="col-3">
+        <mat-label>Payment Network Name</mat-label>
+        <mat-form-field appearance="outline" class="w-100 input-sm">
+          <input disabled [value]="ruleGroup.paymentNetwork?.networkName" type="text" matInput placeholder="" class="disabled"/>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-label>Rule Group Id</mat-label>
+        <mat-form-field appearance="outline" class="w-100 input-sm disabled">
+          <input disabled [value]="ruleGroup.ruleGroupUuid" type="text" matInput placeholder="" class="disabled"/>
+        </mat-form-field>
+      </div>
+      <div class="col-md-3">
+        <mat-label>Rule Group Name</mat-label>
+        <mat-form-field appearance="outline" class="w-100 input-sm">
+          <input disabled [value]="ruleGroup.groupName" type="text" matInput placeholder="Enter Element Name " />
+        </mat-form-field>
+      </div>
+    </form>
+    <hr>
+    <div class="accordion" id="accordionMain" *ngFor="let ruleGroupRule of ruleGroup.ruleGroupRuleCollection">
+      <div class="accordion-item">
+        <h2 class="accordion-header m-0" id="headingOne">
+          <button
+            class="accordion-button"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#collapseOne"
+          >
+            {{ruleGroupRule.efmsRule?.ruleName}}
+          </button>
+        </h2>
+        <div
+          id="collapseOne"
+          class="accordion-collapse collapse show"
+          data-bs-parent="#accordionMain"
+        >
+          <div class="accordion-body">
+            <div class="row">
+              <div class="col-3">
+                <mat-label>Rule ID</mat-label><br>
+                <b><label>{{ ruleGroupRule?.efmsRuleId }}</label></b>
+              </div>
+              <div class="col-3">
+                <mat-label>Rule Name</mat-label><br>
+                <b><label>{{ ruleGroupRule?.efmsRule?.ruleName }}</label></b>
+              </div>
+
+            </div><div class="row mt-4 mb-2">
+            <div *ngFor="let ruleGroupRuleElement of ruleGroupRule.efmsRule?.efmsRuleConditionCollection" class="col-3">
+              <b><label>Element</label></b><br>
+              <div class="operator-btn-group mt-2">
+<!--                *ngFor="let op of JSON.parse(String((ruleGroupRuleElement.operator)))"-->
+<!--                <div class="px-4 p-2" >-->
+<!--                  <span >{{ruleGroupRuleElement.operator}}</span>-->
+<!--                </div>-->
+
+                    <div class=" operator-btn-group gap-2 p-2" *ngIf="ruleGroupRuleElement.operator === 'EQUAL'">
+                   <b>=</b>
+                  </div >
+                  <div class=" operator-btn-group gap-2 p-2"  *ngIf="ruleGroupRuleElement.operator === 'NOT_EQUAL'" >
+                     <b>≠</b>
+                  </div>
+                  <div class=" operator-btn-group gap-2 p-2"  *ngIf="ruleGroupRuleElement.operator === 'GREATERTHAN'" >
+                     <b>></b>
+                  </div>
+                  <div class=" operator-btn-group gap-2 p-2"  *ngIf="ruleGroupRuleElement.operator === 'LESSTHAN'" >
+                     <b><</b>
+                  </div>
+                  <div class=" operator-btn-group gap-2 p-2"  *ngIf="ruleGroupRuleElement.operator === 'GREATERTHAN_OR_EQUAL'" >
+                    <b>=</b>
+                  </div >
+                  <div class=" operator-btn-group gap-2 p-2"  *ngIf="ruleGroupRuleElement.operator === 'LESSTHAN_OR_EQUAL'">
+                     <b><=</b>
+                  </div>
+
+              </div>
+              <br>
+              <b><label>Values</label></b><br>
+<!--              <div class="d-flex flex-wrap flex-1 mt-2" *ngFor="let value of JSON.parse(String((ruleGroupRuleElement.value)))">-->
+                <button class="badge badge-light">{{ ruleGroupRuleElement.value }}</button>
+<!--              </div>-->
+            </div>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

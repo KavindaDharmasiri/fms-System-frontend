@@ -1,0 +1,318 @@
+<div class="main-container">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="breadcrumb-container">
+      <!-- Breadcrumb Navigation -->
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">
+          <i class="ph ph-cardholder me-1"></i>
+          <!-- <li class="breadcrumb-item has-dropdown">
+            <a href="#" class="text-decoration-none">Electronics</a>
+          </li>
+          <li class="breadcrumb-item has-dropdown">
+            <i class="ph ph-caret-right"></i>
+            <a href="#" class="text-decoration-none">Smartphones</a>
+          </li>
+          <li class="breadcrumb-item has-dropdown">
+            <i class="ph ph-caret-right"></i>
+            <a href="#" class="text-decoration-none">iPhone</a>
+          </li> -->
+          <li class="breadcrumb-item has-dropdown">
+            <i class="ph ph-caret-right"></i>
+            <a [routerLink]="'/configurations/rule-configuration'" class="text-decoration-none">Configurations</a>
+          </li>
+          <!-- Active Page  -->
+          <li class="breadcrumb-item active" aria-current="page">
+            <i class="ph ph-caret-right"></i> <span id="active-iphone-breadcrumb">{{isEditMode ? 'Edit Rule' : 'New Rule'}}</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <form [formGroup]="addRuleValueForm">
+    <div class="sub-container">
+
+      <div class="row g-2">
+        <div class="col-md-3">
+          <mat-label>Payment Network</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+<!--            <h1>{{netId}}</h1>-->
+            <mat-select placeholder="Select" [(ngModel)]="netId" formControlName="paymentNetworkId">
+                <mat-option *ngFor="let option of paymentNetworkList" [value]="option.paymentNetworkId">
+                  {{option.networkName}}</mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Rule ID</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input type="text" [value]="efmsRule.ruleUuid" matInput placeholder="RL3545656" disabled />
+          </mat-form-field>
+        </div>
+<!--        <div class="col-md-3">-->
+<!--          <mat-label>Rule ID</mat-label>-->
+<!--          <mat-form-field appearance="outline" class="w-100">-->
+            <input type="text" [value]="efmsRule.efmsRuleId" matInput  disabled class="visually-hidden" />
+<!--          </mat-form-field>-->
+<!--        </div>-->
+        <div class="col-md-3">
+          <mat-label>Rule Name</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input type="text" [value]="efmsRule.ruleName" matInput placeholder="Enter Rule Name" formControlName="ruleName" />
+          </mat-form-field>
+        </div>
+      </div>
+
+      <div class="d-column gap-4">
+        <div class="row g-2">
+          <div class="col-12">
+            <span class="fw-semibold font-16px">Effective Dates</span>
+          </div>
+          <div class="col-md-3">
+            <mat-label>Effective From Date</mat-label>
+            <div class="d-flex align-items-center border rounded">
+              <input
+                matInput
+                [matDatepicker]="picker1"
+                [value]="efmsRule.fromDate"
+                placeholder="MM/DD/YYYY"
+                class="form-control border-0 flex-grow-1 date-size"
+                style="outline: none; box-shadow: none"
+                formControlName="fromDate"
+              />
+
+              <span class="cursor mx-2 mt-1" (click)="picker1.open()">
+              <i class="ph ph-calendar fs-4"></i>
+              </span>
+
+              <mat-datepicker class="input-sm" #picker1></mat-datepicker>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <mat-label>Effective To Date</mat-label>
+            <div class="d-flex align-items-center border rounded">
+              <input
+                matInput
+                [matDatepicker]="picker2"
+                [value]="efmsRule.toDate"
+                placeholder="MM/DD/YYYY"
+                class="form-control border-0 flex-grow-1 date-size"
+                style="outline: none; box-shadow: none"
+                formControlName="toDate"
+              />
+
+              <span class="cursor mx-2 mt-1" (click)="picker2.open()">
+              <i class="ph ph-calendar fs-4"></i>
+              </span>
+
+              <mat-datepicker class="input-sm" #picker2></mat-datepicker>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-2">
+          <div class="">
+            <div class="row g-2">
+              <div class="col-md-2">
+                <mat-slide-toggle formControlName="status">Status</mat-slide-toggle>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-2">
+          <div class="col-12">
+            <span class="fw-semibold font-16px">Rule Conditions</span>
+          </div>
+          <div class="col-md-3">
+            <mat-label>Element</mat-label>
+            <mat-form-field appearance="outline" class="w-100 input-sm">
+              <mat-select  formControlName="efmsElementId" placeholder="Select" >
+                <div *ngFor="let option of efmsElements">
+                  <mat-option (click)="getElementData()" value="{{option.efmsElementId}}" [value]="option.efmsElementId">{{option.elementName}}</mat-option>
+                </div>
+              </mat-select>
+            </mat-form-field>
+          </div>
+        </div>
+
+
+        <hr>
+
+        <div class="row g-2">
+          <div class="col-12">
+            <span class="fw-semibold font-16px">Operators</span>
+          </div>
+          <div class="col-md-4">
+            <mat-label>Comparison Operators</mat-label>
+            <div class="operator-btn-group">
+              <div *ngIf="isEqule">
+                <mat-checkbox (click)="setOperations('EQUAL')" formControlName="coEqual">=</mat-checkbox>
+              </div>
+              <div *ngIf="isNotEqual">
+                <mat-checkbox (click)="setOperations('NOT_EQUAL')" formControlName="coNotEqual">≠</mat-checkbox>
+              </div>
+              <div *ngIf="isGreater">
+                <mat-checkbox (click)="setOperations('GREATERTHAN')" formControlName="coGreater">></mat-checkbox>
+              </div>
+              <div *ngIf="isLess">
+                <mat-checkbox (click)="setOperations('LESSTHAN')" formControlName="coLess"><</mat-checkbox>
+              </div>
+              <div *ngIf="isGreaterEqual">
+                <mat-checkbox (click)="setOperations('GREATERTHAN_OR_EQUAL')" formControlName="coGreaterEqual">>=</mat-checkbox>
+              </div>
+              <div *ngIf="isLessEqual">
+                <mat-checkbox (click)="setOperations('LESSTHAN_OR_EQUAL')" formControlName="coLessEqual"><=</mat-checkbox>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <mat-label>List Operators</mat-label>
+            <div class="operator-btn-group">
+              <div>
+
+                <mat-checkbox (click)="setOperations('IN')" formControlName="loMIn" *ngIf="isIn">IN</mat-checkbox>
+              </div>
+              <div>
+
+                <mat-checkbox (click)="setOperations('NOT IN')" formControlName="loNotIN" *ngIf="isNotIN">NOT IN</mat-checkbox>
+              </div>
+            </div>
+          </div>
+          <div class="col-md-4">
+            <mat-label>Range Operators</mat-label>
+            <div class="d-flex gap-2">
+              <mat-form-field appearance="outline">
+                <input type="text" matInput placeholder="Min" formControlName="rgMin" />
+              </mat-form-field>
+              <mat-form-field appearance="outline">
+                <input type="text" matInput placeholder="Max" formControlName="rgMax" />
+              </mat-form-field>
+            </div>
+          </div>
+          <div class="col-md-2">
+            <div class="d-column gap-2" *ngIf="isboValue">
+              <mat-label>Boolean Operators</mat-label>
+              <mat-slide-toggle  formControlName="boValue">False</mat-slide-toggle>
+
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <hr>
+
+      <div class="d-column gap-4">
+        <div class="row g-2">
+          <div class="col-12">
+            <span class="fw-semibold font-16px">Value</span>
+          </div>
+          <div class="col-md-3">
+            <mat-label>Element Value</mat-label>
+            <mat-form-field appearance="outline" class="w-100 input-sm">
+              <mat-select  formControlName="value" placeholder="Select" >
+                <div *ngFor="let option of elementValue">
+                  <mat-option  value="{{option}}">{{option}}</mat-option>
+                </div>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <mat-label>Risk Weight</mat-label>
+            <mat-form-field appearance="outline" class="w-100">
+              <input type="text" matInput placeholder="Enter Risk Weight" formControlName="riskWeight" />
+            </mat-form-field>
+          </div>
+          <div class="col-md-3">
+            <div class="flex-v-center h-100 gap-2 mt-1">
+              <button class="btn btn-default btn-outline" (click)="addRules()">
+                <i class="ph ph-plus"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="table-container mt-3">
+
+        <div class="mat-table">
+          <table mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="efmsElementId">
+              <th mat-header-cell *matHeaderCellDef>Field</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.efmsElementId }}</td>
+            </ng-container>
+            <ng-container matColumnDef="operator">
+              <th mat-header-cell *matHeaderCellDef>Operators</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.operator }}</td>
+            </ng-container>
+            <ng-container matColumnDef="value">
+              <th mat-header-cell *matHeaderCellDef>Value</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.value }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="riskScore">
+              <th mat-header-cell *matHeaderCellDef>Risk Score</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.riskScore }}
+              </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef>Action</th>
+              <td mat-cell *matCellDef="let element" class="text-center">
+
+                <div class="btn-group" role="group" aria-label="Basic outlined example">
+<!--                  <button type="button" class="btn btn-secondary btn-outline btn-sm" title="edit"><i class="ph ph-note-pencil"></i></button>-->
+                  <button type="button" class="btn btn-secondary btn-outline btn-sm" title="delete" (click)="deleteData(element)" > <i class="ph ph-trash"></i></button>
+
+                </div>
+              </td>
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+
+        </div>
+
+      </div>
+
+
+      <hr>
+
+      <div class="d-flex justify-content-end m-2 gap-2">
+        <div class="flex-1 ">
+          <div class="operator-btn-group p-2">
+            <div>
+              <label class=text-center>Final Risk Score <br>
+                <h4 class="score fw-bold">{{finalRiskScore}}</h4>
+              </label>
+            </div>
+          </div>
+        </div>
+
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-secondary btn-outline btn-sm" (click)="resetFiled()">
+          <i class="ph ph-clock-counter-clockwise"></i>Reset
+        </button>
+        <div class="d-flex justify-content-end gap-2">
+          <button class="btn btn-secondary btn-outline btn-sm" (click)="openModal()">
+            Test Rule
+          </button>
+          <button *ngIf="!isEditMode" class="btn btn-primary btn-sm" (click)="saveRule()" >
+            <i class="ph ph-floppy-disk"></i>Save
+          </button>
+          <button *ngIf="isEditMode" class="btn btn-primary btn-sm" (click)="editRule()" [routerLink]="'/configurations/rule-configuration/'">
+            <i class="ph ph-note-pencil"></i>Edit
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

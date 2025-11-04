@@ -1,0 +1,606 @@
+<!--<div class="main-container">-->
+    <div class="main-container"  [ngClass]="mode === 'view' ? 'disabled' : ''">
+  <div class="breadcrumb-container">
+    <!-- Breadcrumb Navigation -->
+    <!--    <nav aria-label="breadcrumb">-->
+    <!--      <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">-->
+    <!--        <li class="breadcrumb-item has-dropdown">-->
+    <!--          <a routerLink="#" class="text-decoration-none">Configurations</a>-->
+    <!--        </li>-->
+    <!--        <li class="breadcrumb-item" aria-current="page">-->
+    <!--          <i class="ph ph-caret-right"></i>-->
+    <!--&lt;!&ndash;          <span id="active-iphone-breadcrumb">Transaction Element Management</span>&ndash;&gt;-->
+    <!--          <a [routerLink]="['/../configurations/transaction-element']" class="text-decoration-none">Transaction Element Management</a>-->
+    <!--        </li>-->
+    <!--        &lt;!&ndash; Active Page  &ndash;&gt;-->
+    <!--        <li class="breadcrumb-item active" aria-current="page">-->
+    <!--          <i class="ph ph-caret-right"></i> <span id="active-iphone-breadcrumb1">New Transaction Element</span>-->
+    <!--        </li>-->
+    <!--      </ol>-->
+    <!--    </nav>-->
+
+    <!-- Breadcrumb Navigation -->
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">
+        <li class="breadcrumb-item has-dropdown">
+          <a class="text-decoration-none" routerLink="#">Configurations</a>
+        </li>
+        <li aria-current="page" class="breadcrumb-item">
+          <i class="ph ph-caret-right"></i>
+          <a
+            [routerLink]="['/../configurations/transaction-element']"
+            class="text-decoration-none"
+            >Transaction Element Management</a
+          >
+        </li>
+        <!-- Active Page -->
+        <li aria-current="page" class="breadcrumb-item active">
+          <i class="ph ph-caret-right"></i>
+          <span id="active-iphone-breadcrumb1">{{ breadcrumbTitle }}</span>
+        </li>
+      </ol>
+    </nav>
+  </div>
+  <form (ngSubmit)="onSubmit()" [formGroup]="form">
+    <div class="sub-container">
+      <div class="d-flex gap-3">
+        <div class="">
+          <mat-label>Payment Network Name</mat-label>
+          <mat-form-field appearance="outline" class="input-sm">
+            <mat-select
+              [(value)]="selectedStatus"
+              formControlName="paymentNetworkId"
+              placeholder="Select"
+            >
+              <mat-option
+                *ngFor="let option of paymentNetwork"
+                [value]="option.paymentNetworkId"
+              >
+                {{ option.networkName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div
+            *ngIf="
+              form.get('paymentNetworkId')?.invalid &&
+              form.get('paymentNetworkId')?.touched
+            "
+            class="error-message"
+          >
+            Payment Network is required.
+          </div>
+        </div>
+        <div class="">
+          <mat-label>Element Id</mat-label>
+          <mat-form-field appearance="outline" class="input-sm">
+            <input
+              [(ngModel)]="code"
+              formControlName="elementCode"
+              matInput
+              placeholder="Enter Element Id "
+              type="text"
+            />
+          </mat-form-field>
+        </div>
+        <div class="">
+          <mat-label>Element Name</mat-label>
+          <mat-form-field appearance="outline" class="input-sm">
+            <input
+              formControlName="elementName"
+              matInput
+              placeholder="Enter Element Name "
+              type="text"
+            />
+          </mat-form-field>
+          <div
+            *ngIf="
+              form.get('elementName')?.invalid &&
+              form.get('elementName')?.touched
+            "
+            class="error-message"
+          >
+            Element Name is required.
+          </div>
+        </div>
+        <div class="">
+          <mat-label>Variable Name</mat-label>
+          <mat-form-field appearance="outline" class="input-sm">
+            <input
+              matInput
+              placeholder="Variable Name"
+              aria-label="Country"
+              [matAutocomplete]="auto"
+              formControlName="variableName"
+              required
+            />
+            <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayVariableName">
+              <mat-option
+                *ngFor="let option of observableEfmsVariable | async"
+                [value]="option"
+              >
+                {{ option.name }}
+              </mat-option>
+            </mat-autocomplete>
+
+            <!--            <mat-select-->
+            <!--              #variableSelect-->
+            <!--              formControlName="variableName"-->
+            <!--              (openedChange)="onOpenedChange(variableSelect)"-->
+            <!--              (closed)="onClosed()"-->
+            <!--              panelClass="custom-select-panel"-->
+            <!--            >-->
+            <!--              <ng-template matSelectHeader>-->
+            <!--                <input-->
+            <!--                  #hiddenInput-->
+            <!--                  type="text"-->
+            <!--                  [(ngModel)]="filterValue"-->
+            <!--                  (ngModelChange)="filterOptions()"-->
+            <!--                  class="hidden-filter-input"-->
+            <!--                  autocomplete="off"-->
+            <!--                />-->
+            <!--              </ng-template>-->
+
+            <!--              <mat-option *ngFor="let option of filteredEfmsVariable" [value]="option.value">-->
+            <!--                {{ option.name }}-->
+            <!--              </mat-option>-->
+            <!--            </mat-select>-->
+          </mat-form-field>
+          <div
+            *ngIf="
+              form.get('variableName')?.invalid &&
+              form.get('variableName')?.touched
+            "
+            class="error-message"
+          >
+            Variable Name is required.
+          </div>
+        </div>
+
+        <div class="col-md-2">
+          <mat-label> &nbsp;</mat-label>
+          <div class="mt-2">
+            <mat-slide-toggle formControlName="status">Status</mat-slide-toggle>
+          </div>
+        </div>
+      </div>
+
+      <hr />
+      <div class="d-flex flex-column gap-2">
+        <p class="m-0 font-16px fw-bold">Validations</p>
+      <div class="d-flex gap-3">
+        <div class="">
+          <mat-label>Element or Regular Expression</mat-label>
+          <mat-form-field appearance="outline" class="input-sm">
+            <input
+              formControlName="validation"
+              matInput
+              placeholder="Enter Reg Ex "
+              type="text"
+            />
+          </mat-form-field>
+          <div
+            *ngIf="
+              form.get('validation')?.invalid && form.get('validation')?.touched
+            "
+            class="error-message"
+          >
+            Validation is required.
+          </div>
+        </div>
+        <div class="">
+          <mat-label>Validation Message</mat-label>
+          <mat-form-field appearance="outline" class="input-sm">
+            <input
+              formControlName="validationMessage"
+              matInput
+              placeholder="Enter Validation Message "
+              type="text"
+            />
+          </mat-form-field>
+          <div
+            *ngIf="
+              form.get('validationMessage')?.invalid &&
+              form.get('validationMessage')?.touched
+            "
+            class="error-message"
+          >
+            validation Message is required.
+          </div>
+        </div>
+        <div class="">
+          <mat-label>Risk Weight</mat-label>
+          <mat-form-field appearance="outline" class="input-sm">
+            <input
+              formControlName="riskWeight"
+              matInput
+              placeholder="Enter Risk Weight "
+              type="number"
+            />
+          </mat-form-field>
+          <div
+            *ngIf="
+              form.get('riskWeight')?.invalid && form.get('riskWeight')?.touched
+            "
+            class="error-message"
+          >
+            RiskWeight is required.
+          </div>
+        </div>
+      </div>
+      </div>
+
+      <div class="d-flex flex-column gap-2">
+        <p class="m-0 font-16px fw-bold">Operators</p>
+        <div
+          class="d-flex align-items-center flex-wrap gap-3 col-md-12"
+          [formGroup]="operatorsForm"
+        >
+          <!-- Comparison Operators -->
+          <div>
+            <mat-label>Comparison Operators</mat-label>
+            <div
+              class="operator-btn-group d-flex gap-2 align-items-center mt-1"
+              formControlName="comparisonOperator"
+            >
+              <div><mat-checkbox formControlName="EQUAL">=</mat-checkbox></div>
+              <div>
+                <mat-checkbox formControlName="NOT_EQUAL">≠</mat-checkbox>
+              </div>
+              <div>
+                <mat-checkbox formControlName="GREATERTHAN">></mat-checkbox>
+              </div>
+              <div>
+                <mat-checkbox formControlName="LESSTHAN"><</mat-checkbox>
+              </div>
+              <div>
+                <mat-checkbox formControlName="GREATERTHAN_OR_EQUAL"
+                  >>=</mat-checkbox
+                >
+              </div>
+              <div>
+                <mat-checkbox formControlName="LESSTHAN_OR_EQUAL"
+                  ><=</mat-checkbox
+                >
+              </div>
+            </div>
+          </div>
+
+          <!-- List Operators -->
+          <div>
+            <mat-label>List Operators</mat-label>
+            <div
+              class="operator-btn-group d-flex gap-2 align-items-center mt-1"
+              formGroupName="listOperator"
+            >
+              <div><mat-checkbox formControlName="IN">IN</mat-checkbox></div>
+              <div>
+                <mat-checkbox formControlName="NOT_IN">NOT IN</mat-checkbox>
+              </div>
+            </div>
+          </div>
+
+          <!-- Range Operators -->
+          <div>
+            <mat-label>Range Operators</mat-label>
+            <div class="d-flex gap-2 align-items-center">
+              <mat-form-field appearance="outline" class="m-0 num-inputs">
+                <input formControlName="rangeMin" matInput placeholder="Min" />
+              </mat-form-field>
+              <mat-form-field appearance="outline" class="m-0 num-inputs">
+                <input formControlName="rangeMax" matInput placeholder="Max" />
+              </mat-form-field>
+            </div>
+          </div>
+
+          <!-- Boolean Operators -->
+          <div>
+            <mat-label>Boolean Operators</mat-label>
+            <div class="d-flex align-items-center mt-1" style="height: 40px">
+              <mat-slide-toggle formControlName="booleanValue"
+                >Value</mat-slide-toggle
+              >
+            </div>
+          </div>
+        </div>
+      </div>
+
+
+
+      <hr />
+      <div class="d-flex flex-column gap-2">
+        <p class="m-0 font-16px fw-bold">Value</p>
+        <form [formGroup]="addValueForm">
+          <div class="d-flex align-items-center justify-content-between flex-wrap gap-2">
+
+
+            <div class="d-flex align-items-center gap-2 flex-grow-1">
+              <div class="">
+                <mat-label>Element Value</mat-label>
+                <mat-form-field appearance="outline" class="w-100 input-sm pe-2">
+                  <input
+                    formControlName="value"
+                    matInput
+                    placeholder="Enter value"
+                    type="text"
+                  />
+                </mat-form-field>
+              </div>
+
+              <button
+                type="button"
+                (click)="addValue()"
+                class="btn btn-primary btn-outline btn-sm mt-3"
+              >
+                +
+              </button>
+            </div>
+
+
+            <div class="d-flex flex-column align-items-end">
+              <input
+                #fileInput
+                (change)="onFileSelected($event)"
+                accept=".csv"
+                type="file"
+                hidden
+              />
+              <button
+                type="button"
+                (click)="fileInput.click()"
+                class="btn btn-primary btn-outline btn-sm mb-1"
+              >
+                <i class="ph ph-upload-simple"></i>Upload Values
+              </button>
+              <mat-label class="text-muted">Accepted files are .CSV, .XLS</mat-label>
+            </div>
+
+          </div>
+        </form>
+      </div>
+
+
+
+
+
+      <div class="row position-relative">
+        <!-- Spinner Overlay -->
+        <div
+          *ngIf="isLoading"
+          class="position-absolute top-0 start-0 w-100 h-100 d-flex justify-content-center align-items-center bg-white bg-opacity-75 z-10"
+        >
+          <div class="spinner-border text-primary opacity-75" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>
+
+        <!-- Table Container -->
+        <div
+          [class.opacity-50]="isLoading"
+          class="mat-table overflow-y-scroll h-30vh position-relative"
+        >
+          <table [dataSource]="dataSource" mat-table>
+            <ng-container matColumnDef="number">
+              <th
+                *matHeaderCellDef
+                class="position-sticky top-0 bg-white"
+                mat-header-cell
+              >
+                Number
+              </th>
+              <td *matCellDef="let element" mat-cell>{{ element.num }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="value">
+              <th
+                *matHeaderCellDef
+                class="position-sticky top-0 bg-white"
+                mat-header-cell
+              >
+                Value
+              </th>
+              <td *matCellDef="let element" mat-cell>{{ element.value }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="action">
+              <th
+                *matHeaderCellDef
+                class="position-sticky top-0 bg-white"
+                mat-header-cell
+              >
+                Action
+              </th>
+              <td *matCellDef="let element" mat-cell>
+                <button
+                  (click)="deleteData(element)"
+                  class="btn btn-secondary btn-outline btn-sm p-1"
+                  style="line-height: 1; height: 32px; width: 32px"
+                  title="Delete"
+                  type="button"
+                >
+                  <i class="ph ph-trash"></i>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+            <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+          </table>
+        </div>
+      </div>
+
+      <form [formGroup]="fieldDependenciesForm">
+        <div class="d-flex flex-column gap-2 w-100">
+          <p class="font-16px fw-bold m-0">Field Dependencies</p>
+
+          <div class="d-flex flex-wrap gap-2 w-100 align-items-start border-1 rounded-2 p-3">
+            <!-- Operators -->
+            <div class="flex-grow-1">
+              <mat-label>Operators</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <mat-select
+                  [(value)]="selectedStatus2"
+                  formControlName="fdOperator"
+                  placeholder="Select"
+                >
+                  <mat-option *ngFor="let option of fdependenciesoperators" [value]="option.id">
+                    {{ option.value }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- Value 1 -->
+            <div class="flex-grow-1">
+              <mat-label>Value</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <input
+                  formControlName="value1"
+                  matInput
+                  placeholder="Enter value"
+                  type="text"
+                />
+              </mat-form-field>
+            </div>
+
+            <!-- Element -->
+            <div class="flex-grow-1">
+              <mat-label>Element</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <mat-select
+                  [(value)]="selectedStatus3"
+                  formControlName="efmsElement"
+                  placeholder="Select"
+                >
+                  <mat-option *ngFor="let option of efmsElements" [value]="option">
+                    {{ option.elementName }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- Operator -->
+            <div class="flex-grow-1">
+              <mat-label>Operator</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <mat-select
+                  [(value)]="selectedStatus4"
+                  formControlName="operator"
+                  placeholder="operator"
+                >
+                  <mat-option *ngFor="let option of efmsOperators" [value]="option.id">
+                    {{ option.value }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <!-- Value 2 -->
+            <div class="flex-grow-1">
+              <mat-label>Value</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <input
+                  formControlName="value2"
+                  matInput
+                  placeholder="Enter value"
+                  type="text"
+                />
+              </mat-form-field>
+            </div>
+
+            <!-- Aligned Button (like your example) -->
+            <div class="d-flex mt-3">
+              <button
+                type="button"
+                (click)="addFieldDependencie()"
+                class="btn btn-primary btn-outline btn-sm mt-3"
+              >
+                +
+              </button>
+            </div>
+          </div>
+        </div>
+
+
+
+      </form>
+
+      <div class="row">
+        <div class="mat-table">
+          <table [dataSource]="dataSource2" mat-table>
+            <ng-container matColumnDef="operators">
+              <th *matHeaderCellDef mat-header-cell>Operators</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.operators }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="value">
+              <th *matHeaderCellDef mat-header-cell>Value</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.value1 }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="field">
+              <th *matHeaderCellDef mat-header-cell>Field</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.field.elementName }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="operator">
+              <th *matHeaderCellDef mat-header-cell>Operator</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.operator }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="values">
+              <th *matHeaderCellDef mat-header-cell>Value</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.value2 }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+              <!--              <th *matHeaderCellDef mat-header-cell>Action</th>-->
+              <!--              <td *matCellDef="let element" class="text-center" mat-cell>-->
+
+              <!--                <div aria-label="Basic outlined example" class="btn-group" role="group">-->
+              <!--                  <button (click)="deleteData1(element)" class="btn btn-secondary btn-outline btn-sm" title="Delete"-->
+              <!--                          type="button"><i class="ph ph-trash"></i></button>-->
+              <!--                </div>-->
+              <!--              </td>-->
+
+              <th *matHeaderCellDef mat-header-cell>Action</th>
+              <td *matCellDef="let element" mat-cell>
+                <button
+                  (click)="deleteData1(element)"
+                  class="btn btn-secondary btn-outline btn-sm p-1"
+                  style="line-height: 1; height: 32px; width: 32px"
+                  title="Delete"
+                  type="button"
+                >
+                  <i class="ph ph-trash"></i>
+                </button>
+              </td>
+            </ng-container>
+            <tr *matHeaderRowDef="displayedColumns2" mat-header-row></tr>
+            <tr *matRowDef="let row; columns: displayedColumns2" mat-row></tr>
+          </table>
+        </div>
+      </div>
+
+      <hr />
+      <div *ngIf="mode != 'view'" class="row">
+        <div class="d-flex justify-content-between">
+          <button
+            (click)="resetForm()"
+            class="btn btn-secondary btn-outline btn-sm"
+            type="button"
+          >
+            <i class="ph ph-clock-counter-clockwise"></i>Reset
+          </button>
+          <button class="btn btn-primary btn-sm" type="submit">
+            <i class="ph ph-floppy-disk"></i>Save
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

@@ -1,0 +1,263 @@
+<div class="main-container">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="breadcrumb-container">
+      <!-- Breadcrumb Navigation -->
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">
+          <i class="ph ph-cardholder me-1"></i>
+          <!-- <li class="breadcrumb-item has-dropdown">
+            <a href="#" class="text-decoration-none">Electronics</a>
+          </li>
+          <li class="breadcrumb-item has-dropdown">
+            <i class="ph ph-caret-right"></i>
+            <a href="#" class="text-decoration-none">Smartphones</a>
+          </li>
+          <li class="breadcrumb-item has-dropdown">
+            <i class="ph ph-caret-right"></i>
+            <a href="#" class="text-decoration-none">iPhone</a>
+          </li> -->
+          <li class="breadcrumb-item has-dropdown">
+            <i class="ph ph-caret-right"></i>
+            <a [routerLink]="'/configurations/rule-configuration'" class="text-decoration-none">Configurations</a>
+          </li>
+          <!-- Active Page  -->
+          <li class="breadcrumb-item active" aria-current="page">
+            <i class="ph ph-caret-right"></i> <span id="active-iphone-breadcrumb">{{efmsRule.ruleName}}</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <form [formGroup]="ruleForm">
+    <div class="sub-container">
+      <div class="row d-flex align-items-start justify-content-between">
+        <div class="col-2 align-items-start">
+          <button class="badge bg-green">Active</button>
+        </div>
+        <div class="col d-flex justify-content-end align-items-end gap-3">
+          <div><b>Created Date and Time </b><span>{{
+              efmsRule.efmsRuleConditionCollection?.[0]?.createdAt
+                | date: 'medium'
+            }}</span></div>
+          <div><b>Last Modified Date and Time </b><span>{{efmsRule.efmsRuleConditionCollection?.[0]?.updatedAt
+            | date: 'medium'}}</span></div>
+        </div>
+      </div>
+      <div class="row g-2">
+        <div class="col-md-3">
+          <mat-label>Payment Network</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+                <input type="text" [value]="efmsRule.paymentNetworkId" matInput placeholder="Payment Network" disabled/>
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Rule ID</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input type="text" [value]="efmsRule.ruleUuid" matInput placeholder="RL3545656" disabled />
+          </mat-form-field>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Rule Name</mat-label>
+          <mat-form-field appearance="outline" class="w-100">
+            <input type="text" [value]="efmsRule.ruleName" matInput placeholder="Enter Rule Name" disabled/>
+          </mat-form-field>
+        </div>
+<!--        <div class="col-md-3">-->
+<!--          <mat-label>Element</mat-label>-->
+<!--          <mat-form-field appearance="outline" class="w-100">-->
+<!--            <input type="text" matInput placeholder="Element Name" disabled/>-->
+<!--          </mat-form-field>-->
+<!--        </div>-->
+      </div>
+
+<!--      <div class="d-column gap-4">-->
+<!--        <div class="row g-2">-->
+<!--          <div class="col-12">-->
+<!--            <span class="fw-semibold font-16px">Operators</span>-->
+<!--          </div>-->
+<!--          <div class="col-md-4">-->
+<!--            <mat-label>Comparison Operators</mat-label>-->
+<!--            <div class="operator-btn-group mt-2">-->
+<!--              <div *ngIf="isEqule">-->
+<!--                <mat-checkbox formControlName="coEqual">=</mat-checkbox>-->
+<!--              </div>-->
+<!--              <div *ngIf="isNotEqual">-->
+<!--                <mat-checkbox formControlName="coNotEqual">≠</mat-checkbox>-->
+<!--              </div>-->
+<!--              <div *ngIf="isGreater">-->
+<!--                <mat-checkbox formControlName="coGreater">></mat-checkbox>-->
+<!--              </div>-->
+<!--              <div *ngIf="isLess">-->
+<!--                <mat-checkbox formControlName="coLess"><</mat-checkbox>-->
+<!--              </div>-->
+<!--              <div *ngIf="isGreaterEqual">-->
+<!--                <mat-checkbox formControlName="coGreaterEqual">>=</mat-checkbox>-->
+<!--              </div>-->
+<!--              <div *ngIf="isLessEqual">-->
+<!--                <mat-checkbox formControlName="coLessEqual"><=</mat-checkbox>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="col-md-2">-->
+<!--            <mat-label>List Operators</mat-label>-->
+<!--            <div class="operator-btn-group mt-2">-->
+<!--              <div>-->
+<!--                <mat-checkbox formControlName="loMIn" *ngIf="isIn">IN</mat-checkbox>-->
+<!--              </div>-->
+<!--              <div>-->
+
+<!--                <mat-checkbox formControlName="loNotIN" *ngIf="isNotIN">NOT IN</mat-checkbox>-->
+<!--              </div>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="col-md-4">-->
+<!--            <mat-label>Range Operators</mat-label>-->
+<!--            <div class="d-flex gap-2">-->
+<!--              <mat-form-field appearance="outline">-->
+<!--                <input type="text" matInput placeholder="Min" formControlName="rgMin" />-->
+<!--              </mat-form-field>-->
+<!--              <mat-form-field appearance="outline">-->
+<!--                <input type="text" matInput placeholder="Max" formControlName="rgMax" />-->
+<!--              </mat-form-field>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--          <div class="col-md-2">-->
+<!--            <div class="d-column gap-2" *ngIf="isboValue">-->
+<!--              <mat-label>Boolean Operators</mat-label>-->
+<!--              <mat-slide-toggle  formControlName="boValue" class="mt-2">False</mat-slide-toggle>-->
+<!--            </div>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--      </div>-->
+
+
+
+<!--      <div class="d-column gap-4">-->
+<!--        <div class="row g-2">-->
+<!--          <div class="col-12">-->
+<!--            <span class="fw-semibold font-16px">Value</span>-->
+<!--          </div>-->
+<!--          <div class="col-md-3">-->
+<!--            <mat-label>Element Value</mat-label>-->
+<!--            <mat-form-field appearance="outline" class="w-100 input-sm">-->
+<!--              <input type="text" matInput placeholder="Element Value" disabled/>-->
+<!--            </mat-form-field>-->
+<!--          </div>-->
+<!--          <div class="col-md-3">-->
+<!--            <mat-label>Risk Weight</mat-label>-->
+<!--            <mat-form-field appearance="outline" class="w-100">-->
+<!--              <input type="text" placeholder="Risk Weight" matInput disabled/>-->
+<!--            </mat-form-field>-->
+<!--          </div>-->
+<!--&lt;!&ndash;          <div class="col-md-3">&ndash;&gt;-->
+<!--&lt;!&ndash;            <div class="flex-v-center h-100 gap-2 mt-1">&ndash;&gt;-->
+<!--&lt;!&ndash;              <button class="btn btn-default btn-outline" (click)="addRules()">&ndash;&gt;-->
+<!--&lt;!&ndash;                <i class="ph ph-plus"></i>&ndash;&gt;-->
+<!--&lt;!&ndash;              </button>&ndash;&gt;-->
+<!--&lt;!&ndash;            </div>&ndash;&gt;-->
+<!--&lt;!&ndash;          </div>&ndash;&gt;-->
+<!--        </div>-->
+<!--      </div>-->
+
+        <div class="table-container mt-3">
+
+<!--        <div class="mat-table" *ngIf="efmsRule?.efmsRuleConditionCollection">-->
+<!--          <table mat-table [dataSource]="efmsRule.efmsRuleConditionCollection">-->
+<!--            <ng-container matColumnDef="efmsElementId">-->
+<!--              <th mat-header-cell *matHeaderCellDef>Field</th>-->
+<!--              <td  mat-cell *matCellDef="let element">-->
+<!--                {{element.efmsElementId}}</td>-->
+<!--            </ng-container>-->
+<!--            <ng-container matColumnDef="operator">-->
+<!--              <th mat-header-cell>Operators</th>-->
+<!--              <td mat-cell>-->
+<!--                {{}}</td>-->
+<!--            </ng-container>-->
+<!--            <ng-container matColumnDef="value">-->
+<!--              <th mat-header-cell>Value</th>-->
+<!--              <td mat-cell>-->
+<!--                {{}}</td>-->
+<!--            </ng-container>-->
+
+<!--&lt;!&ndash;            <ng-container matColumnDef="riskScore">&ndash;&gt;-->
+<!--&lt;!&ndash;              <th mat-header-cell *matHeaderCellDef>Risk Score</th>&ndash;&gt;-->
+<!--&lt;!&ndash;              <td mat-cell *matCellDef="let element">&ndash;&gt;-->
+<!--&lt;!&ndash;                {{ element.riskScore }}&ndash;&gt;-->
+<!--&lt;!&ndash;              </td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </ng-container>&ndash;&gt;-->
+
+
+<!--&lt;!&ndash;            <ng-container matColumnDef="action">&ndash;&gt;-->
+<!--&lt;!&ndash;              <th mat-header-cell *matHeaderCellDef>Action</th>&ndash;&gt;-->
+<!--&lt;!&ndash;              <td mat-cell *matCellDef="let element" class="text-center">&ndash;&gt;-->
+
+<!--&lt;!&ndash;                <div class="btn-group" role="group" aria-label="Basic outlined example">&ndash;&gt;-->
+<!--&lt;!&ndash;                  <button type="button" class="btn btn-secondary btn-outline btn-sm" title="edit"><i class="ph ph-note-pencil"></i></button>&ndash;&gt;-->
+<!--&lt;!&ndash;                  <button type="button" class="btn btn-secondary btn-outline btn-sm" title="delete" (click)="deleteData(element)" > <i class="ph ph-trash"></i></button>&ndash;&gt;-->
+
+<!--&lt;!&ndash;                </div>&ndash;&gt;-->
+<!--&lt;!&ndash;              </td>&ndash;&gt;-->
+<!--&lt;!&ndash;            </ng-container>&ndash;&gt;-->
+
+
+<!--            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>-->
+<!--            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>-->
+<!--          </table>-->
+
+<!--        </div>-->
+
+          <div class="mat-table" *ngIf="efmsRule?.efmsRuleConditionCollection">
+            <table mat-table [dataSource]="efmsRule.efmsRuleConditionCollection || []" class="mat-elevation-z8">
+
+              <!-- Field Column -->
+              <ng-container matColumnDef="efmsElementId">
+                <th mat-header-cell *matHeaderCellDef> Field </th>
+                <td mat-cell *matCellDef="let element">Filed {{ element.efmsElementId }} </td>
+              </ng-container>
+
+              <!-- Operator Column -->
+              <ng-container matColumnDef="operator">
+                <th mat-header-cell *matHeaderCellDef> Operators </th>
+                <td mat-cell *matCellDef="let element"><button class="badge bg-green"> {{ element.operator }} </button></td>
+              </ng-container>
+
+              <!-- Value Column -->
+              <ng-container matColumnDef="value">
+                <th mat-header-cell *matHeaderCellDef> Value </th>
+                <td mat-cell *matCellDef="let element"> {{ element.value }} </td>
+              </ng-container>
+
+              <tr mat-header-row *matHeaderRowDef="['efmsElementId', 'operator', 'value']"></tr>
+              <tr mat-row *matRowDef="let row; columns: ['efmsElementId', 'operator', 'value'];"></tr>
+            </table>
+          </div>
+
+
+        </div>
+
+
+      <hr>
+
+      <div class="row d-flex align-items-start justify-content-between">
+        <div class="col-2 align-items-start">
+          <button class="badge badge-warning font-16px">Final Risk Score : <span class="font-16px">{{efmsRule.finalRiskScore}}</span></button>
+        </div>
+        <div class="col d-flex justify-content-end align-items-end gap-3">
+          <div><b>Effective From </b><span></span>{{efmsRule.fromDate}}</div>
+          <div><b>Effective To </b><span>{{efmsRule.toDate}}</span></div>
+        </div>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <button class="btn btn-secondary btn-outline btn-sm" [routerLink]="['/configurations/rule-configuration/']">
+          <i class="ph ph-arrow-bend-up-left"></i>Back
+        </button>
+        <div class="d-flex justify-content-end gap-2">
+          <button class="btn btn-primary btn-sm">
+            <i class="ph ph-pencil" [routerLink]="['/configurations/rule-configuration/edit-rule/'+efmsRuleId]"></i>Edit
+          </button>
+        </div>
+      </div>
+    </div>
+  </form>
+</div>

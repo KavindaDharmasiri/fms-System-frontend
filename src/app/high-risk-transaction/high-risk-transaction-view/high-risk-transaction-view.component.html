@@ -1,0 +1,178 @@
+<div class="main-container">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="breadcrumb-container">
+      <!-- Breadcrumb Navigation -->
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">
+          <li class="breadcrumb-item has-dropdown">
+            <a  [routerLink]="['/../high-risk-transaction']" class="text-decoration-none">High-Risk Transaction Explorer</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            <i class="ph ph-caret-right"></i>
+            <span id="privileges-management-breadcrumb">{{
+              highRiskElement.tranPacket?.tranId || 'N/A'
+              }}</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <div class="sub-container">
+    <div class="view-container">
+      <button class="badge bg-{{ elementStatus === 'SUCCESSFUL' ? 'green' : 'red' }}">{{ elementStatus }}</button>
+      <br>
+      <div class="row g-2">
+        <div class="col-md-3">
+          <mat-label>Transaction ID</mat-label><br>
+          <b class="">{{
+            highRiskElement.tranUuid
+              ? highRiskElement.tranUuid.slice(0,8)
+              : 'N/A'
+            }}</b>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Timestamp</mat-label><br>
+          <b class="">{{
+            highRiskElement.createdAt
+              | date: 'MM/dd/yyyy HH:mm'
+            }}</b>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Card Number</mat-label><br>
+          <b class="">{{
+            highRiskElement.tranPacket?.cardSequenceNumber | maskCard
+            }}</b>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Cardholder Name / ID</mat-label><br>
+          <b class="">{{
+            highRiskElement.tranPacket?.cardAcceptorId
+            }}</b>
+        </div>
+      </div>
+
+      <div class="row g-2">
+        <div class="col-md-3">
+          <mat-label>Acquirer BIN</mat-label><br>
+          <b class="">{{
+            highRiskElement.tranPacket?.cardSequenceNumber | maskAcquirerBin
+            }}</b>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Transaction Amount</mat-label><br>
+          <b class="">{{
+            highRiskElement.tranPacket?.amount
+            }}</b>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Currency Code</mat-label><br>
+          <b class="">{{
+            highRiskElement.tranPacket?.transactionCurrencyCode || 'N/A'
+            }}</b>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Merchant Name</mat-label><br>
+          <b class="">{{
+            highRiskElement.tranPacket?.merchantName || 'N/A'
+            }}</b>
+        </div>
+      </div>
+      <div class="row g-2">
+        <div class="col-md-3">
+          <mat-label>Merchant Category Code</mat-label><br>
+          <b class="">{{
+            highRiskElement.tranPacket?.merchantCategoryCode || 'N/A'
+            }}</b>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Merchant Country Code</mat-label><br>
+          <b class="">{{
+            highRiskElement.tranPacket?.merchantCountryCode || 'N/A'
+            }}</b>
+        </div>
+        <div class="col-md-3">
+          <mat-label>POS Entry Mode</mat-label><br>
+          <b class="">{{
+            highRiskElement.tranPacket?.posEntryMode || 'N/A'
+            }}</b>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Authorization Response Code</mat-label><br>
+          <b class="">{{
+            highRiskElement.tranPacket?.authResponse || 'N/A'
+            }}</b>
+        </div>
+      </div>
+
+      <div class="row g-2">
+        <div class="col-md-3">
+          <mat-label>Risk Score</mat-label><br>
+          <b class="">{{
+            highRiskElement.tranPacket?.riskLevel || 'N/A'
+            }}</b>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Payment Network</mat-label><br>
+          <b class="">{{
+            highRiskElement.tranPacket?.paymentNetwork || 'N/A'
+            }}</b>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Rule Group</mat-label><br>
+          <b class="">{{
+              groupNameString || 'N/A'
+            }}</b>
+        </div>
+      </div>
+      <hr>
+    </div>
+
+    <mat-label>Triggered Rule(s)</mat-label>
+    <div class="accordion" id="accordionMain">
+      <div
+        class="accordion-item"
+        *ngFor="let group of groupedRules | keyvalue; let i = index"
+      >
+        <h2 class="accordion-header m-0" [id]="'heading' + i">
+          <button
+            class="accordion-button"
+            type="button"
+            [attr.data-bs-toggle]="'collapse'"
+            [attr.data-bs-target]="'#collapse' + i"
+            [attr.aria-expanded]="i === 0 ? 'true' : 'false'"
+          >
+            {{ group.key }}
+          </button>
+        </h2>
+        <div
+          [id]="'collapse' + i"
+          class="accordion-collapse collapse"
+          [class.show]="i === 0"
+          [attr.data-bs-parent]="'#accordionMain'"
+        >
+          <div class="accordion-body">
+            <div class="row">
+              <div
+                class="mt-2 col-3 border-end"
+                *ngFor="let rule of group.value"
+              >
+                <mat-label>Rule ID</mat-label><br />
+                <b><label>{{ rule.ruleName }}</label></b>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+
+
+    <div class="d-flex justify-content-end gap-2">
+      <button class="btn btn-secondary btn-outline btn-sm" [routerLink]="['/high-risk-transaction']" >
+        <i class="ph ph-arrow-bend-up-left"></i>Back
+      </button>
+    </div>
+
+  </div>
+</div>
+

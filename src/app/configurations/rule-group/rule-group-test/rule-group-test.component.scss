@@ -1,0 +1,20 @@
+.detail-row {
+  background-color: #f9f9f9;
+}
+
+.inner-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.inner-table th,
+.inner-table td {
+  border: 1px solid #ccc;
+  padding: 4px;
+}
+
+
+.scrollable-table-container {
+  max-height: 300px;
+  overflow-y: auto;
+}

@@ -1,0 +1,24 @@
+/* You can add global styles to this file, and also import other style files */
+@import "assets/scss/core/variables.scss";
+@import "assets/scss/core/base.scss";
+@import "assets/scss/responsive.scss";
+@import "assets/scss/font.scss";
+
+@import "assets/scss/shared/header.scss";
+
+
+@import "assets/scss/components/accordion.scss";
+@import "assets/scss/components/alerts.scss";
+@import "assets/scss/components/badge.scss";
+@import "assets/scss/components/button.scss";
+@import "assets/scss/components/cards.scss";
+@import "assets/scss/components/form.scss";
+@import "assets/scss/components/tables.scss";
+@import "assets/scss/components/modal.scss";
+
+@import "assets/scss/shared/sidebar.scss";
+@import "assets/scss/shared/footer.scss";
+
+@import "assets/scss/main.scss";
+@import "../node_modules/phosphor-icons/src/css/icons.css";
+

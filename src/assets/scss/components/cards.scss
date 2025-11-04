@@ -1,0 +1,160 @@
+// Modern Card Styles
+.card {
+  background: var(--card-bg-color);
+  border-radius: 16px !important;
+  box-shadow: var(--card-shadow);
+  border: none !important;
+  transition: all 0.2s ease;
+  overflow: hidden;
+
+  &:hover {
+    box-shadow: var(--card-hover-shadow);
+    transform: translateY(-1px);
+  }
+
+  .card-header {
+    background: transparent;
+    border-bottom: 1px solid var(--neutral-200);
+    padding: 1.5rem 1.5rem 1rem;
+    border-radius: 0 !important;
+
+    h1, h2, h3, h4, h5, h6 {
+      color: var(--neutral-800);
+      font-weight: 600;
+      margin: 0;
+    }
+
+    .card-title {
+      color: var(--neutral-800);
+      font-weight: 600;
+      margin: 0;
+    }
+  }
+
+  .card-body {
+    padding: 1.5rem;
+  }
+
+  .card-footer {
+    background: transparent;
+    border-top: 1px solid var(--neutral-200);
+    padding: 1rem 1.5rem;
+  }
+}
+
+// Stats Card Variant
+.stats-card {
+  background: var(--card-bg-color);
+  border-radius: 16px;
+  padding: 1.5rem;
+  box-shadow: var(--card-shadow);
+  border: none;
+  transition: all 0.2s ease;
+  
+  &:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--card-hover-shadow);
+  }
+  
+  .stat-label {
+    color: var(--neutral-600);
+    font-size: 0.875rem;
+    font-weight: 500;
+    margin-bottom: 0.5rem;
+  }
+  
+  .stat-value {
+    font-size: 2.5rem;
+    font-weight: 700;
+    color: var(--neutral-800);
+    margin: 0.5rem 0;
+    line-height: 1;
+  }
+  
+  .stat-change {
+    font-size: 0.875rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    
+    &.positive {
+      color: var(--positive-600);
+    }
+    
+    &.negative {
+      color: var(--negative-600);
+    }
+  }
+}
+
+// Gradient Card Variant
+.gradient-card {
+  background: var(--gradient-primary);
+  color: white;
+  
+  .card-header,
+  .card-body,
+  .card-footer {
+    color: white;
+    
+    h1, h2, h3, h4, h5, h6,
+    .card-title {
+      color: white;
+    }
+  }
+  
+  .card-header {
+    border-bottom-color: rgba(255, 255, 255, 0.2);
+  }
+  
+  .card-footer {
+    border-top-color: rgba(255, 255, 255, 0.2);
+  }
+}
+
+// Chart Card Variant
+.chart-card {
+  .card-header {
+    display: flex;
+    justify-content: between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  
+  .chart-legend {
+    display: flex;
+    gap: 1rem;
+    
+    .legend-item {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      font-size: 0.875rem;
+      color: var(--neutral-600);
+      
+      .legend-dot {
+        width: 12px;
+        height: 12px;
+        border-radius: 50%;
+        
+        &.primary {
+          background: var(--primary-600);
+        }
+        
+        &.success {
+          background: var(--positive-600);
+        }
+        
+        &.danger {
+          background: var(--negative-600);
+        }
+        
+        &.warning {
+          background: var(--warning-600);
+        }
+      }
+    }
+  }
+}

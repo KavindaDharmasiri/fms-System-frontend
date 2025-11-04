@@ -1,0 +1,56 @@
+<div class="mat-modal-content container-min-width">
+  <div class="d-flex justify-content-between align-items-center pt-3">
+    <div>
+      <h3 class="" mat-dialog-title>Title</h3>
+    </div>
+    <a href="javascript:void(0)" mat-dialog-close class="">
+      <i class="ph ph-x"></i>
+    </a>
+  </div>
+  <mat-dialog-content>
+    <p> Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt
+      ut labore et dolore magna aliquyam erat, sed diam voluptua.</p>
+
+    <div class="flex-c- gap-2">
+      <div class="col-12">
+        <mat-label>Email Field</mat-label>
+        <mat-form-field appearance="outline" class="w-100 input-sm">
+          <input type="email" matInput placeholder="pat@example.com">
+        </mat-form-field>
+
+      </div>
+
+      <div class="col-12">
+        <mat-label>Number Field</mat-label>
+        <mat-form-field appearance="outline" class="w-100 input-sm">
+          <input type="number" matInput placeholder="0123456789">
+        </mat-form-field>
+
+      </div>
+
+      <div class="col-12">
+        <mat-label>Number Field with Arrows</mat-label>
+        <mat-form-field class="nfw-arrows" appearance="outline" class="w-100 input-sm">
+          <input type="number" matInput placeholder="0123456789">
+        </mat-form-field>
+
+      </div>
+
+      <div class="col-12">
+        <mat-label>Amount Field</mat-label>
+        <mat-form-field class="input-amount" appearance="outline" class="w-100 input-sm">
+          <span matTextPrefix>$</span>
+          <input matInput type="number" placeholder="0">
+          <span matTextSuffix>.00</span>
+        </mat-form-field>
+
+      </div>
+    </div>
+  </mat-dialog-content>
+  <mat-dialog-actions>
+    <div class="d-flex justify-content-center gap-2 w-100">
+      <button class="btn w-100 btn-default" mat-dialog-close>Cancel</button>
+      <button class="btn w-100 btn-primary" [mat-dialog-close]="true" cdkFocusInitial>Save</button>
+    </div>
+  </mat-dialog-actions>
+</div>

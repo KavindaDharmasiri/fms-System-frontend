@@ -1,0 +1,127 @@
+<div class="main-container">
+  <div class="sub-container">
+    <div class="row">
+      <span class="fw-semibold font-16px">Tooltip</span>
+
+      <div class="col-md-12">
+        <p>Import the following module to your module.ts</p>
+        <!-- code -->
+        <div class="copy-code w-50">
+          <button
+            class="copy-btn"
+            onclick="javascript:CopyToClipboard(this,'tooltipI')"
+          >
+            Copy
+          </button>
+          <pre id="tooltipI">{{ tooltipI }}</pre>
+        </div>
+        <button
+          mat-raised-button
+          #tooltip="matTooltip"
+          matTooltip="Info about the action"
+          [matTooltipPosition]="'above'"
+          matTooltipHideDelay="1000"
+          class="btn btn-primary"
+        >
+          Tooltip
+        </button>
+        <!-- code -->
+        <div class="copy-code mt-2">
+          <button
+            class="copy-btn"
+            onclick="javascript:CopyToClipboard(this,'tooltipH')"
+          >
+            Copy
+          </button>
+          <pre id="tooltipH">{{ tooltipH }}</pre>
+        </div>
+      </div>
+
+      <div class="row">
+        <div class="col-md-3">
+          <p>Above</p>
+          <button
+            mat-raised-button
+            #tooltipa="matTooltip"
+            matTooltip="Info about the action"
+            [matTooltipPosition]="'above'"
+            matTooltipHideDelay="1000"
+            class="btn btn-primary"
+          >
+            Above
+          </button>
+          <!-- code -->
+          <div class="copy-code mt-2">
+            <button
+              class="copy-btn"
+              onclick="javascript:CopyToClipboard(this,'tooltipA')"
+            >
+              Copy
+            </button>
+            <pre id="tooltipA">{{ tooltipA }}</pre>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <p>Below</p>
+          <button
+            mat-raised-button
+            #tooltip="matTooltip"
+            matTooltip="Info about the action"
+            [matTooltipPosition]="'below'"
+            matTooltipHideDelay="1000"
+            class="btn btn-primary"
+          >
+            Below
+          </button>
+          <!-- code -->
+          <div class="copy-code mt-2">
+            <button
+              class="copy-btn"
+              onclick="javascript:CopyToClipboard(this,'tooltipB')"
+            >
+              Copy
+            </button>
+            <pre id="tooltipB">{{ tooltipB }}</pre>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <p>Left</p>
+          <button
+            mat-raised-button
+            #tooltip="matTooltip"
+            matTooltip="Info about the action"
+            [matTooltipPosition]="'left'"
+            matTooltipHideDelay="1000"
+            class="btn btn-primary"
+          >
+            Left
+          </button>
+          <!-- code -->
+          <div class="copy-code mt-2">
+            <button
+              class="copy-btn"
+              onclick="javascript:CopyToClipboard(this,'tooltipL')"
+            >
+              Copy
+            </button>
+            <pre id="tooltipL">{{ tooltipL }}</pre>
+          </div>
+        </div>
+        <div class="col-md-3">
+          <p>Right</p>
+          <button
+            mat-raised-button
+            #tooltip="matTooltip"
+            matTooltip="Info about the action"
+            [matTooltipPosition]="'right'"
+            matTooltipHideDelay="1000"
+            class="btn btn-primary"
+          >
+            Right
+          </button>
+          <!-- code -->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

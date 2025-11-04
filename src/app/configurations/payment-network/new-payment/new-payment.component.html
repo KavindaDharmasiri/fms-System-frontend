@@ -1,0 +1,128 @@
+<div class="main-container">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="breadcrumb-container">
+      <!-- Breadcrumb Navigation -->
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">
+          <li class="breadcrumb-item has-dropdown">
+            <a routerLink="#" class="text-decoration-none">Configurations</a>
+          </li>
+          <li class="breadcrumb-item has-dropdown">
+            <i class="ph ph-caret-right"></i>
+            <a [routerLink]="['/../configurations/payment-network']" class="text-decoration-none">Payment Network</a>
+          </li>
+          <!-- Active Page  -->
+          <li class="breadcrumb-item active" aria-current="page">
+            <i class="ph ph-caret-right"></i> <span id="active-iphone-breadcrumb">{{title}}</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <div class="sub-container">
+    <div class="d-flex justify-content-between" >
+      <div>
+        <span class="fw-semibold font-16px">{{page_title}}</span>
+      </div>
+      <div class="d-flex" *ngIf="viewDateTime">
+        <div class="d-flex">
+          <span class="fw-semibold font-16px me-2">Created Date & Time</span>
+          <span class="font-14px me-4">{{ createdAt }}</span>
+        </div>
+        <div>
+          <span class="fw-semibold font-16px me-2">Last Modified Date & Time</span>
+          <span class="font-14px me-4">{{ updatedAt }}</span>
+        </div>
+      </div>
+    </div>
+    <form [formGroup]="paymentNetworkForm">
+      <div class="row mt-4 no-left-padding">
+        <div class="col-3">
+          <mat-label>Payment Network ID</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <input type="text" matInput placeholder="Auto Generated" formControlName="paymentNetworkID" readonly/>
+          </mat-form-field>
+        </div>
+
+        <div class="col-3">
+          <mat-label>Payment Network Name</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <input type="text" matInput placeholder="Payment Network Name" formControlName="paymentNetworkName"/>
+          </mat-form-field>
+          <div
+            *ngIf="
+              paymentNetworkForm.get('paymentNetworkName')?.invalid &&
+              paymentNetworkForm.get('paymentNetworkName')?.touched
+            "
+            class="error-message"
+          >
+            Payment Network Name is required.
+          </div>
+        </div>
+
+        <div class="col-3">
+          <mat-label>BIN Length</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <mat-select placeholder="Select" formControlName="BINLength">
+              <mat-option value="6">06</mat-option>
+              <mat-option value="8">08</mat-option>
+            </mat-select>
+          </mat-form-field>
+          <div
+            *ngIf="
+              paymentNetworkForm.get('BINLength')?.invalid &&
+              paymentNetworkForm.get('BINLength')?.touched
+            "
+            class="error-message"
+          >
+            BIN Length is required.
+          </div>
+        </div>
+
+        <div class="col-3">
+          <mat-label>BIN</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <input
+              type="text"
+              matInput
+              placeholder="BIN"
+              formControlName="BIN"
+              [attr.maxlength]="selectedBINLength"
+              (input)="validateBIN()"
+              required
+            />
+          </mat-form-field>
+          <div
+            *ngIf="
+              paymentNetworkForm.get('BIN')?.invalid &&
+              paymentNetworkForm.get('BIN')?.touched
+            "
+            class="error-message"
+          >
+            BIN is required.
+          </div>
+          <div
+            *ngIf="
+              paymentNetworkForm.get('BIN')?.errors?.['invalidBIN']
+            "
+            class="error-message"
+          >
+            BIN must be exactly {{ selectedBINLength }} digits long.
+          </div>
+        </div>
+
+        <mat-divider class="mt-2 mb-4"></mat-divider>
+        <mat-slide-toggle formControlName="Status" class="mb-3">Status</mat-slide-toggle>
+      </div>
+
+      <div class="d-flex justify-content-between">
+        <div class="d-flex">
+          <button class="btn btn-default me-2" (click)="toggletoView()" *ngIf="showBackButton"><i class="ph ph-arrow-bend-up-left"></i>Back</button>
+          <button class="btn btn-default" type="button" (click)="resetForm()" *ngIf="showResetButton"><i class="ph ph-clock-counter-clockwise"></i>Reset</button>
+        </div>
+        <button class="btn btn-primary" (click)="addNewNetwork()" *ngIf="showSaveButton"><i class="ph ph-floppy-disk"></i>Save</button>
+        <button class="btn btn-primary" (click)="toggleToEdit()" *ngIf="showEditButton"><i class="ph ph-note-pencil"></i>Edit</button>
+      </div>
+    </form>
+  </div>
+</div>

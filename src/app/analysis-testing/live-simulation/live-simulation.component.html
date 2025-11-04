@@ -1,0 +1,318 @@
+<div class="main-container">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="breadcrumb-container">
+      <!-- Breadcrumb Navigation -->
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">
+          <li class="breadcrumb-item has-dropdown">
+            <a href="#" class="text-decoration-none">Analysis & Testing</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            <i class="ph ph-caret-right"></i>
+            <span id="privileges-management-breadcrumb">Live Simulation</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+
+  </div>
+  <div class="sub-container">
+    <div class="search-container">
+      <div class="search-header">
+        <div class="search-result-count">
+          <span class="fw-semibold font-16px">Simulation</span>
+        </div>
+        <div class="flex-1">
+          <button class="badge badge-warning" *ngIf="simuInactive"> <i class="ph ph-pause-circle"></i> Simulation Inactive</button>
+          <button class="badge bg-green" *ngIf="simuActive"> <i class="ph ph-play"></i> Simulation Active</button>
+        </div>
+
+
+      </div>
+
+
+        <div class="row g-3 no-left-padding">
+
+          <div class="col-3">
+            <mat-label>Rule Group</mat-label>
+            <mat-form-field appearance="outline" class="w-100 input-sm">
+              <mat-select [(value)]="dropdownSingal">
+                <mat-option value="option1">Active</mat-option>
+                <mat-option value="option2">Inactive</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+          <div class="col-3">
+            <mat-label>Simulation Type</mat-label>
+            <mat-form-field appearance="outline" class="w-100 input-sm">
+              <mat-select [(value)]="dropdownSingal">
+                <mat-option value="option1">Active</mat-option>
+                <mat-option value="option2">Inactive</mat-option>
+              </mat-select>
+            </mat-form-field>
+          </div>
+
+          <div class="col-md-3">
+            <mat-label>Simulation Start</mat-label>
+            <div class="d-flex align-items-center border rounded mt-2">
+              <input
+                matInput
+                [matDatepicker]="picker1"
+                placeholder="DD/MM/YYYY"
+                class="form-control border-0 flex-grow-1 date-size"
+                style="outline: none; box-shadow: none"
+              />
+
+              <span class="cursor mx-2 mt-1" (click)="picker1.open()">
+              <i class="ph ph-calendar fs-4"></i>
+              </span>
+
+              <mat-datepicker class="input-sm" #picker1></mat-datepicker>
+            </div>
+          </div>
+
+          <div class="col-md-3">
+            <mat-label>Simulation End Date</mat-label>
+            <div class="d-flex align-items-center border rounded mt-2">
+              <input
+                matInput
+                [matDatepicker]="picker2"
+                placeholder="DD/MM/YYYY"
+                class="form-control border-0 flex-grow-1 date-size"
+                style="outline: none; box-shadow: none"
+              />
+
+              <span class="cursor mx-2 mt-1" (click)="picker2.open()">
+              <i class="ph ph-calendar fs-4"></i>
+            </span>
+
+              <mat-datepicker class="input-sm" #picker2></mat-datepicker>
+            </div>
+          </div>
+        </div>
+
+        <hr>
+        <div class="d-flex justify-content-end gap-2" *ngIf="!(runSimulation)" >
+          <div class="d-flex gap-2">
+            <button class="btn btn-primary  btn-sm" (click)="simulationRun()" >
+              <i class="ph ph-play"></i>New Simulation
+            </button>
+
+          </div>
+        </div>
+
+      <div class="table-container mt-3" *ngIf="!(runSimulation)">
+        <div class="search-result-count">
+          <span class="fw-semibold font-16px">Previous Simulations</span>
+        </div>
+        <div class="mat-table">
+          <table mat-table [dataSource]="dataSource" class="text-left" >
+            <ng-container matColumnDef="last_simu_date">
+              <th class="text-left" mat-header-cell *matHeaderCellDef>Last Simulation Date</th>
+              <td class="text-left" mat-cell *matCellDef="let element">
+                {{ element.last_simu_date }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="flagged">
+              <th mat-header-cell *matHeaderCellDef>Flagged</th>
+              <td mat-cell *matCellDef="let element">
+                {{ element.flagged }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th mat-header-cell *matHeaderCellDef>Status</th>
+              <td mat-cell *matCellDef="let element">
+                <div class="">
+                  <button class="badge bg-green">{{ element.status }}</button>
+                </div>
+
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef>Action</th>
+              <td mat-cell *matCellDef="let element" class="text-center">
+
+                <div class="btn-group" role="group" aria-label="Basic outlined example">
+                  <button type="button" class="btn btn-secondary btn-outline btn-sm" title="View"><i class="ph ph-download-simple"></i></button>
+                </div>
+              </td>
+            </ng-container>
+
+
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+          </table>
+          <mat-paginator
+            [pageSizeOptions]="[5, 10, 20]"
+            showFirstLastButtons
+          ></mat-paginator>
+        </div>
+
+      </div>
+
+      <div class="tab-container mt-3" *ngIf="runSimulation">
+
+        <div class="d-flex justify-content-end gap-2" >
+          <div class="d-flex gap-2">
+            <button class="btn btn-danger  btn-sm" (click)="simulationStop()" >
+              <i class="ph ph-stop"></i>Stop Simulation
+            </button>
+
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
+            <mat-tab-group class="mat-tab">
+              <mat-tab label="Scheduled Simulations">
+
+                <table mat-table [dataSource]="dataSource2" >
+                  <ng-container matColumnDef="simu_id">
+                    <th class="text-left" mat-header-cell *matHeaderCellDef>Simulation ID</th>
+                    <td class="text-left" mat-cell *matCellDef="let element">
+                      {{ element.simu_id }}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="rule_group">
+                    <th mat-header-cell *matHeaderCellDef>Selected Rule Group</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.rule_group }}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="start_date">
+                    <th mat-header-cell *matHeaderCellDef>Scheduled Start Date</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.start_date }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="end_date">
+                    <th mat-header-cell *matHeaderCellDef>Scheduled End Date</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.end_date }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="creat_user">
+                    <th mat-header-cell *matHeaderCellDef>Created User</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.creat_user }}
+                    </td>
+                  </ng-container>
+                  <ng-container matColumnDef="creat_date">
+                    <th mat-header-cell *matHeaderCellDef>Created Date</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.creat_date }}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef>Action</th>
+                    <td mat-cell *matCellDef="let element" class="text-center">
+
+                      <div class="btn-group" role="group" aria-label="Basic outlined example">
+                        <button type="button" class="btn btn-secondary btn-outline btn-sm" title="View"><i class="ph ph-play"></i></button>
+                        <button type="button" class="btn btn-secondary btn-outline btn-sm" title="View"><i class="ph ph-pause"></i></button>
+                        <button type="button" class="btn btn-secondary btn-outline btn-sm" title="View"><i class="ph ph-clock-counter-clockwise"></i></button>
+                        <button type="button" class="btn btn-secondary btn-outline btn-sm" title="View"><i class="ph ph-trash"></i></button>
+                      </div>
+                    </td>
+                  </ng-container>
+
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns2"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns2"></tr>
+                </table>
+
+              </mat-tab>
+              <mat-tab label="Flagged Transaction">
+
+                <table mat-table [dataSource]="dataSource3">
+                  <ng-container matColumnDef="simu_id">
+                    <th class="text-left" mat-header-cell *matHeaderCellDef>Simulation ID</th>
+                    <td class="text-left" mat-cell *matCellDef="let element">
+                      {{ element.simu_id }}
+                    </td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="time_stamp">
+                    <th mat-header-cell *matHeaderCellDef>Timestamp</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.time_stamp }}</td>
+                  </ng-container>
+
+                  <ng-container matColumnDef="card_num">
+                    <th mat-header-cell *matHeaderCellDef>Card Number</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.card_num }}
+                  </ng-container>
+
+                  <ng-container matColumnDef="acquire_bin">
+                    <th mat-header-cell *matHeaderCellDef>Acquirer BIN</th>
+                    <td mat-cell *matCellDef="let element">
+                      {{ element.acquire_bin }}
+                  </ng-container>
+
+                  <ng-container matColumnDef="action">
+                    <th mat-header-cell *matHeaderCellDef>Action</th>
+                    <td mat-cell *matCellDef="let element" class="text-center">
+
+                      <div class="btn-group" role="group" aria-label="Basic outlined example">
+                        <button type="button" class="btn btn-secondary btn-outline btn-sm" title="View" [routerLink]="'/high-risk-transaction/view'"><i class="ph ph-eye"></i></button>
+                      </div>
+                    </td>
+                  </ng-container>
+
+
+                  <tr mat-header-row *matHeaderRowDef="displayedColumns3"></tr>
+                  <tr mat-row *matRowDef="let row; columns: displayedColumns3"></tr>
+                </table>
+
+              </mat-tab>
+            </mat-tab-group>
+          </div>
+        </div>
+
+        <hr>
+        <div class="row">
+          <mat-radio-group>
+            <mat-radio-button value="1">All</mat-radio-button>
+            <mat-radio-button value="2">Simulation 02</mat-radio-button>
+            <mat-radio-button value="1">Simulation 03</mat-radio-button>
+            <mat-radio-button value="2">Simulation 04</mat-radio-button>
+          </mat-radio-group>
+        </div>
+
+        <hr>
+
+        <div class="row mt-3">
+          <span class="fw-semibold font-16px mb-3">Active Simulation</span>
+
+          <div class="row p-0">
+            <div class="col-4">
+              <p class="font-14px m-0">Total Number of Transactions Tested</p>
+              <b><label class="fs-5 mt-1">2,146</label></b>
+            </div>
+            <div class="col-4 border-start">
+              <p class="font-14px m-0">Number of Flagged Transactions</p>
+              <b><label class="fs-5 mt-1">18</label></b>
+            </div>
+            <div class="col-4 border-start">
+              <p class="font-14px m-0">Number of Successful Transactions</p>
+              <b><label class="fs-5 mt-1">2,068</label></b>
+            </div>
+          </div>
+        </div>
+
+
+
+      </div>
+
+    </div>
+  </div>
+
+
+
+</div>
+

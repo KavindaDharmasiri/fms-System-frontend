@@ -1,0 +1,15 @@
+{
+  "/fms-auth-service": {
+    "target": "http://localhost:8085",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  },
+
+  "/fms-core-service": {
+    "target": "http://localhost:8765",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
+  }
+}

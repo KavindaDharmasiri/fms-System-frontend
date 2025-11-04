@@ -1,0 +1,30 @@
+.mat-mdc-tab-group {
+  .mdc-tab {
+    border-radius: $tab-border-radius;
+
+    .mdc-tab__ripple::before {
+      background-color: $tab-activet-bg-color;
+      border-radius: $tab-border-radius;
+    }
+  }
+
+  .mat-mdc-tab-body-content {
+    padding: var(--size-16px);
+  }
+
+  .mdc-tab--active {
+    background-color: $tab-activet-bg-color;
+
+    .mdc-tab__text-label,
+    .mdc-tab__icon {
+      color: $tab-activet-color !important;
+      font-weight: 800;
+    }
+
+    .mdc-tab-indicator {
+      .mdc-tab-indicator__content--underline {
+        border-color: transparent !important;
+      }
+    }
+  }
+}

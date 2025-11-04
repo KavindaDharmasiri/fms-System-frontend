@@ -1,0 +1,131 @@
+@mixin afc($c, $bg, $out: false) {
+  .accordion-item {
+    border-color: $bg;
+
+    &:not(:first-of-type) {
+      .accordion-button {
+        border-top-color: $bg;
+      }
+    }
+
+    .accordion-header {
+      .accordion-button {
+        @if $out {
+          color: $bg;
+
+          &::after {
+            // background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='" +rgba(red($bg), green($bg), blue($bg), 1)+"' %3e%3cpath d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+          }
+
+          &:not(.collapsed) {
+            color: $c;
+            background-color: $bg;
+
+            &::after {
+              // background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='" +rgba(red($c), green($c), blue($c), 1)+"' %3e%3cpath d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+            }
+          }
+
+          &.accrodient-button {
+            color: var(--neutral-800) !important;
+          }
+        } @else {
+          color: $c;
+          background-color: $bg;
+
+          &:not(.collapsed) {
+            border: none;
+            &::after {
+              // background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='" +rgba(red($c), green($c), blue($c), 1)+"' %3e%3cpath d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+            }
+          }
+
+          &::after {
+            // background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='" +rgba(red($c), green($c), blue($c), 1)+"' %3e%3cpath d='M1.646 4.646a.5.5 0 0 1 .708 0L8 10.293l5.646-5.647a.5.5 0 0 1 .708.708l-6 6a.5.5 0 0 1-.708 0l-6-6a.5.5 0 0 1 0-.708z'/%3e%3c/svg%3e");
+          }
+        }
+      }
+    }
+  }
+}
+
+.accordion {
+  .accordion-button {
+    color: var(--neutral-700);
+
+    &:focus {
+      box-shadow: none !important;
+    }
+
+    &:not(.collapsed) {
+      border-bottom-left-radius: var(--size-0);
+      border-bottom-right-radius: var(--size-0);
+      background-color: var(--neutral-100);
+    }
+
+    .mat-icon {
+      color: var(--neutral-700);
+    }
+
+    border-color: var(--neutral-300);
+    border-radius: var(--accordion-border-radius);
+    font-weight: 700;
+  }
+
+  .accordion-item {
+    border-color: var(--neutral-300);
+    border-radius: var(--accordion-border-radius);
+    margin-bottom: var(--accordion-items-space);
+
+    &:first-of-type {
+      .accordion-button {
+        border-top-left-radius: var(--accordion-border-radius);
+        border-top-right-radius: var(--accordion-border-radius);
+      }
+    }
+
+    &:not(:first-of-type) {
+      .accordion-button {
+        border-top: 1px solid;
+        border-top-color: var(--neutral-300);
+      }
+    }
+
+    &:last-of-type .accordion-button.collapsed {
+      border-bottom-right-radius: var(--accordion-border-radius);
+      border-bottom-left-radius: var(--accordion-border-radius);
+    }
+  }
+
+  &.accordion-default {
+    @include afc(var(var(--btn-text-color)), var(--neutral-300));
+  }
+
+  &.accordion-default-outline {
+    @include afc(var(--btn-text-color), var(--neutral-500));
+  }
+
+  &.accordion-black {
+    @include afc(var(--btn-text-color), var(--base-1000));
+  }
+
+  &.accordion-black-outline {
+    @include afc(var(--btn-text-color), var(--base-1000), true);
+  }
+
+  &.accordion-primary {
+    @include afc(var(--btn-text-color), var(--primary-300));
+  }
+
+  &.accordion-primary-outline {
+    @include afc(var(--btn-text-color), var(--primary-500), true);
+  }
+
+  &.accordion-secondary {
+    @include afc(var(--btn-text-color), var(--secondary-300));
+  }
+
+  &.accordion-secondary-outline {
+    @include afc(var(--btn-text-color), var(--secondary-500), true);
+  }
+}

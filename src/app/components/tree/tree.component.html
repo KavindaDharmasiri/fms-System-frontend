@@ -1,0 +1,96 @@
+<div class="main-container">
+  <div class="sub-container">
+    <span class="fw-semibold font-16px">Tree</span>
+
+    <div class="row">
+      <div class="col-md-12">
+        <div class="card p-2 mb-3">
+          <mat-tree [dataSource]="dataSource" [treeControl]="treeControl">
+            <!-- Leaf node template -->
+            <mat-tree-node *matTreeNodeDef="let node" matTreeNodePadding>
+              <div
+                class="d-flex align-items-center gap-3 p-2 rounded hover-bg w-100"
+                [ngClass]="{ 'bg-neutral-50': node.level === 0 }"
+              >
+                <!-- Tree icon -->
+                <span class="tree-icon d-flex align-items-center justify-content-center" style="width: 24px;">
+                  <i class="ph fs-5"></i>
+                </span>
+
+                <!-- Node label -->
+                <span class="flex-grow-1">{{ node.name }}</span>
+
+                <!-- Material Switch + Static "Status" -->
+                <div class="d-flex align-items-center gap-1" (click)="$event.stopPropagation()">
+                  <mat-slide-toggle color="primary"></mat-slide-toggle>
+                  <span class="text-muted small me-5">Status</span>
+                </div>
+
+                <!-- Button group -->
+                <div class="btn-group d-flex align-items-center" role="group" (click)="$event.stopPropagation()">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">
+                    <i class="ph ph-note-pencil"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    [disabled]="node.level === 0 || node.level === 1"
+                  >
+                    <i class="ph ph-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </mat-tree-node>
+
+            <!-- Expandable node template -->
+            <mat-tree-node *matTreeNodeDef="let node; when: hasChild" matTreeNodePadding>
+              <div
+                class="d-flex align-items-center gap-3 p-2 rounded hover-bg w-100"
+                [ngClass]="{ 'bg-neutral-50': node.level === 0 }"
+              >
+                <!-- Tree icon -->
+                <span
+                  class="tree-icon d-flex align-items-center justify-content-center"
+                  (click)="treeControl.toggle(node)"
+                  style="cursor: pointer; width: 24px;"
+                >
+                  <i
+                    class="ph fs-5"
+                    [ngClass]="
+                      treeControl.isExpanded(node)
+                        ? 'ph-caret-down'
+                        : 'ph-caret-right'
+                    "
+                  ></i>
+                </span>
+
+                <!-- Node label -->
+                <span class="flex-grow-1">{{ node.name }}</span>
+
+                <!-- Material Switch + Static "Status" -->
+                <div class="d-flex align-items-center gap-1" (click)="$event.stopPropagation()">
+                  <mat-slide-toggle color="primary"></mat-slide-toggle>
+                  <span class="text-muted small me-5">Status</span>
+                </div>
+
+                <!-- Button group -->
+                <div class="btn-group d-flex align-items-center" role="group" (click)="$event.stopPropagation()">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">
+                    <i class="ph ph-note-pencil"></i>
+                  </button>
+                  <button
+                    type="button"
+                    class="btn btn-sm btn-outline-secondary"
+                    [disabled]="node.level === 0 || node.level === 1"
+                  >
+                    <i class="ph ph-trash"></i>
+                  </button>
+                </div>
+              </div>
+            </mat-tree-node>
+          </mat-tree>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

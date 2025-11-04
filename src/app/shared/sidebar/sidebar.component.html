@@ -1,0 +1,27 @@
+<aside id="sidebar" class="sidebar bg-white">
+  <div class="sidebar-content">
+    <div class="logo-details">
+      <img src="../../../assets/img/logo.svg" class="img-fluid h-20 w-40" alt="Logo" />
+    </div>
+    <!-- <hr /> -->
+    <ul class="nav-list">
+      <li *ngFor="let item of menuItems" [class.expanded]="item.expanded">
+        <a [routerLink]="item.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
+          (click)="toggleSubmenu(item, $event)">
+          <i [class]="item.icon"></i> <!-- Replace this with Svg -->
+          <span class="links_name">{{ item.label }}</span>
+          <!-- Show caret only if submenu exists -->
+          <i *ngIf="item.submenu" class="ph caret" [ngClass]="item.expanded ? 'ph-caret-down' : 'ph-caret-right'"></i>
+          <span *ngIf="item.badge" class="badge badge-info badge-outline">{{ item.badge }}</span>
+        </a>
+        <ul *ngIf="item.submenu && item.expanded" class="submenu">
+          <li *ngFor="let sub of item.submenu">
+            <a [routerLink]="sub.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
+              <span>{{ sub.label }}</span>
+            </a>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </div>
+</aside>

@@ -1,0 +1,192 @@
+<div class="main-container">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="breadcrumb-container">
+      <!-- Breadcrumb Navigation -->
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">
+          <i class="ph ph-money me-1"></i>
+          <li class="breadcrumb-item has-dropdown">
+            <a class="text-decoration-none" routerLink="#">Configurations</a>
+          </li>
+          <!-- Active Page  -->
+          <li aria-current="page" class="breadcrumb-item active">
+            <i class="ph ph-caret-right"></i> <span id="active-iphone-breadcrumb">Rule</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+    <div class="d-flex gap-2">
+      <button [routerLink]="'/configurations/rule-configuration/add-rule'" class="btn btn-primary  btn-sm">
+        <i class="ph ph-plus"></i>New Rule
+      </button>
+    </div>
+  </div>
+  <div class="sub-container">
+    <div class="search-container">
+      <div class="search-header">
+        <div class="search-result-count">
+          <span class="fw-semibold font-16px">Search Rules</span>
+        </div>
+        <div (click)="toggleFilter()" class="filter-toggle d-flex align-items-center gap-2">
+          <i class="ph ph-sliders slider-icon"></i>
+          <span class="fw-semibold font-14px">{{ isFilterOpen ? "Close Filters" : "Apply Filters" }}</span>
+        </div>
+
+      </div>
+
+      <div [class.open]="isFilterOpen" class="filter-container">
+        <form [formGroup]="ruleFilterForm">
+          <div class="row g-3 no-left-padding">
+
+            <div class="col-md-3">
+              <mat-label>Rule Id</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <input formControlName="ruleUuid" matInput placeholder="Enter Rule Id " type="text"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3">
+              <mat-label>Rule Name</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <input formControlName="ruleName" matInput placeholder="Enter Rule Name " type="text"/>
+              </mat-form-field>
+            </div>
+            <div class="col-3">
+              <mat-label>Payment Network</mat-label>
+              <mat-form-field appearance="outline" class="w-100">
+                <mat-select formControlName="paymentNetworkId" placeholder="Select">
+                  <div *ngFor="let option of paymentNetworkList">
+                    <mat-option value="{{option.paymentNetworkId}}">
+                      {{option.networkName}}</mat-option>
+                  </div>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-3">
+              <mat-label>Element 01 Name</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <mat-select formControlName="element1">
+                  <mat-option value="option1">Active</mat-option>
+                  <mat-option value="option2">Inactive</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-3">
+              <mat-label>Element 02 Name</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <mat-select formControlName="element2">
+                  <mat-option value="option1">Active</mat-option>
+                  <mat-option value="option2">Inactive</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-3">
+              <mat-label>Element 03 Name</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <mat-select formControlName="element3">
+                  <mat-option value="option1">Active</mat-option>
+                  <mat-option value="option2">Inactive</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+            <div class="col-3">
+              <mat-label>Status</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <mat-select formControlName="status">
+                  <mat-option value="ACTIVE">Active</mat-option>
+                  <mat-option value="INACTIVE">Inactive</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <mat-divider class="mt-2 mb-4"></mat-divider>
+
+          <div class="d-flex justify-content-between gap-2">
+            <button (click)="resetFiled()" class="btn btn-secondary btn-outline btn-sm">
+              <i class="ph ph-clock-counter-clockwise"></i>Reset
+            </button>
+            <button (click)="searchRules()" class="btn btn-primary btn-sm">
+              <i class="ph ph-magnifying-glass"></i>Search
+            </button>
+          </div>
+        </form>
+
+      </div>
+      <div class="table-container mt-3">
+
+        <div class="mat-table">
+          <table [dataSource]="ruleList" class="custom-table" mat-table>
+            <ng-container matColumnDef="efmsRuleId">
+              <th *matHeaderCellDef mat-header-cell>Rule ID</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.ruleUuid   }}</td>
+            </ng-container>
+            <ng-container matColumnDef="ruleName">
+              <th *matHeaderCellDef mat-header-cell>Rule Name</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.ruleName }}</td>
+            </ng-container>
+            <ng-container matColumnDef="paymentNetworkId">
+              <th *matHeaderCellDef mat-header-cell>Payment Network</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.networkName }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th *matHeaderCellDef mat-header-cell>Status</th>
+              <td *matCellDef="let element" mat-cell>
+                  <span
+                    [ngClass]="{
+                      'bg-green': element.status == 'ACTIVE',
+                      'bg-red': element.status == 'INACTIVE',
+                    }"
+                    class="badge ms-5 me-5">
+                    {{ element.status }}
+                </span>
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="action">
+              <th *matHeaderCellDef mat-header-cell>Action</th>
+              <td *matCellDef="let element" class="text-center" mat-cell>
+
+                <div aria-label="Basic outlined example" class="btn-group" role="group">
+                  <button [routerLink]="'/configurations/rule-configuration/view-rule/'+element.efmsRuleId" class="btn btn-secondary btn-outline btn-sm flex-1" title="View"
+                          type="button">
+                    <i class="ph ph-eye"></i>
+                  </button>
+                  <button [routerLink]="'/configurations/rule-configuration/edit-rule/'+element.efmsRuleId" class="btn btn-secondary btn-outline btn-sm flex-1" title="View"
+                          type="button">
+                    <i class="ph ph-pencil"></i>
+                  </button>
+                </div>
+              </td>
+            </ng-container>
+
+            <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+            <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+          </table>
+          <!--          <mat-paginator-->
+          <!--            [pageSizeOptions]="[5, 10, 20]"-->
+          <!--            showFirstLastButtons-->
+          <!--          ></mat-paginator>-->
+          <mat-paginator
+            (page)="onPageChange($event)"
+            [length]="totalRecords"
+            [pageIndex]="pageIndex"
+            [pageSizeOptions]="[5, 10, 20]"
+            [pageSize]="pageSize"
+            showFirstLastButtons
+          >
+          </mat-paginator>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+</div>
+
+

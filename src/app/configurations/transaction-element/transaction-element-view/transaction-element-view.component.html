@@ -1,0 +1,185 @@
+<div class="main-container">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="breadcrumb-container">
+      <!-- Breadcrumb Navigation -->
+      <nav aria-label="breadcrumb">
+<!--        <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">-->
+
+<!--          <i class="ph ph-money me-1"></i>-->
+<!--          &lt;!&ndash; Active Page  &ndash;&gt;-->
+<!--          <li class="breadcrumb-item has-dropdown">-->
+<!--            <a routerLink="#" class="text-decoration-none">Configurations</a>-->
+<!--          </li>-->
+<!--          <li aria-current="page" class="breadcrumb-item active">-->
+<!--            <i class="ph ph-caret-right"></i> <span id="active-iphone-breadcrumb">Transaction Element Management</span>-->
+<!--          </li>-->
+<!--        </ol>-->
+        <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">
+          <li class="breadcrumb-item has-dropdown">
+            <a routerLink="#" class="text-decoration-none">Configurations</a>
+          </li>
+          <!-- Active Page  -->
+          <li class="breadcrumb-item active" aria-current="page">
+            <i class="ph ph-caret-right"></i> <span id="active-iphone-breadcrumb">Transaction Element Management</span>
+          </li>
+        </ol>
+      </nav>
+<!--      <nav aria-label="breadcrumb">-->
+<!--        <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">-->
+<!--          <li class="breadcrumb-item has-dropdown">-->
+<!--            <a routerLink="#" class="text-decoration-none">Configurations</a>-->
+<!--          </li>-->
+<!--          <li class="breadcrumb-item has-dropdown">-->
+<!--            <i class="ph ph-caret-right"></i>-->
+<!--            <a [routerLink]="['/../configurations/reaction-templates']" class="text-decoration-none">Reaction Templates</a>-->
+<!--          </li>-->
+<!--          &lt;!&ndash; Active Page  &ndash;&gt;-->
+<!--          <li class="breadcrumb-item active" aria-current="page">-->
+<!--            <i class="ph ph-caret-right"></i> <span id="active-iphone-breadcrumb">{{title}}</span>-->
+<!--          </li>-->
+<!--        </ol>-->
+<!--      </nav>-->
+    </div>
+    <div class="d-flex gap-2">
+      <button [routerLink]="'/configurations/transaction-element/add-element'"
+              class="btn btn-primary  btn-sm">
+        <i class="ph ph-plus"></i>New Element
+      </button>
+
+    </div>
+  </div>
+  <div class="sub-container">
+    <div class="search-container">
+      <div class="search-header">
+        <div class="search-result-count">
+          <span class="fw-semibold font-16px">Search Transaction Element</span>
+        </div>
+        <div (click)="toggleFilter()" class="filter-toggle d-flex align-items-center gap-2">
+          <i class="ph ph-sliders slider-icon"></i>
+          <span class="fw-semibold font-14px">{{ isFilterOpen ? "Close Filters" : "Apply Filters" }}</span>
+        </div>
+
+      </div>
+
+      <div [class.open]="isFilterOpen" class="filter-container">
+        <form [formGroup]="reactionTemplateFilter">
+          <div class="row g-3 no-left-padding">
+
+            <div class="col-md-3">
+              <mat-label>Element Id</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <input formControlName="templateID" matInput placeholder="Enter Element Id " type="text"/>
+              </mat-form-field>
+            </div>
+            <div class="col-md-3">
+              <mat-label>Element Name</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <input formControlName="templateName" matInput placeholder="Enter Element Name " type="text"/>
+              </mat-form-field>
+            </div>
+            <div class="col-3">
+              <mat-label>Status</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <mat-select formControlName="Status" placeholder="Select">
+                  <mat-option value="ACTIVE">Active</mat-option>
+                  <mat-option value="INACTIVE">Inactive</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <mat-divider class="mt-2 mb-4"></mat-divider>
+
+          <div class="d-flex justify-content-between gap-2">
+            <button class="btn btn-secondary btn-outline btn-sm" (click)="reset()">
+              <i class="ph ph-clock-counter-clockwise"></i>Reset
+            </button>
+            <button class="btn btn-primary btn-sm" (click)="loadDataFilter()">
+              <i class="ph ph-magnifying-glass"></i>Search
+            </button>
+          </div>
+        </form>
+
+      </div>
+      <div class="table-container mt-3">
+
+        <div class="mat-table">
+          <table [dataSource]="dataSource" mat-table>
+            <ng-container matColumnDef="payment_net_id">
+              <th *matHeaderCellDef mat-header-cell>Payment Network ID</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.paymentNetworkId }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="payment_net_name">
+              <th *matHeaderCellDef mat-header-cell>Payment Network Name</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.networkName }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="element_id">
+              <th *matHeaderCellDef mat-header-cell>Element ID</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.elementCode }}
+              </td>
+            </ng-container>
+            <ng-container matColumnDef="element_name">
+              <th *matHeaderCellDef mat-header-cell>Element Name</th>
+              <td *matCellDef="let element" mat-cell>
+                {{ element.elementName }}
+              </td>
+            </ng-container>
+
+            <ng-container matColumnDef="status">
+              <th *matHeaderCellDef mat-header-cell>Status</th>
+              <td *matCellDef="let element" mat-cell>
+                  <span
+                    [ngClass]="{
+                      'bg-green': element.status == 'ACTIVE',
+                      'bg-red': element.status == 'INACTIVE',
+                    }"
+                    class="badge">
+                    {{ element.status }}
+                </span>
+              </td>
+            </ng-container>
+
+
+            <ng-container matColumnDef="action">
+              <th *matHeaderCellDef mat-header-cell>Action</th>
+              <td *matCellDef="let element" mat-cell>
+
+                <div aria-label="Basic outlined example" class="btn-group" role="group">
+                  <button (click)="routeToView(element.efmsElementId)" class="btn btn-secondary btn-outline btn-sm" title="View" type="button"><i
+                    class="ph ph-eye"></i></button>
+                  <button (click)="routeToUpdate(element.efmsElementId)" class="btn btn-secondary btn-outline btn-sm" title="Edit"
+                          type="button"><i
+                    class="ph ph-note-pencil"></i></button>
+                  <button (click)="deleteFieldData(element.efmsElementId)" class="btn btn-secondary btn-outline btn-sm" title="Delete"
+                          type="button"><i
+                    class="ph ph-trash"></i></button>
+                </div>
+              </td>
+            </ng-container>
+
+
+            <tr *matHeaderRowDef="displayedColumns" mat-header-row></tr>
+            <tr *matRowDef="let row; columns: displayedColumns" mat-row></tr>
+          </table>
+
+          <mat-paginator
+            (page)="onPageChange($event)"
+            [length]="totalRecords"
+            [pageSizeOptions]="[5, 10, 20]"
+            [pageSize]="pageSize">
+          </mat-paginator>
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+
+</div>
+

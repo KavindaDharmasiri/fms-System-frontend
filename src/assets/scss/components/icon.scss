@@ -1,0 +1,53 @@
+.tree-icon {
+    width: 32px;
+    height: 32px;
+    margin-right: 0.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: $size-4px;
+}
+
+.ico-bg {
+    width: 96px;
+    height: 96px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    &.ico-48 {
+        width: 48px;
+        height: 48px;
+    }
+
+    &.primary {
+        background-color: $primary-50;
+        color: $primary-600;
+    }
+
+    &.secondary {
+        background-color: $secondary-50;
+        color: $secondary-600;
+    }
+
+    &.green {
+        background-color: $positive-50;
+        color: $positive-600;
+    }
+
+    &.red {
+        background-color: $negative-50;
+        color: $negative-600;
+    }
+
+    &.blue {
+        background-color: $informative-50;
+        color: $informative-600;
+    }
+
+    &.grey {
+        background-color: $neutral-50;
+        color: $neutral-600;
+    }
+}

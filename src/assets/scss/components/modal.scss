@@ -1,0 +1,69 @@
+// modal
+.mat-mdc-dialog-container {
+  .mat-mdc-dialog-content {
+    padding: var(--size-16px) 0 !important;
+  }
+
+  .mdc-dialog__surface {
+    border-radius: var(--br-12px) !important;
+    box-shadow: var(--shadow-sm) !important;
+  }
+}
+
+.mat-mdc-dialog-actions {
+  padding: var(--size-16px) 0 !important;
+}
+
+.mat-modal-content {
+  padding: var(--size-16px) var(--size-32px) !important;
+
+  .mat-mdc-dialog-title {
+    margin-bottom: 0 !important;
+    padding: 0 !important;
+  }
+
+  i {
+    font-size: var(--size-24px) !important;
+  }
+}
+
+.m-close {
+  position: absolute;
+  right: 32px;
+  top: 32px;
+}
+
+.modal {
+  z-index: 9999 !important;
+
+  .modal-content {
+    border-radius: var(--br-12px) !important;
+    box-shadow: var(--shadow-sm) !important;
+    z-index: 9999 !important;
+  }
+
+  .modal-header {
+    padding: var(--size-16px);
+
+    h1 {
+      margin: 0;
+    }
+
+    border-bottom: none;
+  }
+
+  .modal-body {
+    padding: 0 var(--size-32px);
+    max-height: 50vh;
+    overflow: auto;
+  }
+
+  .modal-footer {
+    border-top: none;
+    padding: var(--size-16px) var(--size-32px);
+  }
+}
+
+.mat-mdc-menu-content {
+  padding: 0 !important;
+}

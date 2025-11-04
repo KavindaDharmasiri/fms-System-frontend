@@ -1,0 +1,69 @@
+// nav bar
+.nav-bar {
+  background-color: var(--base-0);
+  padding-block: var(--size-12px);
+  border-bottom: 1px solid var(--neutral-200);
+  height: var(--size-64px) !important;
+
+  .dropdown-item {
+    padding: 0.5rem 1rem;
+
+    &:hover {
+      background-color: var(--neutral-50);
+    }
+  }
+
+  .page-header {
+    padding-block: 12px;
+    border-bottom: 1px solid var(--neutral-100);
+  }
+
+  .header-icon {
+    font-size: 24px;
+    cursor: pointer;
+    background-color: var(--neutral-50);
+    border-radius: 16px;
+    padding: 4px 6px;
+  }
+
+  /* Hide Bootstrap dropdown arrow */
+  .userDropdown,
+  .mailDropdown {
+    .dropdown-toggle::after {
+      display: none !important;
+      content: none !important;
+    }
+  }
+
+  .maildropdown {
+    border-radius: 8px !important;
+    border: 1px solid var(--neutral-100) !important;
+  }
+
+  .maildropdown-menu {
+    min-width: 300px;
+    overflow-y: auto;
+    max-height: 300px;
+  }
+
+  .cursor-pointer {
+    cursor: pointer;
+  }
+}
+
+/* Notification Panel */
+.notification-header {
+  background: var(--neutral-50);
+  padding: 15px;
+  border-bottom: 1px solid var(--primary-100);
+}
+
+.notification-item {
+  padding: 15px;
+  border-bottom: 1px solid var(--primary-50);
+  transition: background-color 0.3s;
+
+  &:hover {
+    background-color: var(--primary-50);
+  }
+}

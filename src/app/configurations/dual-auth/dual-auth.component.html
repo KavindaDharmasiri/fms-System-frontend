@@ -1,0 +1,163 @@
+<div class="main-container">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="breadcrumb-container">
+      <!-- Breadcrumb Navigation -->
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">
+          <li class="breadcrumb-item has-dropdown">
+            <a routerLink="#" class="text-decoration-none">Configurations</a>
+          </li>
+          <!-- Active Page  -->
+          <li class="breadcrumb-item active" aria-current="page">
+            <i class="ph ph-caret-right"></i> <span id="active-iphone-breadcrumb">Dual Authentication</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <div class="sub-container">
+    <div class="search-container">
+      <div class="search-header">
+        <div class="search-result-count">
+          <span class="fw-semibold font-16px">Search Authentications</span>
+        </div>
+        <div class="filter-toggle d-flex align-items-center gap-2" (click)="toggleFilter()">
+          <i class="ph ph-sliders slider-icon"></i>
+          <span class="fw-semibold font-14px">{{ isFilterOpen ? "Close Filters" : "Apply Filters" }}</span>
+        </div>
+
+      </div>
+
+      <div class="filter-container" [class.open]="isFilterOpen">
+        <form [formGroup]="dualAuthFilter">
+          <div class="row g-3 no-left-padding">
+
+            <div class="col-md-3">
+              <mat-label>From</mat-label>
+              <div class="d-flex align-items-center border rounded mt-2">
+                <input
+                  matInput
+                  [matDatepicker]="picker1"
+                  placeholder="DD / MM / YYYY"
+                  class="form-control border-0 flex-grow-1 date-size"
+                  style="outline: none; box-shadow: none"
+                  formControlName="fromDate"
+                />
+                <span class="cursor mx-2 mt-1" (click)="picker1.open()">
+              <i class="ph ph-calendar fs-4"></i>
+            </span>
+                <mat-datepicker class="input-sm" #picker1></mat-datepicker>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <mat-label>To</mat-label>
+              <div class="d-flex align-items-center border rounded mt-2">
+                <input
+                  matInput
+                  [matDatepicker]="picker2"
+                  placeholder="DD / MM / YYYY"
+                  class="form-control border-0 flex-grow-1 date-size"
+                  style="outline: none; box-shadow: none"
+                  formControlName="toDate"
+                />
+                <span class="cursor mx-2 mt-1" (click)="picker2.open()">
+              <i class="ph ph-calendar fs-4"></i>
+            </span>
+                <mat-datepicker class="input-sm" #picker2></mat-datepicker>
+              </div>
+            </div>
+
+            <div class="col-md-3">
+              <mat-label>Configuration</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <mat-select placeholder="Select" formControlName="configuration">
+                  <mat-option value="option1">option1</mat-option>
+                  <mat-option value="option2">option2</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3">
+              <mat-label>Task</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <mat-select placeholder="Select" formControlName="task">
+                  <mat-option value="option1">option1</mat-option>
+                  <mat-option value="option2">option2</mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+
+            <div class="col-md-3">
+              <mat-label>Modified User</mat-label>
+              <mat-form-field appearance="outline" class="w-100 input-sm">
+                <mat-select placeholder="Select" formControlName="modifiedUser">
+                  <mat-option *ngFor="let user of users" [value]="user.username">
+                    {{ user.fullName }}
+                  </mat-option>
+                </mat-select>
+              </mat-form-field>
+            </div>
+          </div>
+
+          <mat-divider class="mt-2 mb-4"></mat-divider>
+
+          <div class="d-flex justify-content-between gap-2">
+            <button class="btn btn-secondary btn-outline btn-sm" (click)="resetFilter()">
+              <i class="ph ph-clock-counter-clockwise"></i>Reset
+            </button>
+            <button class="btn btn-primary btn-outline btn-sm" (click)="applyFilter()">
+              <i class="ph ph-magnifying-glass"></i>Search
+            </button>
+          </div>
+        </form>
+
+      </div>
+      <div class="table-container mt-3">
+        <div class="mat-table">
+          <table mat-table [dataSource]="dataSource">
+            <ng-container matColumnDef="identifier">
+              <th mat-header-cell *matHeaderCellDef> Identifier </th>
+              <td mat-cell *matCellDef="let element"> {{element.identifier}} </td>
+            </ng-container>
+            <ng-container matColumnDef="task">
+              <th mat-header-cell *matHeaderCellDef> Task </th>
+              <td mat-cell *matCellDef="let element"> {{element.task}} </td>
+            </ng-container>
+            <ng-container matColumnDef="modified-user">
+              <th mat-header-cell *matHeaderCellDef>Last Modified User </th>
+              <td mat-cell *matCellDef="let element"> {{element.modifiedUser}} </td>
+            </ng-container>
+            <ng-container matColumnDef="modified-date-time">
+              <th mat-header-cell *matHeaderCellDef> Modified Date & Time </th>
+              <td mat-cell *matCellDef="let element"> {{element.modifiedDate | date:'dd-MM-yyyy HH:mm'}} </td>
+            </ng-container>
+            <ng-container matColumnDef="created-date-time">
+              <th mat-header-cell *matHeaderCellDef> Created Date & Time </th>
+              <td mat-cell *matCellDef="let element">{{ element.cretedDate | date:'dd-MM-yyyy HH:mm' }}</td>
+            </ng-container>
+            <ng-container matColumnDef="action">
+              <th mat-header-cell *matHeaderCellDef>Action</th>
+              <td mat-cell *matCellDef="let element" class="text-center">
+
+                <div class="btn-group" role="group" aria-label="Basic outlined example">
+                  <button type="button" class="btn btn-secondary btn-outline btn-sm" title="View" (click)="openViewDualAuth(element.identifier)"><i class="ph ph-eye"></i></button>
+                  <button type="button" class="btn btn-secondary btn-outline btn-sm" title="Edit" (click)="approveRequest(element.identifier)"><i class="ph ph-check"></i></button>
+                  <button type="button" class="btn btn-secondary btn-outline btn-sm" title="Delete" (click)="rejectRequest(element.identifier)"><i class="ph ph-x"></i></button>
+                </div>
+              </td>
+            </ng-container>
+            <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+          </table>
+          <mat-paginator
+            (page)="onPageChange($event)"
+            [length]="totalRecords"
+            [pageSizeOptions]="[5, 10, 20]"
+            [pageSize]="pageSize">
+          </mat-paginator>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

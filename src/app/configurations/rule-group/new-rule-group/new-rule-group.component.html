@@ -1,0 +1,174 @@
+<div class="main-container">
+  <div class="d-flex justify-content-between align-items-center">
+    <div class="breadcrumb-container">
+      <!-- Breadcrumb Navigation -->
+      <nav aria-label="breadcrumb">
+        <ol class="breadcrumb custom-breadcrumb d-flex align-items-center">
+          <li class="breadcrumb-item has-dropdown">
+            <i class="ph ph-user-circle-gear me-1"></i>
+            <a routerLink="#" class="text-decoration-none">Configurations</a>
+          </li>
+          <!-- Active Page  -->
+          <li class="breadcrumb-item" aria-current="page">
+            <i class="ph ph-caret-right"></i>
+            <a routerLink="/configurations/rule-group" class="text-decoration-none">Rule Group</a>
+          </li>
+          <li class="breadcrumb-item active" aria-current="page">
+            <i class="ph ph-caret-right"></i> <span id="active-iphone-breadcrumb1">{{isEditMode ? 'Edit Rule Group' : 'New Rule Group'}}</span>
+          </li>
+        </ol>
+      </nav>
+    </div>
+  </div>
+  <form  [formGroup]="ruleGroupForm"  class="sub-container">
+    <div class="row g-2 no-left-padding">
+      <div class="col-3">
+        <mat-label>Payment Network Name</mat-label>
+        <mat-form-field appearance="outline" class="w-100 input-sm">
+          <mat-select placeholder="Select" formControlName="paymentNetworkId">
+            <mat-option *ngFor="let paymentNetwork of paymentNetworks" [value]="paymentNetwork.paymentNetworkId">
+              {{ paymentNetwork.networkName }}
+            </mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+      <div class="col-md-6">
+      <mat-label>Rule Group ID</mat-label>
+        <mat-form-field appearance="outline" class="w-100 input-sm disabled">
+          <input disabled [value]="ruleGroupUuid" type="text" matInput placeholder="" class="disabled"/>
+        </mat-form-field>
+      </div>
+<!--      <div class="col-md-3">-->
+<!--        <mat-label>Rule Group Id</mat-label>-->
+<!--        <mat-form-field appearance="outline" class="w-100 input-sm disabled">-->
+          <input disabled [value]="ruleGroupId" type="text" matInput placeholder="" class="disabled visually-hidden"/>
+<!--        </mat-form-field>-->
+<!--      </div>-->
+      <div class="col-md-3">
+        <mat-label>Rule Group Name</mat-label>
+        <mat-form-field appearance="outline" class="w-100 input-sm">
+          <input formControlName="groupName" type="text" matInput placeholder="Enter Element Name " />
+        </mat-form-field>
+      </div>
+    </div>
+    <hr>
+
+      <div>
+        <span class="fw-semibold font-12px">User Rules</span>
+
+        <div class="row no-left-padding">
+          <div class="col-auto">
+            <select #selectRef multiple>
+              <option *ngFor="let rule of allRules" [value]="rule.efmsRuleId" [defaultSelected]="isRuleSelected(rule.efmsRuleId)">
+                {{ rule.ruleName }}
+              </option>
+            </select>
+          </div>
+        </div>
+      </div>
+    <hr>
+    <div class="sub-container p-0">
+      <span class="fw-semibold font-16px">Verdict</span>
+      <div class="col">
+        <mat-radio-group formControlName="verdict">
+          <mat-radio-button value="1">Decline Transaction</mat-radio-button>
+          <mat-radio-button value="2">Escalate for manual review</mat-radio-button>
+          <mat-radio-button value="3">Decline transaction and Escalate for manual review</mat-radio-button>
+        </mat-radio-group>
+      </div>
+    </div>
+
+    <hr>
+    <div class="sub-container p-0">
+      <div class="row g-2 no-left-padding">
+        <span class="fw-semibold font-16px">User Role</span>
+        <div class="col-3">
+          <mat-label>Select</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm" (change)="getRoleValues()" >
+            <mat-select multiple placeholder="Select" [compareWith]="compareRoles" [(value)]="ruleGroupRoleCollection">
+              <mat-option *ngFor="let role of allRoles" [value]="{roleId: role.roleId, status: 'ACTIVE'}">
+                {{ role.roleName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+        <div class="col-3">
+          <mat-label>Alerting template</mat-label>
+          <mat-form-field appearance="outline" class="w-100 input-sm">
+            <mat-select placeholder="Select"  formControlName="reactionTemplateId" >
+              <mat-option *ngFor="let reactionTemplate of reactionTemplates" [value]="reactionTemplate.reactionTemplateId">
+                {{ reactionTemplate.templateName }}
+              </mat-option>
+            </mat-select>
+          </mat-form-field>
+        </div>
+      </div>
+    </div>
+
+    <hr>
+    <div class="sub-container p-0">
+      <div class="row g-2 no-left-padding">
+        <span class="fw-semibold font-16px">Effective Date</span>
+        <div class="col-3">
+          <mat-label>Transaction Initiated From</mat-label>
+          <div class="d-flex align-items-center border rounded mt-2">
+            <input
+              formControlName="fromDate"
+              matInput
+              [matDatepicker]="picker1"
+              placeholder="Select a date"
+              class="form-control border-0 flex-grow-1 date-size"
+              style="outline: none; box-shadow: none"
+            />
+
+            <span class="cursor mx-2 mt-1" (click)="picker1.open()">
+              <i class="ph ph-calendar fs-4"></i>
+            </span>
+
+            <mat-datepicker class="input-sm" #picker1></mat-datepicker>
+          </div>
+        </div>
+        <!--          initiated to date-->
+        <div class="col-3">
+          <mat-label>Transaction Initiated To</mat-label>
+          <div class="d-flex align-items-center border rounded mt-2">
+            <input
+              formControlName="toDate"
+              matInput
+              [matDatepicker]="picker2"
+              placeholder="Select a date"
+              class="form-control border-0 flex-grow-1 date-size"
+              style="outline: none; box-shadow: none"
+            />
+
+            <span class="cursor mx-2 mt-1" (click)="picker2.open()">
+              <i class="ph ph-calendar fs-4"></i>
+            </span>
+
+            <mat-datepicker class="input-sm" #picker2></mat-datepicker>
+          </div>
+        </div>
+        <div class="col-md-6 d-flex align-items-center justify-content-start">
+          <mat-slide-toggle formControlName="status">Status</mat-slide-toggle>
+        </div>
+      </div>
+    </div>
+    <hr>
+    <div class="d-flex justify-content-between">
+      <button class="btn btn-secondary btn-outline btn-sm" (click)="handleResetForm()">
+        <i class="ph ph-clock-counter-clockwise"></i>Reset
+      </button>
+      <div class="d-flex justify-content-end gap-2">
+        <button class="btn btn-secondary btn-outline btn-sm" (click)="openModal()">
+          <i class="ph ph-check"></i>Test Rule
+        </button>
+        <button *ngIf="!isEditMode" class="btn btn-primary btn-sm" (click)="saveRuleGroup()">
+          <i class="ph ph-floppy-disk"></i>Save
+        </button>
+        <button *ngIf="isEditMode" class="btn btn-primary btn-sm" (click)="editRuleGroup()">
+        <i class="ph ph-note-pencil"></i>Edit
+        </button>
+      </div>
+    </div>
+    </form>
+</div>

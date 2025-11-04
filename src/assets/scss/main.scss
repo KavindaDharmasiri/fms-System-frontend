@@ -1,0 +1,212 @@
+.dashboard-main-div {
+  background-color: var(--main-div-bg-color);
+  border-radius: var(--br-24);
+  margin: 0 !important;
+  max-width: 100%;
+  height: 100%;
+  position: relative;
+  background: var(--base-0);
+  min-height: 100vh;
+  top: 0;
+  left: 250px;
+  width: calc(100% - 250px);
+  transition: all 0.5s ease;
+  z-index: 2;
+}
+
+/* Custom scrollbar for WebKit browsers (Chrome, Safari, Edge) */
+::-webkit-scrollbar {
+  width: var(--size-8px); /* Adjust the width */
+}
+
+::-webkit-scrollbar-track {
+  background: var(--base-0); /* Track color */
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--neutral-200); /* Scrollbar thumb color */
+  border-radius: var(--size-4px);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--neutral-300); /* Darker color on hover */
+}
+
+.btn-close:focus {
+  box-shadow: none !important;
+}
+// Login Page style start //////////////////////////////////////////////////////
+
+// .login-component {
+
+//   .form-side {
+//     .form-content {
+//       max-width: 512px;
+//     }
+//   }
+// }
+
+@media screen and (max-width: 769px) {
+  .login-highlight {
+    display: none;
+  }
+}
+// Login Page styles end ////////////////////////////////////////////////////////////////////////////
+.main-container {
+  padding: var(--size-16px);
+  display: flex;
+  flex-direction: column;
+  gap: var(--size-16px);
+}
+.sub-container {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  background: var(--card-bg-color);
+  gap: 16px !important;
+  border-radius: 16px !important;
+  box-shadow: var(--card-shadow);
+  border: none;
+  transition: box-shadow 0.2s ease;
+
+  &:hover {
+    box-shadow: var(--card-hover-shadow);
+  }
+
+  hr {
+    margin: var(--size-8px) var(--size-0) !important;
+    border-color: var(--neutral-200);
+  }
+}
+.search-container {
+  .search-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+
+    .filter-toggle {
+      gap: 8px;
+      cursor: pointer;
+    }
+  }
+
+  .filter-container {
+    display: none;
+    opacity: 0;
+    max-height: 0;
+    overflow: hidden;
+    transition: all 0.4s ease;
+    padding: 0;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: var(--size-8px) !important;
+
+    &.open {
+      display: block;
+      max-height: fit-content;
+      opacity: 1;
+    }
+    .filter-row {
+      gap: 8px;
+    }
+  }
+}
+
+.date-size {
+  padding: 5px 12px !important;
+}
+
+.btn-close {
+  box-shadow: none !important;
+}
+
+.dual-listbox {
+  .dual-listbox__button {
+    padding: 0 !important;
+    background-color: transparent !important;
+  }
+
+  .dual-listbox__item {
+    &:hover {
+      background-color: var(--neutral-50);
+    }
+
+    &.dual-listbox__item--selected {
+      background-color: var(--neutral-100);
+    }
+  }
+
+  .dual-listbox__title {
+    padding: var(--size-16px) var(--size-0) !important;
+    font-size: var(--size-14px);
+    border: var(--br-0) !important;
+    margin: var(--size-0) !important;
+  }
+
+  .dual-listbox__available,
+  .dual-listbox__selected {
+    border: 1px solid var(--neutral-200) !important;
+    border-radius: var(--br-12px) !important;
+  }
+
+  .dual-listbox__search {
+    width: 100%;
+    padding: 8px 6px !important;
+    padding-right: 30px !important;
+    border: 1px solid var(--neutral-200);
+    border-radius: 6px !important;
+    font-size: 14px;
+
+    &:focus-visible {
+      outline-color: var(--neutral-400) !important;
+    }
+  }
+}
+
+.search-input-wrapper {
+  position: relative;
+  display: flex;
+  align-items: center;
+  width: 100%;
+}
+
+.search-icon {
+  position: absolute;
+  right: 10px;
+  font-size: 16px;
+  color: #888;
+}
+
+.tree-border{
+  border-bottom: 1px solid var(--neutral-200);
+}
+
+.num-inputs{
+  width: 90px;
+  .mat-mdc-form-field-bottom-align {
+    display: none !important;
+  }
+}
+
+//CONTAINER
+
+//.row {
+//  gap:8px;
+//}
+//
+//.row > * {
+//    padding-inline: 0 !important;
+//  }
+
+
+.row.no-left-padding > * {
+  padding-left: 0 !important;
+}
+
+.error-message {
+  color: red;
+  font-size: 0.9em;
+  margin-top: 2px;
+  margin-left: 2px;
+}
