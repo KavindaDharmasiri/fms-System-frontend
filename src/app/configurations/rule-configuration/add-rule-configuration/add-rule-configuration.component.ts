@@ -32,14 +32,14 @@ export class AddRuleConfigurationComponent implements OnInit{
 
 
   efmsRuleDTO: EfmsRuleDTO = new EfmsRuleDTO();
-  displayedColumns: string[] = ['efmsElementId', 'operator', 'value','riskScore','action'];
+  displayedColumns: string[] = ['fmsElementId', 'operator', 'value','riskScore','action'];
   selectedStatus: string = '';
-  protected efmsElements: any[] = [];
+  protected fmsElements: any[] = [];
   protected isEditMode: boolean = false;
   protected efmsRuleId: string ='';
   protected ruleUuid: string = this.generateCode();
   protected efmsRule : EfmsRuleDTO = new EfmsRuleDTO();
-  efmsElementData:any;
+  fmsElementData:any;
   selectedOption: any;
   ruleValueList:any[]=[];
   finalRiskScore:number=0.0;
@@ -75,7 +75,7 @@ export class AddRuleConfigurationComponent implements OnInit{
       fromDate:['',Validators.required],
       toDate:['',Validators.required],
       status:[""],
-      efmsElementId:[""],
+      fmsElementId:[""],
       riskWeight:[0],
       value:[""],
       rgMin:[''],
@@ -122,7 +122,7 @@ export class AddRuleConfigurationComponent implements OnInit{
       }else{
         console.log(res)
         this.addRuleValueForm.patchValue({...res.data, status: res.data.status === "ACTIVE" ? true : false});
-        this.ruleValueList = res.data.efmsRuleConditionCollection || [];
+        this.ruleValueList = res.data.fmsRuleConditionCollection || [];
         this.efmsRule = res.data;
         this.efmsRule.ruleUuid = res.data.ruleUuid || this.ruleUuid;
         this.netId = res.data.paymentNetworkId;
@@ -132,7 +132,7 @@ export class AddRuleConfigurationComponent implements OnInit{
   }
 
   openModal(){
-    this.efmsRuleDTO.efmsRuleId=0;
+    this.efmsRuleDTO.fmsRuleId=0;
     this.efmsRuleDTO.ruleUuid=this.uuId;
     this.efmsRuleDTO.ruleName=this.addRuleValueForm.get("ruleName")?.value;
     this.efmsRuleDTO.finalRule='';
@@ -142,7 +142,7 @@ export class AddRuleConfigurationComponent implements OnInit{
     this.efmsRuleDTO.status=this.addRuleValueForm.get("status")?.value? "ACTIVE":"INACTIVE"
     this.efmsRuleDTO.finalRiskScore=this.finalRiskScore;
     this.efmsRuleDTO.paymentNetworkId=this.addRuleValueForm.get("paymentNetworkId")?.value;
-    this.efmsRuleDTO.efmsRuleConditionCollection=this.ruleValueList
+    this.efmsRuleDTO.fmsRuleConditionCollection=this.ruleValueList
 
     if(this.addRuleValueForm.valid){
       let dialogRef = this.dialog.open(RuleViewModalComponent, {
@@ -204,7 +204,7 @@ export class AddRuleConfigurationComponent implements OnInit{
   private getElements() {
     this.transactionElementService.getByStatus().subscribe({
       next: (response: any) => {
-        this.efmsElements = response.data;
+        this.fmsElements = response.data;
 
       }, error: (error: HttpErrorResponse) => {
         console.error('Error loading landing details:', error.message);
@@ -213,25 +213,25 @@ export class AddRuleConfigurationComponent implements OnInit{
   }
 
   getElementData() {
-    const id=this.addRuleValueForm.get("efmsElementId")?.value
+    const id=this.addRuleValueForm.get("fmsElementId")?.value
 
     this.transactionElementService.getDataById(id).subscribe(
       (res:any)=>{
-        this.efmsElementData=res.data;
-        console.log(this.efmsElementData)
+        this.fmsElementData=res.data;
+        console.log(this.fmsElementData)
         this.setElementData();
       }
     )
   }
 
   setElementData(){
-    this.operators = JSON.parse(this.efmsElementData.operator);
-    this.elementValue=JSON.parse(this.efmsElementData.value)
+    this.operators = JSON.parse(this.fmsElementData.operator);
+    this.elementValue=JSON.parse(this.fmsElementData.value)
     const comparisonOps = this.operators.find((op: any) => op['Comparison Operators'])?.['Comparison Operators'] || [];
     const listOps = this.operators.find((op: any) => op['List Operators'])?.['List Operators'] || [];
 
     this.addRuleValueForm.patchValue({
-      riskWeight:this.efmsElementData.riskWeight,
+      riskWeight:this.fmsElementData.riskWeight,
       rgMin:this.getRangeValue(this.operators, 'rangeMin'),
       rgMax:this.getRangeValue(this.operators, 'rangeMax'),
 
@@ -276,7 +276,7 @@ export class AddRuleConfigurationComponent implements OnInit{
   saveRule() {
     let efmsRuleDTO:EfmsRuleDTO=new EfmsRuleDTO();
 
-    this.efmsRuleDTO.efmsRuleId=0;
+    this.efmsRuleDTO.fmsRuleId=0;
     this.efmsRuleDTO.ruleUuid= this.efmsRule.ruleUuid;
     this.efmsRuleDTO.ruleName=this.addRuleValueForm.get("ruleName")?.value;
     this.efmsRuleDTO.finalRule='';
@@ -286,7 +286,7 @@ export class AddRuleConfigurationComponent implements OnInit{
     this.efmsRuleDTO.status=this.addRuleValueForm.get("status")?.value? "ACTIVE":"INACTIVE"
     this.efmsRuleDTO.finalRiskScore=this.finalRiskScore;
     this.efmsRuleDTO.paymentNetworkId=this.addRuleValueForm.get("paymentNetworkId")?.value;
-    this.efmsRuleDTO.efmsRuleConditionCollection=this.ruleValueList
+    this.efmsRuleDTO.fmsRuleConditionCollection=this.ruleValueList
     console.log(this.efmsRuleDTO)
     this.ruleService.saveEfmsRule(this.efmsRuleDTO).pipe(
       catchError(
@@ -333,7 +333,7 @@ export class AddRuleConfigurationComponent implements OnInit{
     let updatedDto: EfmsRuleDTO = new EfmsRuleDTO();
     const efmsRuleId = this.efmsRuleId;
 
-    updatedDto.efmsRuleId = Number(this.efmsRuleId);
+    updatedDto.fmsRuleId = Number(this.efmsRuleId);
     updatedDto.ruleUuid = this.efmsRule.ruleUuid;
     updatedDto.ruleName = this.addRuleValueForm.get("ruleName")?.value;
     updatedDto.finalRule = '';
@@ -349,7 +349,7 @@ export class AddRuleConfigurationComponent implements OnInit{
       condition.efmsRuleConditionId = null;
     });
 
-    updatedDto.efmsRuleConditionCollection = this.ruleValueList;
+    updatedDto.fmsRuleConditionCollection = this.ruleValueList;
 
     this.ruleService.updateEfmsRule(updatedDto).pipe(
       catchError((err) => {
@@ -399,7 +399,7 @@ export class AddRuleConfigurationComponent implements OnInit{
 
   addRules() {
     const ruleValue:EfmsRuleValueDto={
-      efmsElementId:this.addRuleValueForm.get("efmsElementId")?.value,
+      fmsElementId:this.addRuleValueForm.get("fmsElementId")?.value,
       operator:this.selectedOption,
       value:this.addRuleValueForm.get("value")?.value,
       riskScore:this.addRuleValueForm.get("riskWeight")?.value,

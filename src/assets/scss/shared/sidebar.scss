@@ -1,132 +1,48 @@
+// Legacy sidebar styles - keeping for backward compatibility
 .sidebar {
-  position: fixed;
-  left: 0;
-  top: 0;
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
-  width: 250px;
-  // border-right: 1px solid var(--nuetral-400);
-  transition: width 0.5s ease;
-
-  .logo-details {
+  // Modern sidebar styles are now in sidebar.component.scss
+  // This maintains compatibility with existing layouts
+  
+  &:not(.modern-sidebar) {
+    position: fixed;
+    left: 0;
+    top: 0;
     display: flex;
-    align-items: start;
-    position: relative;
-    padding: var(--size-12px) !important;
-
-    img {
-      height: auto !important;
-    }
-  }
-
-  // Sidebar Content
-  .sidebar-content {
-    flex-grow: 1; // Allows sidebar to fill space while keeping footer at the bottom
-    overflow-y: auto; // Enables scrolling for long content
-    border-right: 1px solid var(--neutral-200) !important;
-  }
-
-  /* For Firefox */
-  .sidebar .sidebar-content {
-    scrollbar-color: var(--informative-200) var(--informative-400) !important; /* thumb color, track color */
-  }
-
-  .nav-list {
-    margin-top: var(--size-20px);
-    padding: 0;
-
-    li {
-      list-style: none;
+    flex-direction: column;
+    height: 100vh;
+    width: 250px;
+    transition: width 0.5s ease;
+    
+    .logo-details {
+      display: flex;
+      align-items: start;
       position: relative;
-      padding: var(--size-4px) var(--size-8px);
-
-      a {
-        display: flex;
-        align-items: center;
-        text-decoration: none;
-        padding: var(--size-10px);
-        border-radius: var(--size-12px);
-        color: var(--neutral-800);
-        font-size: var(--size-14px);
-        transition: all 0.4s ease;
-
-        &:hover {
-          background: var(--primary-100);
-          color: var(--primary-600);
-          border-radius: var(--size-8px);
-        }
-        &.active {
-          background: var(--primary-100);
-          color: var(--primary-600);
-          border-radius: var(--size-8px);
-          font-weight: 500;
-        }
-
-        .links_name {
-          width: 100%;
-          margin-left: var(--size-12px);
-        }
-
-        i {
-          font-size: var(--size-20px);
-        }
-
-        .caret {
-          margin-left: auto; // Pushes caret icon to the right
-          transition: transform 0.3s ease;
-        }
-
-        // .badge {
-        //   min-width: var(--size-48px);
-        // }
-      }
-
-      // Submenu Styles
-      .submenu {
-        list-style: none;
-        padding-left: var(--size-24px);
-        transition: all 0.3s ease;
-        max-height: 300px !important;
-        overflow-y: auto !important;
-
-        li {
-          a {
-            font-size: var(--size-14px);
-            padding: var(--size-8px);
-            display: flex;
-            align-items: center;
-            color: var(--neutral-700);
-            justify-content: space-between;
-            border-radius: var(--size-6);
-
-            &:hover {
-              background: var(--primary-100);
-              color: var(--primary-600);
-              border-radius: var(--size-8px);
-            }
-            &.active {
-              background: var(--primary-100);
-              color: var(--primary-600);
-              border-radius: var(--size-8px);
-              font-weight: 500;
-            }
-          }
-        }
-      }
-
-      // Caret Icon Rotation on Expand
-      &.expanded {
-        .caret {
-          // transform: rotate(90deg);
-        }
+      padding: var(--size-12px) !important;
+      
+      img {
+        height: auto !important;
       }
     }
+    
+    .sidebar-content {
+      flex-grow: 1;
+      overflow-y: auto;
+      border-right: 1px solid var(--neutral-200) !important;
+    }
   }
+}
 
-  // Footer Sticks to Bottom
-  .sidenav-footer {
-    padding: var(--size-10px);
-    font-size: var(--size-12px);
+// Global layout adjustments for modern sidebar
+body:has(.modern-sidebar:not(.collapsed)) .dashboard-content {
+  margin-left: 280px;
+}
+
+body:has(.modern-sidebar.collapsed) .dashboard-content {
+  margin-left: 72px;
+}
+
+@media (max-width: 768px) {
+  body .dashboard-content {
+    margin-left: 0 !important;
   }
 }

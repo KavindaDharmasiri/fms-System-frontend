@@ -41,4 +41,9 @@ export class HeaderComponent {
     }
     return 'User';
   }
+
+  getUserInitials(): string {
+    const name = this.getUserName();
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().slice(0, 2);
+  }
 }

@@ -1,11 +1,9 @@
-<div class="container-fluid p-0">
-  <div class="contents">
-    <app-sidebar />
-    <div class="dashboard-main-div ">
-      <div class="bg-neutral-50 h-100vh">
-        <app-header />
-        <router-outlet />
-      </div>
-    </div>
+<div class="modern-dashboard">
+  <app-sidebar />
+  <div class="dashboard-content">
+    <app-header />
+    <main class="main-content">
+      <router-outlet />
+    </main>
   </div>
 </div>

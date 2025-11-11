@@ -59,7 +59,7 @@
         <div class="row no-left-padding">
           <div class="col-auto">
             <select #selectRef multiple>
-              <option *ngFor="let rule of allRules" [value]="rule.efmsRuleId" [defaultSelected]="isRuleSelected(rule.efmsRuleId)">
+              <option *ngFor="let rule of allRules" [value]="rule.fmsRuleId" [defaultSelected]="isRuleSelected(rule.fmsRuleId)">
                 {{ rule.ruleName }}
               </option>
             </select>

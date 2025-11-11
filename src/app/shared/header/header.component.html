@@ -1,56 +1,89 @@
-<header class="border-bottom nav-bar">
-  <div class="container-fluid px-3">
-    <div class="d-flex justify-content-between align-items-center main-header">
-      <div class="d-flex align-items-center">
-        <!-- <i class="ph ph-user-circle-gear fs-4 me-2"></i> -->
-        <span class="fw-bold font-18px">{{ pageTitle }}</span>
+<header class="modern-header">
+  <div class="header-container">
+    <div class="header-content">
+      <div class="header-left">
+        <div class="page-title-section">
+          <span class="page-title">{{ pageTitle }}</span>
+          <div class="breadcrumb-indicator"></div>
+        </div>
       </div>
 
-      <div class="d-flex align-items-center gap-3">
-        <!-- Notification Bell -->
-        <div
-          class="d-flex justify-content-between align-items-center gap-1 header-icon"
-          data-bs-toggle="offcanvas"
-          data-bs-target="#notificationPanel"
-        >
-          <i class="ph ph-bell-simple header-icon"></i>
-          <span class="badge rounded-pill text-bg-danger badge-sm">12</span>
+      <div class="header-right">
+        <!-- Search Bar -->
+        <div class="search-container">
+          <div class="search-input-wrapper">
+            <i class="ph ph-magnifying-glass search-icon"></i>
+            <input type="text" class="search-input" placeholder="Search transactions..." />
+          </div>
         </div>
 
-        <!-- User Profile Dropdown -->
-        <div class="dropdown userDropdown">
-          <div
-            class="d-flex align-items-center gap-2 dropdown-toggle"
-            id="userDropdown"
-            role="button"
-            data-bs-toggle="dropdown"
-            aria-expanded="false"
-          >
-            <!-- User Info -->
-            <div class="d-flex flex-column me-2">
-              <span class="fw-medium font-14px">{{ getUserName() }}</span>
-              <span class="text-muted font-12px">Administrator</span>
-            </div>
+        <!-- Quick Actions -->
+        <div class="quick-actions">
+          <button class="action-btn" title="Refresh">
+            <i class="ph ph-arrow-clockwise"></i>
+          </button>
+          <button class="action-btn" title="Settings">
+            <i class="ph ph-gear"></i>
+          </button>
+        </div>
 
-            <!-- Dropdown Arrow -->
-            <i class="ph ph-caret-down"></i>
+        <!-- Notifications -->
+        <div class="notification-wrapper" data-bs-toggle="offcanvas" data-bs-target="#notificationPanel">
+          <button class="notification-btn">
+            <i class="ph ph-bell"></i>
+            <span class="notification-badge">3</span>
+          </button>
+        </div>
+
+        <!-- User Profile -->
+        <div class="user-profile dropdown">
+          <div class="profile-trigger" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="avatar">
+              <span class="avatar-text">{{ getUserInitials() }}</span>
+            </div>
+            <div class="user-info">
+              <span class="user-name">{{ getUserName() }}</span>
+              <span class="user-role">Administrator</span>
+            </div>
+            <i class="ph ph-caret-down dropdown-arrow"></i>
           </div>
 
-          <!-- Dropdown Menu -->
-          <ul
-            class="dropdown-menu dropdown-menu-end shadow-sm"
-            aria-labelledby="userDropdown"
-          >
+          <ul class="dropdown-menu profile-menu" aria-labelledby="userDropdown">
+            <li class="menu-header">
+              <div class="user-details">
+                <div class="avatar-large">
+                  <span class="avatar-text">{{ getUserInitials() }}</span>
+                </div>
+                <div>
+                  <div class="user-name-large">{{ getUserName() }}</div>
+                  <div class="user-email">admin&#64;fms.com</div>
+                </div>
+              </div>
+            </li>
+            <li><hr class="dropdown-divider"></li>
             <li>
-              <a class="dropdown-item d-flex align-items-center gap-2" href="#">
-                <i class="ph ph-gear"></i>
-                Settings
+              <a class="dropdown-item menu-item" href="#">
+                <i class="ph ph-user"></i>
+                <span>Profile</span>
               </a>
             </li>
             <li>
-              <a class="dropdown-item d-flex align-items-center gap-2" href="#">
+              <a class="dropdown-item menu-item" href="#">
+                <i class="ph ph-gear"></i>
+                <span>Settings</span>
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item menu-item" href="#">
+                <i class="ph ph-question"></i>
+                <span>Help & Support</span>
+              </a>
+            </li>
+            <li><hr class="dropdown-divider"></li>
+            <li>
+              <a class="dropdown-item menu-item danger" href="#">
                 <i class="ph ph-sign-out"></i>
-                Sign Out
+                <span>Sign Out</span>
               </a>
             </li>
           </ul>
@@ -60,49 +93,65 @@
   </div>
 </header>
 
-<!-- Notification Offcanvas -->
-<div class="offcanvas offcanvas-end" tabindex="-1" id="notificationPanel">
-  <div class="offcanvas-header notification-header">
-    <div class="d-flex align-items-center gap-2">
-      <span class="offcanvas-title font-18px fw-semibold">Notifications</span>
-      <span class="badge badge-primary badge-outline badge-sm">10</span>
+<!-- Modern Notification Panel -->
+<div class="offcanvas offcanvas-end modern-notifications" tabindex="-1" id="notificationPanel">
+  <div class="offcanvas-header">
+    <div class="notification-header">
+      <h5 class="offcanvas-title">Notifications</h5>
+      <span class="notification-count">3</span>
     </div>
-
-    <button
-      type="button"
-      class="btn-close"
-      data-bs-dismiss="offcanvas"
-    ></button>
+    <button type="button" class="btn-close-modern" data-bs-dismiss="offcanvas" aria-label="Close">
+      <i class="ph ph-x"></i>
+    </button>
   </div>
-  <div class="offcanvas-body p-0">
-    <!-- Notification Item 1 -->
-    <div class="notification-item">
-      <div class="d-flex flex-column">
-        <div class="d-flex align-items-center">
-          <span class="font-14px fw-semibold me-2"
-            >New applicant registration</span
-          >
-          <span class="badge badge-info badge-outline badge-sm">Success</span>
+  
+  <div class="notification-filters">
+    <button class="filter-btn active">All</button>
+    <button class="filter-btn">Alerts</button>
+    <button class="filter-btn">System</button>
+  </div>
+
+  <div class="offcanvas-body">
+    <div class="notification-list">
+      <div class="notification-item high-priority">
+        <div class="notification-icon danger">
+          <i class="ph ph-warning"></i>
         </div>
-        <span class="notification-time text-neutral-400 font-12px"
-          >2 hours ago</span
-        >
+        <div class="notification-content">
+          <div class="notification-title">High Risk Transaction Detected</div>
+          <div class="notification-message">Transaction #TXN-2024-001 flagged for manual review</div>
+          <div class="notification-time">2 minutes ago</div>
+        </div>
+        <button class="notification-action">
+          <i class="ph ph-arrow-right"></i>
+        </button>
+      </div>
+
+      <div class="notification-item">
+        <div class="notification-icon success">
+          <i class="ph ph-check-circle"></i>
+        </div>
+        <div class="notification-content">
+          <div class="notification-title">Rule Update Successful</div>
+          <div class="notification-message">Fraud detection rule 'Velocity Check' has been updated</div>
+          <div class="notification-time">15 minutes ago</div>
+        </div>
+      </div>
+
+      <div class="notification-item">
+        <div class="notification-icon info">
+          <i class="ph ph-info"></i>
+        </div>
+        <div class="notification-content">
+          <div class="notification-title">System Maintenance</div>
+          <div class="notification-message">Scheduled maintenance window: Tonight 2:00 AM - 4:00 AM</div>
+          <div class="notification-time">1 hour ago</div>
+        </div>
       </div>
     </div>
-
-    <!-- Notification Item 2 -->
-    <div class="notification-item">
-      <div class="d-flex flex-column">
-        <div class="d-flex align-items-center">
-          <span class="font-14px fw-semibold me-2"
-            >New applicant registration</span
-          >
-          <span class="badge bg-red badge-outline badge-sm">Failed</span>
-        </div>
-        <span class="notification-time text-neutral-400 font-12px"
-          >3 hours ago</span
-        >
-      </div>
+    
+    <div class="notification-footer">
+      <button class="btn-view-all">View All Notifications</button>
     </div>
   </div>
 </div>

@@ -167,10 +167,10 @@ export class NewRuleGroupComponent implements OnInit {
     selectEl.innerHTML = '';
     for (const rule of this.allRules) {
       const option = document.createElement('option');
-      option.value = rule.efmsRuleId!.toString();
+      option.value = rule.fmsRuleId!.toString();
       option.text = rule.ruleName!;
 
-      if (this.tempRuleGroupRuleMap.get(rule.efmsRuleId!)) {
+      if (this.tempRuleGroupRuleMap.get(rule.fmsRuleId!)) {
         option.setAttribute('selected', 'selected');
         // console.log( option)
       }
@@ -240,7 +240,7 @@ export class NewRuleGroupComponent implements OnInit {
     const selectedOptionIds = selectedOptions.map((option: any) => Number.parseInt(option.value));
     // this.ruleGroupRuleCollection = selectedOptions.map((option: any) => option.value);
     this.ruleGroupRuleCollection = this.allRules.filter(rule =>
-      rule.efmsRuleId && selectedOptionIds.includes(rule.efmsRuleId));
+      rule.fmsRuleId && selectedOptionIds.includes(rule.fmsRuleId));
   }
 
   getRoleValues(){

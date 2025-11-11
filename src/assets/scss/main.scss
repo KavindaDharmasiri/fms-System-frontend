@@ -1,17 +1,20 @@
 .dashboard-main-div {
-  background-color: var(--main-div-bg-color);
-  border-radius: var(--br-24);
+  background: linear-gradient(135deg, var(--body-bg-color) 0%, #f1f5f9 100%);
   margin: 0 !important;
   max-width: 100%;
   height: 100%;
   position: relative;
-  background: var(--base-0);
   min-height: 100vh;
   top: 0;
-  left: 250px;
-  width: calc(100% - 250px);
-  transition: all 0.5s ease;
+  left: 280px;
+  width: calc(100% - 280px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   z-index: 2;
+
+  &.sidebar-collapsed {
+    left: 72px;
+    width: calc(100% - 72px);
+  }
 }
 
 /* Custom scrollbar for WebKit browsers (Chrome, Safari, Edge) */
@@ -59,23 +62,45 @@
   gap: var(--size-16px);
 }
 .sub-container {
-  padding: 24px;
+  padding: var(--size-24px);
   display: flex;
   flex-direction: column;
   background: var(--card-bg-color);
-  gap: 16px !important;
-  border-radius: 16px !important;
+  gap: var(--size-16px) !important;
+  border-radius: var(--br-16px) !important;
   box-shadow: var(--card-shadow);
-  border: none;
-  transition: box-shadow 0.2s ease;
+  border: 1px solid var(--neutral-200);
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: var(--gradient-primary);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
 
   &:hover {
     box-shadow: var(--card-hover-shadow);
+    transform: translateY(-2px);
+    border-color: var(--primary-200);
+
+    &::before {
+      opacity: 1;
+    }
   }
 
   hr {
-    margin: var(--size-8px) var(--size-0) !important;
-    border-color: var(--neutral-200);
+    margin: var(--size-16px) 0 !important;
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--neutral-200), transparent);
   }
 }
 .search-container {

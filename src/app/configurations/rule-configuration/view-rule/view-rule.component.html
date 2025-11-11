@@ -36,10 +36,10 @@
         </div>
         <div class="col d-flex justify-content-end align-items-end gap-3">
           <div><b>Created Date and Time </b><span>{{
-              efmsRule.efmsRuleConditionCollection?.[0]?.createdAt
+              efmsRule.fmsRuleConditionCollection?.[0]?.createdAt
                 | date: 'medium'
             }}</span></div>
-          <div><b>Last Modified Date and Time </b><span>{{efmsRule.efmsRuleConditionCollection?.[0]?.updatedAt
+          <div><b>Last Modified Date and Time </b><span>{{efmsRule.fmsRuleConditionCollection?.[0]?.updatedAt
             | date: 'medium'}}</span></div>
         </div>
       </div>
@@ -206,8 +206,8 @@
 
 <!--        </div>-->
 
-          <div class="mat-table" *ngIf="efmsRule?.efmsRuleConditionCollection">
-            <table mat-table [dataSource]="efmsRule.efmsRuleConditionCollection || []" class="mat-elevation-z8">
+          <div class="mat-table" *ngIf="efmsRule?.fmsRuleConditionCollection">
+            <table mat-table [dataSource]="efmsRule.fmsRuleConditionCollection || []" class="mat-elevation-z8">
 
               <!-- Field Column -->
               <ng-container matColumnDef="efmsElementId">

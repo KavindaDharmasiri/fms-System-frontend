@@ -1,27 +1,54 @@
-<aside id="sidebar" class="sidebar bg-white">
-  <div class="sidebar-content">
-    <div class="logo-details">
-      <img src="../../../assets/img/logo.svg" class="img-fluid h-20 w-40" alt="Logo" />
+<aside id="sidebar" class="modern-sidebar" [class.collapsed]="isClosed">
+  <div class="sidebar-header">
+    <div class="logo-container">
+      <img src="../../../assets/img/logo.svg" class="logo" alt="Logo" />
+      <span class="logo-text" *ngIf="!isClosed">FMS</span>
     </div>
-    <!-- <hr /> -->
-    <ul class="nav-list">
-      <li *ngFor="let item of menuItems" [class.expanded]="item.expanded">
-        <a [routerLink]="item.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }"
-          (click)="toggleSubmenu(item, $event)">
-          <i [class]="item.icon"></i> <!-- Replace this with Svg -->
-          <span class="links_name">{{ item.label }}</span>
-          <!-- Show caret only if submenu exists -->
-          <i *ngIf="item.submenu" class="ph caret" [ngClass]="item.expanded ? 'ph-caret-down' : 'ph-caret-right'"></i>
-          <span *ngIf="item.badge" class="badge badge-info badge-outline">{{ item.badge }}</span>
-        </a>
-        <ul *ngIf="item.submenu && item.expanded" class="submenu">
-          <li *ngFor="let sub of item.submenu">
-            <a [routerLink]="sub.route" routerLinkActive="active" [routerLinkActiveOptions]="{ exact: true }">
-              <span>{{ sub.label }}</span>
-            </a>
-          </li>
-        </ul>
-      </li>
-    </ul>
+
+  </div>
+
+  <div class="sidebar-content">
+    <nav class="nav-menu">
+      <ul class="nav-list">
+        <li *ngFor="let item of menuItems" class="nav-item" [class.expanded]="item.expanded" [class.has-submenu]="item.submenu">
+          <a class="nav-link" 
+             [routerLink]="item.route" 
+             routerLinkActive="active" 
+             [routerLinkActiveOptions]="{ exact: true }"
+             (click)="toggleSubmenu(item, $event)"
+             [attr.title]="isClosed ? item.label : null">
+            <div class="nav-icon">
+              <i [class]="item.icon"></i>
+            </div>
+            <span class="nav-text" *ngIf="!isClosed">{{ item.label }}</span>
+            <div class="nav-extras" *ngIf="!isClosed">
+              <span *ngIf="item.badge" class="nav-badge">{{ item.badge }}</span>
+              <i *ngIf="item.submenu" class="nav-caret ph" [ngClass]="item.expanded ? 'ph-caret-down' : 'ph-caret-right'"></i>
+            </div>
+          </a>
+          
+          <div class="submenu-wrapper" *ngIf="item.submenu" [class.expanded]="item.expanded">
+            <ul class="submenu">
+              <li *ngFor="let sub of item.submenu" class="submenu-item">
+                <a class="submenu-link" 
+                   [routerLink]="sub.route" 
+                   routerLinkActive="active" 
+                   [routerLinkActiveOptions]="{ exact: true }"
+                   [attr.title]="isClosed ? sub.label : null">
+                  <div class="submenu-indicator"></div>
+                  <span class="submenu-text">{{ sub.label }}</span>
+                </a>
+              </li>
+            </ul>
+          </div>
+        </li>
+      </ul>
+    </nav>
+  </div>
+
+  <div class="sidebar-footer" *ngIf="!isClosed">
+    <div class="footer-content">
+      <span class="copyright">© {{ currentYear }} FMS</span>
+    </div>
   </div>
 </aside>

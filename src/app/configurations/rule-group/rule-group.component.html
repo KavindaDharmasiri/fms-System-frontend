@@ -69,7 +69,7 @@
             <mat-form-field appearance="outline" class="w-100 input-sm">
               <mat-select formControlName="ruleGroupRuleId" placeholder="All">
                 <mat-option [value]="null">All</mat-option>
-                <mat-option *ngFor="let rule of allRules" [value]="rule.efmsRuleId">
+                <mat-option *ngFor="let rule of allRules" [value]="rule.fmsRuleId">
                   {{ rule.ruleName }}
                 </mat-option>
               </mat-select>

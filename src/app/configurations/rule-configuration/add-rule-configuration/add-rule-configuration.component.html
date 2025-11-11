@@ -51,7 +51,7 @@
 <!--        <div class="col-md-3">-->
 <!--          <mat-label>Rule ID</mat-label>-->
 <!--          <mat-form-field appearance="outline" class="w-100">-->
-            <input type="text" [value]="efmsRule.efmsRuleId" matInput  disabled class="visually-hidden" />
+            <input type="text" [value]="efmsRule.fmsRuleId" matInput  disabled class="visually-hidden" />
 <!--          </mat-form-field>-->
 <!--        </div>-->
         <div class="col-md-3">
@@ -126,9 +126,9 @@
           <div class="col-md-3">
             <mat-label>Element</mat-label>
             <mat-form-field appearance="outline" class="w-100 input-sm">
-              <mat-select  formControlName="efmsElementId" placeholder="Select" >
-                <div *ngFor="let option of efmsElements">
-                  <mat-option (click)="getElementData()" value="{{option.efmsElementId}}" [value]="option.efmsElementId">{{option.elementName}}</mat-option>
+              <mat-select  formControlName="fmsElementId" placeholder="Select" >
+                <div *ngFor="let option of fmsElements">
+                  <mat-option (click)="getElementData()" value="{{option.fmsElementId}}" [value]="option.fmsElementId">{{option.elementName}}</mat-option>
                 </div>
               </mat-select>
             </mat-form-field>
@@ -236,10 +236,10 @@
 
         <div class="mat-table">
           <table mat-table [dataSource]="dataSource">
-            <ng-container matColumnDef="efmsElementId">
+            <ng-container matColumnDef="fmsElementId">
               <th mat-header-cell *matHeaderCellDef>Field</th>
               <td mat-cell *matCellDef="let element">
-                {{ element.efmsElementId }}</td>
+                {{ element.fmsElementId }}</td>
             </ng-container>
             <ng-container matColumnDef="operator">
               <th mat-header-cell *matHeaderCellDef>Operators</th>

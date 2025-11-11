@@ -98,7 +98,7 @@ export class ViewRuleComponent implements OnInit{
 
 
   get conditionDataSource(): EfmsRuleConditionDTO[] {
-    return this.efmsRule?.efmsRuleConditionCollection || [];
+    return this.efmsRule?.fmsRuleConditionCollection || [];
   }
 
 

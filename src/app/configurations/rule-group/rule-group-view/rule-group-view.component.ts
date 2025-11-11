@@ -63,7 +63,7 @@ export class RuleGroupViewComponent implements OnInit {
         this.ruleGroup = res.data;
 
         console.log(
-          this.ruleGroup?.ruleGroupRuleCollection?.[0]?.efmsRule?.efmsRuleConditionCollection?.[0].efmsElementOperator);
+          this.ruleGroup?.ruleGroupRuleCollection?.[0]?.efmsRule?.fmsRuleConditionCollection?.[0].efmsElementOperator);
          // this.efmsRuleConditionCollection= this.ruleGroup?.ruleGroupRuleCollection?.efmsRule?.efmsRuleConditionCollection?.[0]
         // this.efmsElementOperator=this.ruleGroup?.ruleGroupRuleCollection?.[0]?.efmsRule?.efmsRuleConditionCollection?.[0].efmsElementOperator
         // console.log(this.efmsElementOperator)

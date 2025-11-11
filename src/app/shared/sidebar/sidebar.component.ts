@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, HostListener } from '@angular/core';
 import { Router, NavigationEnd } from '@angular/router';
 
 @Component({
@@ -33,7 +33,7 @@ export class SidebarComponent {
       icon: 'ph ph-warning-circle',
       submenu: [
         { label: 'Payment Network', route: '/configurations/payment-network' },
-        { label: 'Dual Authentication', route: '/configurations/dual-auth' },
+        // { label: 'Dual Authentication', route: '/configurations/dual-auth' },
         { label: 'Reaction Templates', route: '/configurations/reaction-templates' },
         { label: 'Transaction Element ', route: '/configurations/transaction-element' },
         { label: 'Rule', route: '/configurations/rule-configuration' },
@@ -102,6 +102,13 @@ export class SidebarComponent {
 
   toggleSidebar() {
     this.isClosed = !this.isClosed;
+  }
+
+  @HostListener('window:resize', ['$event'])
+  onResize(event: any) {
+    if (event.target.innerWidth <= 768) {
+      this.isClosed = true;
+    }
   }
 
 
