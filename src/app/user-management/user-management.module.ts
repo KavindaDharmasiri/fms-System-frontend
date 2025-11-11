@@ -31,6 +31,10 @@ import { SystemUserComponent } from './system-user-management/system-user/system
 import {MatDatepicker, MatDatepickerInput} from "@angular/material/datepicker";
 import {MatTree, MatTreeNode, MatTreeNodeDef, MatTreeNodePadding} from "@angular/material/tree";
 import {HttpClientModule} from "@angular/common/http";
+import {MatButtonModule} from "@angular/material/button";
+import {MatIconModule} from "@angular/material/icon";
+import {MatCardModule} from "@angular/material/card";
+import { AuditManagementComponent } from './audit-management/audit-management.component';
 
 
 @NgModule({
@@ -43,6 +47,7 @@ import {HttpClientModule} from "@angular/common/http";
     MatModalViewUserRoleComponent,
     AddPrivilegeComponent,
     SystemUserComponent,
+    AuditManagementComponent,
   ],
     imports: [
         CommonModule,
@@ -77,6 +82,10 @@ import {HttpClientModule} from "@angular/common/http";
         MatTreeNode,
         MatTreeNodeDef,
         MatTreeNodePadding,
+        MatButtonModule,
+        MatIconModule,
+        MatCardModule,
+        HttpClientModule,
     ]
 })
 export class UserManagementModule { }

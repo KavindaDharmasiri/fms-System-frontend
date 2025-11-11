@@ -5,6 +5,7 @@ import { DashboardComponent } from '../dashboard/dashboard.component';
 import { UserRoleComponent } from './user-role-management/user-role/user-role.component';
 import { AddSystemUsersComponent } from './system-user-management/add-system-users/add-system-users.component';
 import {SystemUserComponent} from "./system-user-management/system-user/system-user.component";
+import { AuditManagementComponent } from './audit-management/audit-management.component';
 
 
 const routes: Routes = [
@@ -36,6 +37,14 @@ const routes: Routes = [
         component: AddSystemUsersComponent,
       },
       // system user management route ends //
+
+      // audit management route //
+      {
+        path: 'audit-logs',
+        component: AuditManagementComponent,
+        data: { title: 'Audit Management' }
+      },
+      // audit management route ends //
 
       // privilege management route //
       // {

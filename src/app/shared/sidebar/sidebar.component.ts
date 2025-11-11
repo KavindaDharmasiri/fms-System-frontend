@@ -24,7 +24,7 @@ export class SidebarComponent {
         { label: 'User Role', route: '/user-management/user-role' },
         { label: 'System Users', route: '/user-management/system-users' },
         { label: 'Privilege Management', route: '/user-management/user-privileges' },
-
+        { label: 'Audit Logs', route: '/user-management/audit-logs' },
       ],
       expanded: false
     },

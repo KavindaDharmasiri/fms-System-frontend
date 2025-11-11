@@ -1,10 +1,18 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
+import { AuditTrackerService } from './shared/services/audit-tracker.service';
 
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
-  styleUrl: './app.component.scss'
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent {
-  title = 'uiux-template';
+export class AppComponent implements OnInit {
+  title = 'fraud-system';
+
+  constructor(private auditTracker: AuditTrackerService) {}
+
+  ngOnInit(): void {
+    console.log('App component initialized with audit tracker');
+    // Initialize audit tracking globally
+  }
 }

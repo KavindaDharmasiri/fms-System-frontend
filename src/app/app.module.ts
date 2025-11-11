@@ -50,6 +50,7 @@ import {DatePipe} from "@angular/common";
 import {BrowserAnimationsModule} from "@angular/platform-browser/animations";
 import { RegisterComponent } from './public/register/register.component';
 
+
 // import { HeaderComponent } from './shared/header/header.component';
 
 @NgModule({

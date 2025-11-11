@@ -6,6 +6,7 @@ import { TypographyComponent } from './typography/typography.component';
 import { IconsComponent } from './icons/icons.component';
 import { LoginComponent } from './public/login/login.component';
 import { RegisterComponent } from './public/register/register.component';
+
 import { Error404Component } from './shared/error_pages/error-404/error-404.component';
 import { Error400Component } from './shared/error_pages/error-400/error-400.component';
 import { Error401Component } from './shared/error_pages/error-401/error-401.component';
@@ -24,6 +25,7 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent, pathMatch: 'full' },
   { path: 'register', component: RegisterComponent, pathMatch: 'full' },
   { path: 'forget-password', component: ForgetPasswordComponent, pathMatch: 'full' },
+
 
   // { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
   {

@@ -8,6 +8,8 @@ import {AuthService} from "../service/auth.service";
 import {catchError} from "rxjs/operators";
 import {throwError} from "rxjs";
 import {Constant} from "../../util/constant";
+import {AuditTrackerService} from "../../shared/services/audit-tracker.service";
+import {AuditService} from "../../shared/services/audit.service";
 
 @Component({
   selector: 'app-login',
@@ -17,7 +19,7 @@ import {Constant} from "../../util/constant";
 export class LoginComponent {
   email:string='';
   password:string='';
-  constructor(public authService:AuthService,public dialog: MatDialog,private router:Router) { }
+  constructor(public authService:AuthService,public dialog: MatDialog,private router:Router, private auditTracker: AuditTrackerService, private auditService: AuditService) { }
 
   openDialog() {
     this.dialog.open(ForgetPasswordComponent);
@@ -44,6 +46,13 @@ export class LoginComponent {
         (response:any)=>{
           console.log(response);
           sessionStorage.setItem(Constant.ACCESS_TOKEN,response.token);
+          
+          // Set current user for audit tracking
+          this.auditTracker.setCurrentUser(this.email);
+          
+          // Test audit logging
+          this.auditService.logUserAction('LOGIN_SUCCESS', 'USER', this.email, {loginTime: new Date()});
+          
           setTimeout(() => {
             this.getUserDetails();
           }, 100);
