@@ -33,16 +33,13 @@
 }
 
 // Global layout adjustments for modern sidebar
-body:has(.modern-sidebar:not(.collapsed)) .dashboard-content {
+.dashboard-content {
   margin-left: 280px;
-}
-
-body:has(.modern-sidebar.collapsed) .dashboard-content {
-  margin-left: 72px;
+  transition: margin-left 0.3s ease;
 }
 
 @media (max-width: 768px) {
-  body .dashboard-content {
+  .dashboard-content {
     margin-left: 0 !important;
   }
 }

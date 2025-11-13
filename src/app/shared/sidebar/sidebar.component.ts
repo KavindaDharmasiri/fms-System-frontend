@@ -60,6 +60,11 @@ export class SidebarComponent {
       icon: 'ph ph-shield-check',
       route: '/validate-transaction'
     },
+    {
+      label: 'System Monitoring',
+      icon: 'ph ph-monitor',
+      route: '/monitoring'
+    },
     /*{
       label: 'Components',
       icon: 'ph ph-gear',

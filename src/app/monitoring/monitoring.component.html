@@ -1,0 +1,133 @@
+<div class="container-fluid p-4">
+  <div class="row mb-4">
+    <div class="col-12">
+      <h2 class="text-gray-800 font-bold text-2xl">System Monitoring</h2>
+      <p class="text-gray-600">Real-time system health and performance metrics</p>
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="text-center">
+    <div class="spinner-border" role="status">
+      <span class="visually-hidden">Loading...</span>
+    </div>
+  </div>
+
+  <div *ngIf="!loading">
+    <!-- Health Status Cards -->
+    <div class="row mb-4">
+      <div class="col-md-3">
+        <div class="card bg-white shadow">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="flex-grow-1">
+                <h6 class="card-title mb-1">Overall Status</h6>
+                <h4 [class]="getHealthStatusClass(healthStatus.status)">
+                  <i [class]="getHealthIcon(healthStatus.status)"></i>
+                  {{ healthStatus.status }}
+                </h4>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="col-md-3" *ngFor="let component of healthStatus.components | keyvalue">
+        <div class="card bg-white shadow">
+          <div class="card-body">
+            <div class="d-flex align-items-center">
+              <div class="flex-grow-1">
+                <h6 class="card-title mb-1">{{ component.key }}</h6>
+                <h5 [class]="getHealthStatusClass(getComponentValue(component).status)">
+                  <i [class]="getHealthIcon(getComponentValue(component).status)"></i>
+                  {{ getComponentValue(component).status }}
+                </h5>
+                <small class="text-muted" *ngIf="getComponentValue(component).details">
+                  {{ getComponentValue(component).details | json }}
+                </small>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Metrics Section -->
+    <div class="row">
+      <div class="col-12">
+        <div class="card bg-white shadow">
+          <div class="card-header">
+            <h5 class="mb-0">Application Metrics</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-6">
+                <h6>Available Metrics</h6>
+                <div class="list-group list-group-flush">
+                  <div class="list-group-item d-flex justify-content-between" 
+                       *ngFor="let metric of metrics.names?.slice(0, 10)">
+                    <span>{{ metric }}</span>
+                    <button class="btn btn-sm btn-outline-primary" 
+                            (click)="loadMetricDetails(metric)">
+                      View
+                    </button>
+                  </div>
+                </div>
+              </div>
+              <div class="col-md-6">
+                <h6>Quick Links</h6>
+                <div class="d-grid gap-2">
+                  <a href="/fms-core-service/actuator/prometheus" 
+                     target="_blank" 
+                     class="btn btn-outline-info">
+                    <i class="fas fa-chart-line"></i> Prometheus Metrics
+                  </a>
+                  <a href="/fms-core-service/actuator/loggers" 
+                     target="_blank" 
+                     class="btn btn-outline-warning">
+                    <i class="fas fa-file-alt"></i> Log Levels
+                  </a>
+                  <a href="/fms-core-service/actuator/env" 
+                     target="_blank" 
+                     class="btn btn-outline-success">
+                    <i class="fas fa-cog"></i> Environment
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- System Information -->
+    <div class="row mt-4">
+      <div class="col-12">
+        <div class="card bg-white shadow">
+          <div class="card-header">
+            <h5 class="mb-0">System Information</h5>
+          </div>
+          <div class="card-body">
+            <div class="row">
+              <div class="col-md-4">
+                <strong>Application:</strong> FMS Core Service<br>
+                <strong>Version:</strong> 1.0.0<br>
+                <strong>Java Version:</strong> 17
+              </div>
+              <div class="col-md-4">
+                <strong>Spring Boot:</strong> 3.x<br>
+                <strong>Profile:</strong> {{ healthStatus.groups || 'default' }}<br>
+                <strong>Last Updated:</strong> {{ currentDate | date:'medium' }}
+              </div>
+              <div class="col-md-4">
+                <div class="alert alert-info">
+                  <i class="fas fa-info-circle"></i>
+                  Monitoring data refreshes every 30 seconds
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

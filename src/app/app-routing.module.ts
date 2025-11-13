@@ -25,6 +25,11 @@ const routes: Routes = [
   { path: 'login', component: LoginComponent, pathMatch: 'full' },
   { path: 'register', component: RegisterComponent, pathMatch: 'full' },
   { path: 'forget-password', component: ForgetPasswordComponent, pathMatch: 'full' },
+  {
+    path: 'monitoring',
+    component: DashboardComponent,
+    children: [{ path: '', loadChildren: () => import('./monitoring/monitoring.module').then(m => m.MonitoringModule) }]
+  },
 
 
   // { path: '', redirectTo: 'dashboard', pathMatch: 'full' },
