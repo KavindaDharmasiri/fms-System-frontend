@@ -24,6 +24,7 @@ export class HighRiskTransactionViewComponent implements OnInit{
   ];
 
   groupedRules: { [key: string]: any[] } = {};
+  expandedGroups: { [key: number]: boolean } = {};
 
   ngOnInit(): void {
     this.loadData();
@@ -53,5 +54,13 @@ export class HighRiskTransactionViewComponent implements OnInit{
   getGroupNameString(): string {
     const uniqueGroups = Array.from(new Set(this.rules.map(r => r.ruleGroup)));
     return uniqueGroups.join(' | ');
+  }
+
+  trackByRuleName(index: number, rule: any): any {
+    return rule.ruleName || index;
+  }
+
+  toggleGroup(index: number): void {
+    this.expandedGroups[index] = !this.expandedGroups[index];
   }
 }
