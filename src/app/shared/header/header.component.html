@@ -31,7 +31,7 @@
         <div class="notification-wrapper" data-bs-toggle="offcanvas" data-bs-target="#notificationPanel">
           <button class="notification-btn">
             <i class="ph ph-bell"></i>
-            <span class="notification-badge">3</span>
+            <span class="notification-badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
           </button>
         </div>
 
@@ -98,7 +98,7 @@
   <div class="offcanvas-header">
     <div class="notification-header">
       <h5 class="offcanvas-title">Notifications</h5>
-      <span class="notification-count">3</span>
+      <span class="notification-count">{{ notifications.length }}</span>
     </div>
     <button type="button" class="btn-close-modern" data-bs-dismiss="offcanvas" aria-label="Close">
       <i class="ph ph-x"></i>
@@ -113,40 +113,34 @@
 
   <div class="offcanvas-body">
     <div class="notification-list">
-      <div class="notification-item high-priority">
-        <div class="notification-icon danger">
-          <i class="ph ph-warning"></i>
+      <div *ngFor="let notification of notifications" 
+           class="notification-item" 
+           [class.high-priority]="notification.type === 'FRAUD_ALERT'"
+           [class.unread]="notification.status === 'UNREAD'"
+           (click)="markAsRead(notification.id)"
+           style="cursor: pointer;">
+        <div class="notification-icon" 
+             [class.danger]="notification.type === 'FRAUD_ALERT'"
+             [class.info]="notification.type === 'INFO'"
+             [class.success]="notification.type === 'SYSTEM_ALERT'">
+          <i class="ph" 
+             [class.ph-warning]="notification.type === 'FRAUD_ALERT'"
+             [class.ph-info]="notification.type === 'INFO'"
+             [class.ph-check-circle]="notification.type === 'SYSTEM_ALERT'"></i>
         </div>
         <div class="notification-content">
-          <div class="notification-title">High Risk Transaction Detected</div>
-          <div class="notification-message">Transaction #TXN-2024-001 flagged for manual review</div>
-          <div class="notification-time">2 minutes ago</div>
+          <div class="notification-title">{{ notification.title }}</div>
+          <div class="notification-message">{{ notification.message }}</div>
+          <div class="notification-time">{{ notification.createdAt | date:'short' }}</div>
         </div>
-        <button class="notification-action">
-          <i class="ph ph-arrow-right"></i>
+        <button class="notification-action" *ngIf="notification.status === 'UNREAD'">
+          <i class="ph ph-circle" style="color: #3b82f6;"></i>
         </button>
       </div>
-
-      <div class="notification-item">
-        <div class="notification-icon success">
-          <i class="ph ph-check-circle"></i>
-        </div>
-        <div class="notification-content">
-          <div class="notification-title">Rule Update Successful</div>
-          <div class="notification-message">Fraud detection rule 'Velocity Check' has been updated</div>
-          <div class="notification-time">15 minutes ago</div>
-        </div>
-      </div>
-
-      <div class="notification-item">
-        <div class="notification-icon info">
-          <i class="ph ph-info"></i>
-        </div>
-        <div class="notification-content">
-          <div class="notification-title">System Maintenance</div>
-          <div class="notification-message">Scheduled maintenance window: Tonight 2:00 AM - 4:00 AM</div>
-          <div class="notification-time">1 hour ago</div>
-        </div>
+      
+      <div *ngIf="notifications.length === 0" class="no-notifications">
+        <i class="ph ph-bell-slash"></i>
+        <p>No notifications yet</p>
       </div>
     </div>
     

@@ -11,5 +11,12 @@
     "secure": false,
     "changeOrigin": true,
     "logLevel": "debug"
+  },
+
+  "/api/v1/notifications": {
+    "target": "http://localhost:8765",
+    "secure": false,
+    "changeOrigin": true,
+    "logLevel": "debug"
   }
 }

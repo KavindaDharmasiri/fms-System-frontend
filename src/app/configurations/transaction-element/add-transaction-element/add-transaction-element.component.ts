@@ -144,7 +144,8 @@ export class AddTransactionElementComponent implements OnInit {
     this.route.queryParams.subscribe(params => {
       this.elementId = params['id'];
       this.mode = params['mode']; // will be 'view' or undefined
-
+      console.log(this.elementId)
+      console.log(this.mode)
       if (this.elementId !== undefined) {
         // Edit or View mode
         this.getUpdatableDTO1(this.elementId);

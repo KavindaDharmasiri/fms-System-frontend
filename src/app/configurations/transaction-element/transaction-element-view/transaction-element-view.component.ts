@@ -179,6 +179,7 @@ export class TransactionElementViewComponent implements OnInit{
 
   routeToView(elementId: any) {
     // this.router.navigate(['/configurations/transaction-element/add-element']);
+    console.log('Viewing element with ID:', elementId);
     this.router.navigate([`/configurations/transaction-element/add-element`], { queryParams: { id: elementId ,mode: 'view' } });
 
   }

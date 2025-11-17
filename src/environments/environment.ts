@@ -79,7 +79,7 @@ export const environment = {
       LOAD_FIELD_CONFIGURATION_By_STATUS: `${BASE_URL + CORE_CONTEXT_URL + API_FIELD_CONFIGURATOR}/get-all-by-status`,
       SAVE_FIELD_CONFIGURATION: `${BASE_URL + CORE_CONTEXT_URL + API_FIELD_CONFIGURATOR}/save-configurator`,
       DELETE_FIELD_DEPENDENCIES: `${BASE_URL + CORE_CONTEXT_URL + API_FIELD_CONFIGURATOR}/delete-field-dependencies?depId=`,
-      DELETE_EFMS_ELEMENT: `${BASE_URL + CORE_CONTEXT_URL + API_FIELD_CONFIGURATOR}/delete-efms-element?elemntId=`,
+      DELETE_EFMS_ELEMENT: `${BASE_URL + CORE_CONTEXT_URL + API_FIELD_CONFIGURATOR}/delete-fms-element?elemntId=`,
     },
     RULE_GROUP: {
       SAVE: `${BASE_URL + CORE_CONTEXT_URL + API_RULE_GROUP}/add-rule-group`,
