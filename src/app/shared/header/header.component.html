@@ -113,12 +113,14 @@
 
   <div class="offcanvas-body">
     <div class="notification-list">
-      <div *ngFor="let notification of notifications" 
+      <div *ngFor="let notification of notifications; trackBy: trackNotification" 
            class="notification-item" 
            [class.high-priority]="notification.type === 'FRAUD_ALERT'"
            [class.unread]="notification.status === 'UNREAD'"
-           (click)="markAsRead(notification.id)"
-           style="cursor: pointer;">
+           [class.read]="notification.status === 'READ'"
+           [class.marking-read]="notification.markingRead"
+           (click)="onNotificationClick(notification)"
+           [attr.data-notification-id]="notification.id">
         <div class="notification-icon" 
              [class.danger]="notification.type === 'FRAUD_ALERT'"
              [class.info]="notification.type === 'INFO'"
@@ -131,16 +133,27 @@
         <div class="notification-content">
           <div class="notification-title">{{ notification.title }}</div>
           <div class="notification-message">{{ notification.message }}</div>
-          <div class="notification-time">{{ notification.createdAt | date:'short' }}</div>
+          <div class="notification-meta">
+            <span class="notification-time">{{ notification.createdAt | date:'short' }}</span>
+            <span class="notification-status" *ngIf="notification.status === 'UNREAD'">New</span>
+          </div>
         </div>
-        <button class="notification-action" *ngIf="notification.status === 'UNREAD'">
-          <i class="ph ph-circle" style="color: #3b82f6;"></i>
-        </button>
+        <div class="notification-actions">
+          <div class="read-indicator" 
+               [class.unread]="notification.status === 'UNREAD'"
+               [class.read]="notification.status === 'read'">
+            <div class="pulse-ring" *ngIf="notification.status === 'UNREAD'"></div>
+            <div class="read-dot"></div>
+          </div>
+        </div>
       </div>
       
       <div *ngIf="notifications.length === 0" class="no-notifications">
-        <i class="ph ph-bell-slash"></i>
-        <p>No notifications yet</p>
+        <div class="empty-state">
+          <i class="ph ph-bell-slash"></i>
+          <h6>All caught up!</h6>
+          <p>No new notifications</p>
+        </div>
       </div>
     </div>
     
