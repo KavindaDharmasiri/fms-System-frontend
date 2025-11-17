@@ -1,4 +1,5 @@
 <div class="modern-dashboard-layout">
+  <app-notification-panel></app-notification-panel>
   <!-- Header Section -->
   <div class="dashboard-header">
     <div class="header-content">
@@ -11,16 +12,16 @@
           <p class="dashboard-subtitle">Real-time overview of transaction activity and rule performance</p>
         </div>
       </div>
-      <div class="header-actions">
-        <button class="action-btn secondary">
-          <i class="ph ph-download"></i>
-          <span>Export Report</span>
-        </button>
-        <button class="action-btn primary">
-          <i class="ph ph-plus"></i>
-          <span>New Rule</span>
-        </button>
-      </div>
+<!--      <div class="header-actions">-->
+<!--        <button class="action-btn secondary" (click)="exportReport()">-->
+<!--          <i class="ph ph-download"></i>-->
+<!--          <span>Export Report</span>-->
+<!--        </button>-->
+<!--        <button class="action-btn primary" (click)="createNewRule()">-->
+<!--          <i class="ph ph-plus"></i>-->
+<!--          <span>New Rule</span>-->
+<!--        </button>-->
+<!--      </div>-->
     </div>
   </div>
 
@@ -85,7 +86,7 @@
         </div>
       </div>
       <div class="stat-content">
-        <div class="stat-value">${{stats.valueAtRisk | number}}</div>
+        <div class="stat-value">RS {{stats.valueAtRisk | number}}</div>
         <div class="stat-label">Value at Risk</div>
       </div>
     </div>
@@ -114,13 +115,17 @@
           </div>
         </div>
         <div class="card-body">
-          <div class="chart-placeholder">
-            <div class="placeholder-content">
-              <i class="ph ph-chart-line"></i>
-              <p>Chart Integration Ready</p>
-              <small>Connect with ng2-charts or Chart.js</small>
-            </div>
+          <div class="chart-container" *ngIf="!loading; else loadingChart">
+            <app-transaction-chart></app-transaction-chart>
           </div>
+          <ng-template #loadingChart>
+            <div class="chart-placeholder">
+              <div class="placeholder-content">
+                <i class="ph ph-spinner ph-spin"></i>
+                <p>Loading Chart Data...</p>
+              </div>
+            </div>
+          </ng-template>
         </div>
       </div>
     </div>
@@ -135,23 +140,27 @@
         </div>
         <div class="card-body">
           <div class="rules-list">
+            <div *ngIf="fraudRules.length === 0 && !loading" class="empty-state">
+              <i class="ph ph-shield-slash"></i>
+              <p>No active rules configured</p>
+            </div>
             <div *ngFor="let rule of fraudRules" class="rule-item">
               <div class="rule-content">
                 <div class="rule-header">
-                  <div class="rule-name">{{rule.name}}</div>
-                  <div class="rule-status" [class]="rule.active ? 'active' : 'inactive'">
-                    {{rule.active ? 'Active' : 'Inactive'}}
+                  <div class="rule-name">{{rule.ruleName || rule.name}}</div>
+                  <div class="rule-status" [class]="rule.status === 'ACTIVE' ? 'active' : 'inactive'">
+                    {{rule.status || (rule.active ? 'Active' : 'Inactive')}}
                   </div>
                 </div>
                 <div class="rule-meta">
-                  <span class="rule-triggers">{{rule.triggers}} triggers</span>
+                  <span class="rule-triggers">{{rule.executionCount || 0}} executions</span>
                   <span class="rule-separator">•</span>
-                  <span class="rule-updated">Updated 2h ago</span>
+                  <span class="rule-updated">{{rule.updatedAt | date:'short' || 'Recently'}}</span>
                 </div>
               </div>
-              <div class="rule-toggle">
-                <mat-slide-toggle [checked]="rule.active" (change)="toggleRule(rule)"></mat-slide-toggle>
-              </div>
+<!--              <div class="rule-toggle">-->
+<!--                <mat-slide-toggle [checked]="rule.status === 'ACTIVE' || rule.active" (change)="toggleRule(rule)"></mat-slide-toggle>-->
+<!--              </div>-->
             </div>
           </div>
         </div>
@@ -170,8 +179,8 @@
               <i class="ph ph-funnel"></i>
               <span>Filter</span>
             </button>
-            <button class="refresh-btn">
-              <i class="ph ph-arrow-clockwise"></i>
+            <button class="refresh-btn" (click)="refreshData()" [disabled]="loading">
+              <i class="ph ph-arrow-clockwise" [class.ph-spin]="loading"></i>
             </button>
           </div>
         </div>
@@ -186,38 +195,45 @@
               <th>Merchant</th>
               <th>Location</th>
               <th>Status</th>
-              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let transaction of recentTransactions" class="table-row">
+            <tr *ngIf="loading" class="table-row loading-row">
+              <td colspan="7" class="loading-cell">
+                <div class="loading-content">
+                  <i class="ph ph-spinner ph-spin"></i>
+                  <span>Loading transactions...</span>
+                </div>
+              </td>
+            </tr>
+            <tr *ngIf="recentTransactions.length === 0 && !loading" class="table-row empty-row">
+              <td colspan="7" class="empty-cell">
+                <div class="empty-content">
+                  <i class="ph ph-database"></i>
+                  <span>No transactions available</span>
+                </div>
+              </td>
+            </tr>
+            <tr *ngFor="let transaction of recentTransactions; trackBy: trackByTransactionId" class="table-row" [class.new-transaction]="transaction.isNew">
               <td class="transaction-id">
-                <span class="id-text">{{transaction.id}}</span>
+                <span class="id-text">{{formatTransactionId(transaction.tranUuid || transaction.id)}}</span>
               </td>
               <td class="timestamp">
-                {{transaction.timestamp | date:'short'}}
+                {{transaction.createdAt || transaction.timestamp | date:'short'}}
               </td>
               <td class="amount">
-                <span class="amount-value">${{transaction.amount | number:'1.2-2'}}</span>
+                <span class="amount-value">RS {{getTransactionAmount(transaction) | number:'1.2-2'}}</span>
               </td>
               <td class="merchant">
-                {{transaction.merchant}}
+                {{getTransactionMerchant(transaction)}}
               </td>
               <td class="location">
-                {{transaction.location}}
+                {{getTransactionLocation(transaction)}}
               </td>
               <td class="status">
                 <span class="status-badge" [ngClass]="getStatusClass(transaction.status)">
                   {{transaction.status}}
                 </span>
-              </td>
-              <td class="actions">
-                <button class="action-btn view" title="View Details">
-                  <i class="ph ph-eye"></i>
-                </button>
-                <button class="action-btn more" title="More Options">
-                  <i class="ph ph-dots-three"></i>
-                </button>
               </td>
             </tr>
           </tbody>

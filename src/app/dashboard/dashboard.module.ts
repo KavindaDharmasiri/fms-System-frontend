@@ -1,11 +1,16 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
 import { DashboardLayoutComponent } from './dashboard-layout/dashboard-layout.component';
 import { SidebarComponent } from '../shared/sidebar/sidebar.component';
 import { HeaderComponent } from '../shared/header/header.component';
+import { TransactionChartComponent } from './components/transaction-chart/transaction-chart.component';
+import { NotificationPanelComponent } from './components/notification-panel/notification-panel.component';
+import { DashboardService } from './services/dashboard.service';
+import { NotificationService } from './services/notification.service';
 
 
 //material
@@ -32,11 +37,13 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     DashboardComponent,
     SidebarComponent,
     DashboardLayoutComponent,
-    HeaderComponent
-
+    HeaderComponent,
+    TransactionChartComponent,
+    NotificationPanelComponent
   ],
   imports: [
     CommonModule,
+    HttpClientModule,
     DashboardRoutingModule,
     MatFormFieldModule,
     MatInputModule,
@@ -55,6 +62,10 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     MatDatepickerModule,
     MatNativeDateModule,
     MatProgressSpinnerModule,
+  ],
+  providers: [
+    DashboardService,
+    NotificationService
   ]
 })
 export class DashboardModule { }
