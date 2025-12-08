@@ -1,6 +1,7 @@
 import {Component, OnInit} from '@angular/core';
 import {Navigation, Router} from "@angular/router";
 import {HighRiskService} from "../../configurations/services/high-risk/high-risk.service";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-high-risk-transaction-view',
@@ -12,16 +13,20 @@ export class HighRiskTransactionViewComponent implements OnInit{
   elementStatus : string = "UNSUCCESSFUL";
   private navigation: Navigation | null;
   protected groupNameString: string = '';
+  
+  isGenerating: boolean = false;
+  speedometerValue: number = 0;
+  generatedRules: string = '';
+  
   constructor(
     private router: Router,
-    private highRiskService: HighRiskService
+    private highRiskService: HighRiskService,
+    private http: HttpClient
   ) {
     this.navigation = this.router.getCurrentNavigation();
   }
 
-  rules = [
-    { ruleName: '', ruleGroup: '' }
-  ];
+  rules: any[] = [];
 
   groupedRules: { [key: string]: any[] } = {};
   expandedGroups: { [key: number]: boolean } = {};
@@ -34,17 +39,15 @@ export class HighRiskTransactionViewComponent implements OnInit{
     this.highRiskElement = this.highRiskService.getElement();
     if (this.highRiskElement) {
       this.elementStatus = "SUCCESSFUL";
-      console.log(this.highRiskElement.tranPacket.firedRules);
-      this.rules = this.highRiskElement.tranPacket.firedRules;
+      this.rules = this.highRiskElement.transactionFlaggedRulesCollection || [];
       this.rules.forEach(rule => {
-        if (!this.groupedRules[rule.ruleGroup]) {
-          this.groupedRules[rule.ruleGroup] = [];
+        const groupName = rule.ruleGroupName;
+        if (!this.groupedRules[groupName]) {
+          this.groupedRules[groupName] = [];
         }
-        this.groupedRules[rule.ruleGroup].push(rule);
+        this.groupedRules[groupName].push(rule);
       });
       this.groupNameString = this.getGroupNameString();
-      // Optional: Clear after use
-      // this.highRiskService.clearElement();
     } else {
       this.elementStatus = "UNSUCCESSFUL";
       console.log("failed");
@@ -52,7 +55,7 @@ export class HighRiskTransactionViewComponent implements OnInit{
   }
 
   getGroupNameString(): string {
-    const uniqueGroups = Array.from(new Set(this.rules.map(r => r.ruleGroup)));
+    const uniqueGroups = Array.from(new Set(this.rules.map(r => r.ruleGroupName)));
     return uniqueGroups.join(' | ');
   }
 
@@ -62,5 +65,33 @@ export class HighRiskTransactionViewComponent implements OnInit{
 
   toggleGroup(index: number): void {
     this.expandedGroups[index] = !this.expandedGroups[index];
+  }
+
+  generateFutureRules(): void {
+    this.isGenerating = true;
+    this.speedometerValue = 0;
+    this.generatedRules = '';
+    
+    const interval = setInterval(() => {
+      this.speedometerValue += Math.random() * 15;
+      if (this.speedometerValue > 100) this.speedometerValue = 100;
+    }, 100);
+    
+    this.http.post('http://localhost:8765/fms-core-service/api/v1/tran/generate-future-rules', {})
+      .subscribe({
+        next: (response: any) => {
+          clearInterval(interval);
+          this.speedometerValue = 100;
+          this.generatedRules = response;
+          setTimeout(() => {
+            this.isGenerating = false;
+          }, 500);
+        },
+        error: (error) => {
+          clearInterval(interval);
+          this.isGenerating = false;
+          console.error('Error generating rules:', error);
+        }
+      });
   }
 }

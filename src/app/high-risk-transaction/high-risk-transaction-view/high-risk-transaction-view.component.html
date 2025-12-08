@@ -21,6 +21,9 @@
     <div class="view-container">
       <button class="badge bg-{{ elementStatus === 'SUCCESSFUL' ? 'green' : 'red' }}">{{ elementStatus }}</button>
       <br>
+      <div *ngIf="highRiskElement?.blockReason" class="mt-2 mb-3">
+        <b style="color: red;">{{ highRiskElement.blockReason }}</b>
+      </div>
       <div class="row g-2">
         <div class="col-md-3">
           <mat-label>Transaction ID</mat-label><br>
@@ -173,7 +176,35 @@
 
 
 
-    <div class="d-flex justify-content-end gap-2">
+    <div class="mt-4">
+      <h6 class="fw-semibold mb-3">AI Rule Generation</h6>
+      <div class="card">
+        <div class="card-body text-center">
+          <div class="speedometer-container mb-3" *ngIf="isGenerating">
+            <svg width="200" height="120" viewBox="0 0 200 120">
+              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e0e0e0" stroke-width="20" stroke-linecap="round"/>
+              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" [attr.stroke]="speedometerValue > 70 ? '#4caf50' : speedometerValue > 40 ? '#ff9800' : '#2196f3'" stroke-width="20" stroke-linecap="round" [attr.stroke-dasharray]="(speedometerValue * 2.51) + ' 251'" class="speedometer-progress"/>
+              <text x="100" y="90" text-anchor="middle" font-size="24" font-weight="bold">{{speedometerValue | number:'1.0-0'}}%</text>
+            </svg>
+            <p class="text-muted">Generating AI Rules...</p>
+          </div>
+          <button class="btn btn-primary" (click)="generateFutureRules()" [disabled]="isGenerating">
+            <i class="ph ph-magic-wand"></i> {{isGenerating ? 'Generating...' : 'Generate Future Rules'}}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="mt-4" *ngIf="generatedRules">
+      <h6 class="fw-semibold mb-3">Generated Rules</h6>
+      <div class="card">
+        <div class="card-body">
+          <pre class="console-view">{{generatedRules}}</pre>
+        </div>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-end gap-2 mt-3">
       <button class="btn btn-secondary btn-outline btn-sm" [routerLink]="['/high-risk-transaction']" >
         <i class="ph ph-arrow-bend-up-left"></i>Back
       </button>

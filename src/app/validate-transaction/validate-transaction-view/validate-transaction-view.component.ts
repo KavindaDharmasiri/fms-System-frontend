@@ -1,10 +1,6 @@
 import {Component, Inject} from '@angular/core';
 import {MAT_DIALOG_DATA, MatDialogRef} from "@angular/material/dialog";
-import {DatePipe} from "@angular/common";
-import {
-  MatModalViewUserRoleComponent
-} from "../../user-management/user-role-management/mat-modal-view-user-role/mat-modal-view-user-role.component";
-import {DateTime} from "luxon";
+import {HttpClient} from "@angular/common/http";
 
 @Component({
   selector: 'app-validate-transaction-view',
@@ -12,25 +8,41 @@ import {DateTime} from "luxon";
   styleUrl: './validate-transaction-view.component.scss'
 })
 export class ValidateTransactionViewComponent {
-  validateTransactionID: string = '';
-  isValid: boolean = false;
-  TransactionDateTime: string = '';
-  errorMessageList: string[] = [];
+  isGenerating: boolean = false;
+  speedometerValue: number = 0;
+  generatedRules: string = '';
+
   constructor(
     public dialogRef: MatDialogRef<ValidateTransactionViewComponent>,
     @Inject(MAT_DIALOG_DATA) public data: any,
-    private datePipe: DatePipe
-  ) {
-    this.validateTransactionID = data.element.validateTransactionId;
-    this.TransactionDateTime = this.datePipe.transform(data.element.transactionTime, 'yyyy-MM-dd HH:mm:ss') ?? '';
+    private http: HttpClient
+  ) {}
 
-    try {
-      this.errorMessageList = JSON.parse(data.element.errorMessage);
-    } catch (e) {
-      this.errorMessageList = [data.element.errorMessage]; // fallback to single string
-    }
-
-    this.isValid = data.element.isValid
-    console.log(this.isValid,this.validateTransactionID,this.isValid, data, data.userRoleCode)
+  generateFutureRules(): void {
+    this.isGenerating = true;
+    this.speedometerValue = 0;
+    this.generatedRules = '';
+    
+    const interval = setInterval(() => {
+      this.speedometerValue += Math.random() * 15;
+      if (this.speedometerValue > 100) this.speedometerValue = 100;
+    }, 100);
+    
+    this.http.post('http://localhost:8765/fms-core-service/api/v1/tran/generate-future-rules', {})
+      .subscribe({
+        next: (response: any) => {
+          clearInterval(interval);
+          this.speedometerValue = 100;
+          this.generatedRules = response;
+          setTimeout(() => {
+            this.isGenerating = false;
+          }, 500);
+        },
+        error: (error) => {
+          clearInterval(interval);
+          this.isGenerating = false;
+          console.error('Error generating rules:', error);
+        }
+      });
   }
 }

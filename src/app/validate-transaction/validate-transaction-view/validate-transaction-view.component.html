@@ -1,46 +1,35 @@
-<div class="mat-modal-content container-min-width">
+<div class="mat-modal-content" style="min-width: 700px;">
   <div class="d-flex justify-content-between align-items-center pt-3">
-    <h4 class="modal-title fw-semibold" mat-dialog-title>View Validate Transaction</h4>
-    <!-- <a href="javascript:void(0)" mat-dialog-close class="close-icon">
+    <h4 class="modal-title fw-semibold" mat-dialog-title>AI Rule Generation</h4>
+    <a href="javascript:void(0)" mat-dialog-close class="close-icon">
       <i class="ph ph-x"></i>
-    </a> -->
+    </a>
   </div>
 
   <mat-dialog-content>
-    <div class="input-group p-1">
-      <mat-label>Validate Transaction ID</mat-label>
-      <mat-form-field appearance="outline" class="w-100 input-sm">
-        <input matInput [(ngModel)]="validateTransactionID" name="userRoleCode" disabled>
-      </mat-form-field>
+    <div class="text-center py-4">
+      <div class="speedometer-container mb-3" *ngIf="isGenerating">
+        <svg width="200" height="120" viewBox="0 0 200 120">
+          <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e0e0e0" stroke-width="20" stroke-linecap="round"/>
+          <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" [attr.stroke]="speedometerValue > 70 ? '#4caf50' : speedometerValue > 40 ? '#ff9800' : '#2196f3'" stroke-width="20" stroke-linecap="round" [attr.stroke-dasharray]="(speedometerValue * 2.51) + ' 251'" class="speedometer-progress"/>
+          <text x="100" y="90" text-anchor="middle" font-size="24" font-weight="bold">{{speedometerValue | number:'1.0-0'}}%</text>
+        </svg>
+        <p class="text-muted">Generating AI Rules...</p>
+      </div>
+      <button class="btn btn-primary" (click)="generateFutureRules()" [disabled]="isGenerating">
+        <i class="ph ph-magic-wand"></i> {{isGenerating ? 'Generating...' : 'Generate Future Rules'}}
+      </button>
     </div>
 
-    <div class="input-group p-1">
-      <mat-label>Error Message List</mat-label>
-      <mat-form-field appearance="outline" class="w-100 input-sm" *ngIf="errorMessageList.length === 0">
-        <input matInput value="No errors" disabled>
-      </mat-form-field>
-
-      <ul *ngIf="errorMessageList.length > 0" class="p-2">
-        <li *ngFor="let msg of errorMessageList">{{ msg }}</li>
-      </ul>
-    </div>
-
-
-    <div class="input-group p-1">
-      <mat-label>Transaction date & Time</mat-label>
-      <mat-form-field appearance="outline" class="w-100 input-sm">
-        <input matInput [(ngModel)]="TransactionDateTime" name="createdDate" disabled>
-      </mat-form-field>
-    </div>
-
-    <div class="status-toggle p-1">
-      <mat-slide-toggle [(ngModel)]="isValid" name="status" disabled>Is Valid</mat-slide-toggle>
+    <div class="mt-4" *ngIf="generatedRules">
+      <h6 class="fw-semibold mb-3">Generated Rules</h6>
+      <pre class="console-view">{{generatedRules}}</pre>
     </div>
   </mat-dialog-content>
 
   <mat-dialog-actions>
-    <div class="d-flex p-2 justify-content-between w-100">
-      <button class="btn btn-default" mat-dialog-close>Cancel</button>
+    <div class="d-flex p-2 justify-content-end w-100">
+      <button class="btn btn-default" mat-dialog-close>Close</button>
     </div>
   </mat-dialog-actions>
 </div>

@@ -1,4 +1,4 @@
-import {Component, ViewChild} from '@angular/core';
+import {Component, ViewChild, ElementRef} from '@angular/core';
 import {FormBuilder, FormGroup} from "@angular/forms";
 import {MatTableDataSource} from "@angular/material/table";
 import {GetAllRolesRequestDTO, RoleDTO} from "../../user-management/user-role-management/dto/Role";
@@ -9,6 +9,8 @@ import {ValidateTransactionDTO} from "../DTOs/ValidateTransactionDTO";
 import {ValidateTransactionService} from "../service/validate-transaction.service";
 import {DateTime} from "luxon";
 import {ValidateTransactionViewComponent} from "../validate-transaction-view/validate-transaction-view.component";
+import {HttpClient} from "@angular/common/http";
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-validate-transaction-page',
@@ -30,12 +32,23 @@ export class ValidateTransactionPageComponent {
   currentPage = 0; // Start from page 1
   validateTransactionDTO = new ValidateTransactionDTO();
 
+  isGenerating: boolean = false;
+  speedometerValue: number = 0;
+  generatedRules: string = '';
+  isDeploying: boolean = false;
+
   @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild('rulesContainer') rulesContainer!: ElementRef;
+
+  private isResizing = false;
+  private startY = 0;
+  private startHeight = 0;
 
   constructor(
     public dialog: MatDialog,
     private fb: FormBuilder,
-    private validationTransactionServise: ValidateTransactionService
+    private validationTransactionServise: ValidateTransactionService,
+    private http: HttpClient
   ) {
     this.TransactionValidateFilter = this.fb.group({
       validateTransactionId: [undefined],
@@ -43,15 +56,6 @@ export class ValidateTransactionPageComponent {
       toTransactionTime: [''],
       Status: [''],
     });
-  }
-
-  ngAfterViewInit() {
-    this.paginator.page.subscribe(() => {
-      this.currentPage = this.paginator.pageIndex ; // MatPaginator uses 0-based index
-      this.pageSize = this.paginator.pageSize;
-      this.fetchData();
-    });
-    this.fetchData(); // Initial data fetch
   }
 
   fetchData() {
@@ -142,5 +146,102 @@ export class ValidateTransactionPageComponent {
     this.TransactionValidateFilter.reset();
     this.validateTransactionDTO = new ValidateTransactionDTO();
     this.fetchData();
+  }
+
+  generateFutureRules(): void {
+    if (this.isGenerating) return;
+
+    this.isGenerating = true;
+    this.speedometerValue = 0;
+    this.generatedRules = '';
+
+    const interval = setInterval(() => {
+      this.speedometerValue += Math.random() * 15;
+      if (this.speedometerValue > 100) this.speedometerValue = 100;
+    }, 100);
+
+    this.http.get('http://localhost:4200/fms-core-service/api/v1/tran/generate-future-rules', {responseType: 'text'})
+      .subscribe({
+        next: (response: any) => {
+          clearInterval(interval);
+          this.speedometerValue = 100;
+          this.generatedRules = this.decodeHtml(response);
+          setTimeout(() => {
+            this.isGenerating = false;
+          }, 500);
+        },
+        error: (error) => {
+          clearInterval(interval);
+          this.isGenerating = false;
+          console.error('Error generating rules:', error);
+        }
+      });
+  }
+
+  private decodeHtml(html: string): string {
+    const txt = document.createElement('textarea');
+    txt.innerHTML = html;
+    const decoded = txt.value;
+    return this.formatRules(decoded);
+  }
+
+  private formatRules(rules: string): string {
+    return rules;
+  }
+
+  get rulesArray(): string[] {
+    return this.generatedRules.split(/(?=import net\.com\.fms_core)/)
+      .filter(rule => rule.trim())
+      .map(rule => rule.trim());
+  }
+
+  deployRules(): void {
+    this.isDeploying = true;
+    this.http.get('http://localhost:4200/fms-core-service/api/v1/tran/deploy-ai-rules', {responseType: 'text'})
+      .subscribe({
+        next: (response: string) => {
+          this.isDeploying = false;
+          Swal.fire({
+            icon: 'success',
+            title: 'Success',
+            text: response
+          });
+        },
+        error: (error) => {
+          this.isDeploying = false;
+          console.error('Error deploying rules:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error',
+            text: 'Failed to deploy rules'
+          });
+        }
+      });
+  }
+
+  startResize(event: MouseEvent): void {
+    this.isResizing = true;
+    this.startY = event.clientY;
+    this.startHeight = this.rulesContainer.nativeElement.offsetHeight;
+    event.preventDefault();
+
+    const onMouseMove = (e: MouseEvent) => {
+      if (this.isResizing) {
+        const delta = e.clientY - this.startY;
+        const newHeight = this.startHeight + delta;
+        if (newHeight >= 100 && newHeight <= window.innerHeight * 0.7) {
+          this.rulesContainer.nativeElement.style.maxHeight = newHeight + 'px';
+        }
+      }
+    };
+
+    const onMouseUp = () => {
+      this.isResizing = false;
+      document.removeEventListener('mousemove', onMouseMove);
+      document.removeEventListener('mouseup', onMouseUp);
+    };
+
+    document.addEventListener('mousemove', onMouseMove);
+    document.addEventListener('mouseup', onMouseUp);
   }
 }

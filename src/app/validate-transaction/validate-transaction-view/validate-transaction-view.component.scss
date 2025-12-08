@@ -1,0 +1,51 @@
+.speedometer-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.speedometer-progress {
+  transition: stroke-dasharray 0.3s ease;
+}
+
+.console-view {
+  background-color: #1e1e1e;
+  color: #d4d4d4;
+  padding: 20px;
+  border-radius: 5px;
+  font-family: 'Courier New', monospace;
+  font-size: 12px;
+  max-height: 400px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+  margin: 0;
+}
+
+.console-view::-webkit-scrollbar {
+  width: 8px;
+}
+
+.console-view::-webkit-scrollbar-track {
+  background: #2d2d2d;
+}
+
+.console-view::-webkit-scrollbar-thumb {
+  background: #555;
+  border-radius: 4px;
+}
+
+.console-view::-webkit-scrollbar-thumb:hover {
+  background: #777;
+}
+
+.close-icon {
+  color: #666;
+  font-size: 24px;
+  text-decoration: none;
+}
+
+.close-icon:hover {
+  color: #333;
+}
