@@ -13,11 +13,16 @@ export class HighRiskTransactionViewComponent implements OnInit{
   elementStatus : string = "UNSUCCESSFUL";
   private navigation: Navigation | null;
   protected groupNameString: string = '';
-  
+
   isGenerating: boolean = false;
   speedometerValue: number = 0;
   generatedRules: string = '';
-  
+
+  showStatusModal: boolean = false;
+  newStatus: string = '';
+  statusReason: string = '';
+  isUpdatingStatus: boolean = false;
+
   constructor(
     private router: Router,
     private highRiskService: HighRiskService,
@@ -71,12 +76,12 @@ export class HighRiskTransactionViewComponent implements OnInit{
     this.isGenerating = true;
     this.speedometerValue = 0;
     this.generatedRules = '';
-    
+
     const interval = setInterval(() => {
       this.speedometerValue += Math.random() * 15;
       if (this.speedometerValue > 100) this.speedometerValue = 100;
     }, 100);
-    
+
     this.http.post('http://localhost:8765/fms-core-service/api/v1/tran/generate-future-rules', {})
       .subscribe({
         next: (response: any) => {
@@ -91,6 +96,46 @@ export class HighRiskTransactionViewComponent implements OnInit{
           clearInterval(interval);
           this.isGenerating = false;
           console.error('Error generating rules:', error);
+        }
+      });
+  }
+
+  openStatusModal(): void {
+    this.showStatusModal = true;
+    this.newStatus = '';
+    this.statusReason = '';
+  }
+
+  closeStatusModal(): void {
+    this.showStatusModal = false;
+  }
+
+  updateStatus(): void {
+    if (!this.newStatus || !this.statusReason) {
+      alert('Please select status and provide reason');
+      return;
+    }
+
+    this.isUpdatingStatus = true;
+    const updateData = {
+      transactionUuid: this.highRiskElement.tranUuid,
+      newStatus: this.newStatus,
+      reason: this.statusReason,
+      reviewedBy: 'admin'
+    };
+
+    this.http.put('fms-core-service/api/v1/tran/update-status', updateData)
+      .subscribe({
+        next: (response: any) => {
+          this.isUpdatingStatus = false;
+          this.showStatusModal = false;
+          alert('Status updated successfully');
+          this.loadData();
+        },
+        error: (error) => {
+          this.isUpdatingStatus = false;
+          console.error('Error updating status:', error);
+          alert('Failed to update status');
         }
       });
   }

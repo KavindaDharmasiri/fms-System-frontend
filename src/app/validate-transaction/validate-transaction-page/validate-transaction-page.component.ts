@@ -33,9 +33,14 @@ export class ValidateTransactionPageComponent {
   validateTransactionDTO = new ValidateTransactionDTO();
 
   isGenerating: boolean = false;
+  isTraining: boolean = false;
   speedometerValue: number = 0;
   generatedRules: string = '';
   isDeploying: boolean = false;
+  ruleMetadata: any = null;
+  showMetadata: boolean = false;
+  expandedRules: { [key: number]: boolean } = {};
+  expandedRuleCode: { [key: number]: boolean } = {};
 
   @ViewChild(MatPaginator) paginator!: MatPaginator;
   @ViewChild('rulesContainer') rulesContainer!: ElementRef;
@@ -148,24 +153,92 @@ export class ValidateTransactionPageComponent {
     this.fetchData();
   }
 
+  trainModel(): void {
+    if (this.isTraining) return;
+
+    this.isTraining = true;
+    this.speedometerValue = 0;
+
+    const interval = setInterval(() => {
+      this.speedometerValue += Math.random() * 10;
+      if (this.speedometerValue > 95) this.speedometerValue = 95;
+    }, 500);
+
+    this.http.post('/fms-core-service/api/v1/tran/train-fraud-model', {})
+      .subscribe({
+        next: (response: any) => {
+          clearInterval(interval);
+          this.speedometerValue = 100;
+          
+          if (response.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Model Trained!',
+              text: response.message || 'Model trained successfully. You can now generate rules.',
+              confirmButtonText: 'OK'
+            });
+          } else {
+            throw new Error(response.error || 'Training failed');
+          }
+          
+          setTimeout(() => {
+            this.isTraining = false;
+            this.speedometerValue = 0;
+          }, 1000);
+        },
+        error: (error) => {
+          clearInterval(interval);
+          this.isTraining = false;
+          this.speedometerValue = 0;
+          console.error('Error training model:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Training Failed',
+            text: error.error?.message || 'Failed to train model'
+          });
+        }
+      });
+  }
+
   generateFutureRules(): void {
     if (this.isGenerating) return;
 
     this.isGenerating = true;
     this.speedometerValue = 0;
     this.generatedRules = '';
+    this.ruleMetadata = null;
 
     const interval = setInterval(() => {
       this.speedometerValue += Math.random() * 15;
       if (this.speedometerValue > 100) this.speedometerValue = 100;
     }, 100);
 
-    this.http.get('http://localhost:4200/fms-core-service/api/v1/tran/generate-future-rules', {responseType: 'text'})
+    this.http.post('/fms-core-service/api/v1/tran/generate-future-rules', {})
       .subscribe({
         next: (response: any) => {
           clearInterval(interval);
           this.speedometerValue = 100;
-          this.generatedRules = this.decodeHtml(response);
+          
+          if (response.success) {
+            this.generatedRules = response.rules || '';
+            this.ruleMetadata = response.metadata || {};
+            
+            Swal.fire({
+              icon: 'success',
+              title: 'Rules Generated!',
+              html: `
+                <div style="text-align: left;">
+                  <p><strong>Total Rules:</strong> ${this.ruleMetadata.total_rules || 0}</p>
+                  <p><strong>Model Accuracy:</strong> ${this.getModelAccuracy()}%</p>
+                  <p><strong>Features Used:</strong> ${this.ruleMetadata.feature_count || 0}</p>
+                </div>
+              `,
+              confirmButtonText: 'View Rules'
+            });
+          } else {
+            throw new Error(response.error || 'Generation failed');
+          }
+          
           setTimeout(() => {
             this.isGenerating = false;
           }, 500);
@@ -174,8 +247,49 @@ export class ValidateTransactionPageComponent {
           clearInterval(interval);
           this.isGenerating = false;
           console.error('Error generating rules:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Generation Failed',
+            text: error.error?.message || 'Failed to generate rules'
+          });
         }
       });
+  }
+  
+  getModelAccuracy(): string {
+    if (!this.ruleMetadata) return 'N/A';
+    if (this.ruleMetadata.model_f1_score) {
+      return (this.ruleMetadata.model_f1_score * 100).toFixed(1);
+    }
+    if (this.ruleMetadata.metrics) {
+      const metrics = this.ruleMetadata.metrics;
+      const bestModel = Object.keys(metrics).reduce((a, b) => 
+        metrics[a].accuracy > metrics[b].accuracy ? a : b
+      );
+      return (metrics[bestModel].accuracy * 100).toFixed(1);
+    }
+    return 'N/A';
+  }
+  
+  getMetricAccuracy(value: any): string {
+    return value?.accuracy ? (value.accuracy * 100).toFixed(1) : 'N/A';
+  }
+  
+  toggleMetadata(): void {
+    this.showMetadata = !this.showMetadata;
+  }
+  
+  toggleRuleDetails(index: number): void {
+    this.expandedRules[index] = !this.expandedRules[index];
+  }
+  
+  toggleRuleCode(index: number): void {
+    this.expandedRuleCode[index] = !this.expandedRuleCode[index];
+  }
+  
+  extractConfidence(rule: string): string {
+    const match = rule.match(/Confidence[=:]\s*(\d+\.?\d*)%/);
+    return match ? `${match[1]}% Confidence` : 'N/A';
   }
 
   private decodeHtml(html: string): string {

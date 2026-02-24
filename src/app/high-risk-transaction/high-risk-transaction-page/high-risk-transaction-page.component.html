@@ -233,6 +233,22 @@
               <td mat-cell *matCellDef="let element">
                 {{ element.tranPacket?.merchantCategoryCode || 'N/A'}}</td>
             </ng-container>
+            <ng-container matColumnDef="manual_review">
+              <th mat-header-cell *matHeaderCellDef>Manual Review</th>
+              <td mat-cell *matCellDef="let element">
+                <span *ngIf="element.manualReviewStatus" 
+                      class="badge"
+                      [ngClass]="{
+                        'bg-success': element.manualReviewStatus === 'APPROVED',
+                        'bg-danger': element.manualReviewStatus === 'REJECTED',
+                        'badge-warning': element.manualReviewStatus === 'UNDER_REVIEW',
+                        'bg-info': element.manualReviewStatus === 'FALSE_POSITIVE'
+                      }">
+                  {{ element.manualReviewStatus }}
+                </span>
+                <span *ngIf="!element.manualReviewStatus" class="text-muted">-</span>
+              </td>
+            </ng-container>
             <ng-container matColumnDef="action">
               <th mat-header-cell *matHeaderCellDef>Action</th>
               <td mat-cell *matCellDef="let element" class="text-center">

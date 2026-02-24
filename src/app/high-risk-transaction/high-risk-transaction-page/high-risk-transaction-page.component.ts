@@ -37,7 +37,7 @@ export class HighRiskTransactionPageComponent implements OnInit{
 
   @ViewChild(MatPaginator) paginator ! :MatPaginator;
   isFilterOpen = false;
-  displayedColumns: string[] = ['time_stamp', 'tran_id', 'card_num', 'acquirer_bin','status','tran_amount','currency','merchant_name','action'];
+  displayedColumns: string[] = ['time_stamp', 'tran_id', 'card_num', 'acquirer_bin','status','tran_amount','currency','merchant_name','manual_review','action'];
   selectedStatus: string = '';
   dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
   dropdownSingal = 'Active';

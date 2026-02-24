@@ -126,17 +126,69 @@
               groupNameString || 'N/A'
             }}</b>
         </div>
+        <div class="col-md-3">
+          <mat-label>Action Status</mat-label><br>
+          <b class="badge" [class.bg-danger]="highRiskElement.actionStatus === 'BLOCKED'"
+             [class.bg-warning]="highRiskElement.actionStatus === 'REVIEW'"
+             [class.bg-success]="highRiskElement.actionStatus === 'ALLOWED'">{{
+            highRiskElement.actionStatus || 'N/A'
+            }}</b>
+        </div>
+      </div>
+
+      <div class="row g-2" *ngIf="highRiskElement.reactionTemplateName">
+        <div class="col-md-12">
+          <h6 class="fw-semibold mt-3 mb-2">Reaction Template Actions</h6>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Template Name</mat-label><br>
+          <b>{{ highRiskElement.reactionTemplateName }}</b>
+        </div>
+        <div class="col-md-3">
+          <mat-label>SMS Enabled</mat-label><br>
+          <b>{{ highRiskElement.smsEnabled || 'N/A' }}</b>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Email Enabled</mat-label><br>
+          <b>{{ highRiskElement.emailEnabled || 'N/A' }}</b>
+        </div>
+        <div class="col-md-3">
+          <mat-label>FRM Enabled</mat-label><br>
+          <b>{{ highRiskElement.frmEnabled || 'N/A' }}</b>
+        </div>
+      </div>
+
+      <div class="row g-2" *ngIf="highRiskElement.manualReviewStatus">
+        <div class="col-md-12">
+          <h6 class="fw-semibold mt-3 mb-2">Manual Review</h6>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Review Status</mat-label><br>
+          <b class="badge bg-info">{{ highRiskElement.manualReviewStatus }}</b>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Reviewed By</mat-label><br>
+          <b>{{ highRiskElement.reviewedBy || 'N/A' }}</b>
+        </div>
+        <div class="col-md-3">
+          <mat-label>Reviewed At</mat-label><br>
+          <b>{{ highRiskElement.reviewedAt | date: 'MM/dd/yyyy HH:mm' }}</b>
+        </div>
+        <div class="col-md-9">
+          <mat-label>Review Reason</mat-label><br>
+          <b>{{ highRiskElement.manualReviewReason }}</b>
+        </div>
       </div>
       <hr>
     </div>
 
     <div class="mt-4">
       <h6 class="fw-semibold mb-3">Triggered Rule(s)</h6>
-      
+
       <div *ngIf="!groupedRules || (groupedRules | keyvalue).length === 0" class="alert alert-info">
         No triggered rules found.
       </div>
-      
+
       <div *ngIf="groupedRules && (groupedRules | keyvalue).length > 0">
         <div
           class="card mb-2"
@@ -176,24 +228,24 @@
 
 
 
-    <div class="mt-4">
-      <h6 class="fw-semibold mb-3">AI Rule Generation</h6>
-      <div class="card">
-        <div class="card-body text-center">
-          <div class="speedometer-container mb-3" *ngIf="isGenerating">
-            <svg width="200" height="120" viewBox="0 0 200 120">
-              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e0e0e0" stroke-width="20" stroke-linecap="round"/>
-              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" [attr.stroke]="speedometerValue > 70 ? '#4caf50' : speedometerValue > 40 ? '#ff9800' : '#2196f3'" stroke-width="20" stroke-linecap="round" [attr.stroke-dasharray]="(speedometerValue * 2.51) + ' 251'" class="speedometer-progress"/>
-              <text x="100" y="90" text-anchor="middle" font-size="24" font-weight="bold">{{speedometerValue | number:'1.0-0'}}%</text>
-            </svg>
-            <p class="text-muted">Generating AI Rules...</p>
-          </div>
-          <button class="btn btn-primary" (click)="generateFutureRules()" [disabled]="isGenerating">
-            <i class="ph ph-magic-wand"></i> {{isGenerating ? 'Generating...' : 'Generate Future Rules'}}
-          </button>
-        </div>
-      </div>
-    </div>
+<!--    <div class="mt-4">-->
+<!--      <h6 class="fw-semibold mb-3">AI Rule Generation</h6>-->
+<!--      <div class="card">-->
+<!--        <div class="card-body text-center">-->
+<!--          <div class="speedometer-container mb-3" *ngIf="isGenerating">-->
+<!--            <svg width="200" height="120" viewBox="0 0 200 120">-->
+<!--              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="#e0e0e0" stroke-width="20" stroke-linecap="round"/>-->
+<!--              <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" [attr.stroke]="speedometerValue > 70 ? '#4caf50' : speedometerValue > 40 ? '#ff9800' : '#2196f3'" stroke-width="20" stroke-linecap="round" [attr.stroke-dasharray]="(speedometerValue * 2.51) + ' 251'" class="speedometer-progress"/>-->
+<!--              <text x="100" y="90" text-anchor="middle" font-size="24" font-weight="bold">{{speedometerValue | number:'1.0-0'}}%</text>-->
+<!--            </svg>-->
+<!--            <p class="text-muted">Generating AI Rules...</p>-->
+<!--          </div>-->
+<!--          <button class="btn btn-primary" (click)="generateFutureRules()" [disabled]="isGenerating">-->
+<!--            <i class="ph ph-magic-wand"></i> {{isGenerating ? 'Generating...' : 'Generate Future Rules'}}-->
+<!--          </button>-->
+<!--        </div>-->
+<!--      </div>-->
+<!--    </div>-->
 
     <div class="mt-4" *ngIf="generatedRules">
       <h6 class="fw-semibold mb-3">Generated Rules</h6>
@@ -205,6 +257,9 @@
     </div>
 
     <div class="d-flex justify-content-end gap-2 mt-3">
+      <button class="btn btn-warning btn-sm" (click)="openStatusModal()">
+        <i class="ph ph-pencil"></i> Change Status
+      </button>
       <button class="btn btn-secondary btn-outline btn-sm" [routerLink]="['/high-risk-transaction']" >
         <i class="ph ph-arrow-bend-up-left"></i>Back
       </button>
@@ -212,4 +267,39 @@
 
   </div>
 </div>
+
+<!-- Status Update Modal -->
+<div class="modal fade" [class.show]="showStatusModal" [style.display]="showStatusModal ? 'block' : 'none'" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Update Transaction Status</h5>
+        <button type="button" class="btn-close" (click)="closeStatusModal()"></button>
+      </div>
+      <div class="modal-body">
+        <div class="mb-3">
+          <label class="form-label">New Status</label>
+          <select class="form-select" [(ngModel)]="newStatus">
+            <option value="">Select Status</option>
+            <option value="APPROVED">Approved</option>
+            <option value="REJECTED">Rejected</option>
+            <option value="UNDER_REVIEW">Under Review</option>
+            <option value="FALSE_POSITIVE">False Positive</option>
+          </select>
+        </div>
+        <div class="mb-3">
+          <label class="form-label">Reason</label>
+          <textarea class="form-control" rows="3" [(ngModel)]="statusReason" placeholder="Enter reason for status change"></textarea>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="closeStatusModal()" [disabled]="isUpdatingStatus">Cancel</button>
+        <button type="button" class="btn btn-primary" (click)="updateStatus()" [disabled]="isUpdatingStatus">
+          {{ isUpdatingStatus ? 'Updating...' : 'Update Status' }}
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal-backdrop fade" [class.show]="showStatusModal" *ngIf="showStatusModal"></div>
 

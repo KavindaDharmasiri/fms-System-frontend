@@ -22,7 +22,7 @@ import { HighRiskTransactionViewComponent } from './high-risk-transaction-view/h
 import { MaskCardPipe } from './card-masks/mask-card/mask-card.pipe';
 import { MaskAcquirerBinPipe } from './card-masks/mask-acquirer-BIN/mask-acquirer-bin.pipe';
 import {Router} from "@angular/router";
-import {ReactiveFormsModule} from "@angular/forms";
+import {FormsModule, ReactiveFormsModule} from "@angular/forms";
 import {MatDatepicker, MatDatepickerInput} from "@angular/material/datepicker";
 import {MatDivider} from "@angular/material/divider";
 
@@ -53,6 +53,7 @@ import {MatDivider} from "@angular/material/divider";
         MatTable,
         MatHeaderCellDef,
         ReactiveFormsModule,
+        FormsModule,
         MatDatepicker,
         MatDatepickerInput,
         MatDivider

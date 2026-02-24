@@ -12,28 +12,253 @@
   </div>
   <div class="sub-container">
     <div class="text-center py-5">
-      <div class="speedometer-container mb-4" (click)="generateFutureRules()" [style.cursor]="isGenerating ? 'not-allowed' : 'pointer'">
+      <!-- Two-Step Process Buttons -->
+      <div class="row mb-4 justify-content-center">
+        <div class="col-md-5">
+          <div class="card h-100" [class.border-primary]="!isTraining" style="cursor: pointer;" (click)="trainModel()">
+            <div class="card-body text-center">
+              <i class="ph ph-brain" style="font-size: 48px; color: #2196f3;"></i>
+              <h5 class="mt-3">Step 1: Train Model</h5>
+              <p class="text-muted">Train fraud detection model on dataset (one-time, ~30-60s)</p>
+              <button class="btn btn-primary" [disabled]="isTraining">
+                <i class="ph" [class.ph-spinner]="isTraining" [class.ph-brain]="!isTraining"></i>
+                {{isTraining ? 'Training...' : 'Train Model'}}
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="col-md-5">
+          <div class="card h-100" [class.border-success]="!isGenerating" style="cursor: pointer;" (click)="generateFutureRules()">
+            <div class="card-body text-center">
+              <i class="ph ph-lightning" style="font-size: 48px; color: #4caf50;"></i>
+              <h5 class="mt-3">Step 2: Generate Rules</h5>
+              <p class="text-muted">Generate rules from trained model (fast, ~1-2s)</p>
+              <button class="btn btn-success" [disabled]="isGenerating">
+                <i class="ph" [class.ph-spinner]="isGenerating" [class.ph-lightning]="!isGenerating"></i>
+                {{isGenerating ? 'Generating...' : 'Generate Rules'}}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="speedometer-container mb-4" *ngIf="isTraining || isGenerating">
         <svg width="300" height="180" viewBox="0 0 300 180">
           <path d="M 30 150 A 120 120 0 0 1 270 150" fill="none" stroke="#e0e0e0" stroke-width="30" stroke-linecap="round"/>
           <path d="M 30 150 A 120 120 0 0 1 270 150" fill="none" [attr.stroke]="speedometerValue > 70 ? '#4caf50' : speedometerValue > 40 ? '#ff9800' : '#2196f3'" stroke-width="30" stroke-linecap="round" [attr.stroke-dasharray]="(speedometerValue * 3.77) + ' 377'" class="speedometer-progress"/>
           <text x="150" y="135" text-anchor="middle" font-size="36" font-weight="bold">{{speedometerValue | number:'1.0-0'}}%</text>
         </svg>
-        <p class="text-muted mt-3" style="font-size: 18px;">{{isGenerating ? 'Generating AI Rules...' : 'Ready'}}</p>
+        <p class="text-muted mt-3" style="font-size: 18px;">{{isTraining ? 'Training Model...' : 'Generating Rules...'}}</p>
       </div>
-      <div *ngIf="generatedRules" class="mt-4">
-        <h6 class="fw-semibold mb-3">Generated Rules ({{rulesArray.length}})</h6>
-        <div class="resizable-panel">
-          <div class="rules-container" #rulesContainer>
-            <div class="rule-card" *ngFor="let rule of rulesArray; let i = index">
-              <div class="rule-header">Rule {{i + 1}}</div>
-              <pre class="rule-content">{{rule}}</pre>
+      
+      <!-- Metadata Card -->
+      <div *ngIf="ruleMetadata" class="card mb-4 mx-auto" style="max-width: 800px;">
+        <div class="card-header d-flex justify-content-between align-items-center" (click)="toggleMetadata()" style="cursor: pointer;">
+          <h6 class="mb-0">Generation Metrics</h6>
+          <i class="ph" [class.ph-caret-down]="!showMetadata" [class.ph-caret-up]="showMetadata"></i>
+        </div>
+        <div class="card-body" *ngIf="showMetadata">
+          <div class="row g-3">
+            <div class="col-md-3">
+              <div class="metric-box">
+                <div class="metric-label">Total Rules</div>
+                <div class="metric-value">{{ruleMetadata.total_rules || 0}}</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="metric-box">
+                <div class="metric-label">Model Accuracy</div>
+                <div class="metric-value">{{getModelAccuracy()}}%</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="metric-box">
+                <div class="metric-label">Features</div>
+                <div class="metric-value">{{ruleMetadata.feature_count || 0}}</div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div class="metric-box">
+                <div class="metric-label">Generated At</div>
+                <div class="metric-value" style="font-size: 12px;">{{ruleMetadata.generated_at | date:'short'}}</div>
+              </div>
             </div>
           </div>
-          <div class="resize-handle" (mousedown)="startResize($event)"></div>
+          <div class="mt-3" *ngIf="ruleMetadata.metrics">
+            <small class="text-muted">Model Performance:</small>
+            <div class="d-flex gap-3 mt-2">
+              <div *ngFor="let model of ruleMetadata.metrics | keyvalue" class="badge bg-secondary">
+                {{model.key}}: {{getMetricAccuracy(model.value)}}%
+              </div>
+            </div>
+          </div>
         </div>
-        <button class="btn btn-primary mt-3" (click)="deployRules()" [disabled]="isDeploying">
-          <i class="ph ph-rocket-launch"></i> {{isDeploying ? 'Deploying...' : 'Deploy AI Rules'}}
-        </button>
+      </div>
+      
+      <div *ngIf="generatedRules" class="mt-4">
+        <div class="d-flex justify-content-between align-items-center mb-3">
+          <h6 class="fw-semibold mb-0">Generated Rules ({{rulesArray.length}})</h6>
+          <button class="btn btn-primary btn-sm" (click)="deployRules()" [disabled]="isDeploying">
+            <i class="ph ph-rocket-launch"></i> {{isDeploying ? 'Deploying...' : 'Deploy to Production'}}
+          </button>
+        </div>
+        
+        <!-- Enhanced Rule Cards with Structured Display -->
+        <div *ngIf="ruleMetadata?.rule_details" class="row g-3">
+          <div class="col-12" *ngFor="let detail of ruleMetadata.rule_details; let i = index">
+            <div class="card rule-detail-card">
+              <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                <div>
+                  <h6 class="mb-0"><i class="ph ph-shield-check"></i> {{detail.id}}</h6>
+                  <small>Target Pattern: {{detail.rule_name}}</small>
+                </div>
+                <span class="badge" [class.bg-success]="detail.confidence >= 0.8" 
+                      [class.bg-warning]="detail.confidence >= 0.6 && detail.confidence < 0.8"
+                      [class.bg-light]="detail.confidence < 0.6"
+                      style="font-size: 14px;">
+                  {{(detail.confidence * 100).toFixed(1)}}% Confidence
+                </span>
+              </div>
+              <div class="card-body">
+                <div class="row g-3">
+                  <!-- Rule Identification -->
+                  <div class="col-md-6">
+                    <div class="info-section">
+                      <h6 class="section-title"><i class="ph ph-identification-card text-primary"></i> RULE IDENTIFICATION</h6>
+                      <ul class="list-unstyled mb-0">
+                        <li><strong>Rule ID:</strong> <code>{{detail.id}}</code></li>
+                        <li><strong>Target Pattern:</strong> <span class="badge bg-info">{{detail.rule_name}}</span></li>
+                        <li><strong>Decision Depth:</strong> {{detail.depth}} levels</li>
+                        <li><strong>Training Samples:</strong> {{detail.samples}} transactions</li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <!-- Risk Assessment -->
+                  <div class="col-md-6">
+                    <div class="info-section">
+                      <h6 class="section-title"><i class="ph ph-warning text-danger"></i> RISK ASSESSMENT</h6>
+                      <ul class="list-unstyled mb-0">
+                        <li><strong>Fraud Probability:</strong> <span class="text-danger fw-bold">{{(detail.confidence * 100).toFixed(1)}}%</span></li>
+                        <li><strong>Risk Score:</strong> {{(detail.confidence * 10).toFixed(1)}}/10</li>
+                        <li><strong>Action:</strong> <span class="badge bg-danger">FLAG & REVIEW</span></li>
+                        <li><strong>Priority:</strong> {{(detail.confidence * 100).toFixed(0)}} (salience)</li>
+                      </ul>
+                    </div>
+                  </div>
+                  
+                  <!-- Risk Indicators -->
+                  <div class="col-12" *ngIf="detail.risk_indicators && detail.risk_indicators.length > 0">
+                    <div class="info-section">
+                      <h6 class="section-title"><i class="ph ph-flag text-warning"></i> PRIMARY RISK INDICATORS</h6>
+                      <div class="d-flex flex-wrap gap-2">
+                        <span class="badge bg-warning text-dark" *ngFor="let indicator of detail.risk_indicators">
+                          <i class="ph ph-warning-circle"></i> {{indicator}}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Detailed Condition Analysis -->
+                  <div class="col-12">
+                    <div class="info-section">
+                      <h6 class="section-title"><i class="ph ph-list-checks text-success"></i> DETAILED CONDITION ANALYSIS</h6>
+                      <div class="alert alert-info mb-2">
+                        <small><i class="ph ph-info"></i> This rule triggers when <strong>ALL</strong> of the following conditions are met:</small>
+                      </div>
+                      <div class="condition-list">
+                        <div class="condition-item" *ngFor="let cond of detail.conditions; let j = index">
+                          <div class="d-flex align-items-start">
+                            <span class="badge bg-success me-2">{{j + 1}}</span>
+                            <div class="flex-grow-1">
+                              <strong>{{cond.feature}}</strong> 
+                              <span class="text-muted">{{cond.operator === '>' ? 'greater than' : cond.operator === '<=' ? 'less than or equal to' : 'equals'}}</span>
+                              <code class="ms-1">{{cond.threshold.toFixed(2)}}</code>
+                              <div class="text-muted small mt-1" *ngIf="detail.detailed_explanations && detail.detailed_explanations[j]">
+                                <i class="ph ph-arrow-right"></i> {{detail.detailed_explanations[j]}}
+                              </div>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- Historical Context -->
+                  <div class="col-md-6">
+                    <div class="info-section">
+                      <h6 class="section-title"><i class="ph ph-clock-counter-clockwise text-secondary"></i> HISTORICAL CONTEXT</h6>
+                      <p class="small mb-0">
+                        This pattern was learned from analyzing historical transactions that were previously 
+                        flagged by the <strong>{{detail.rule_name}}</strong> rule. The AI model identified this 
+                        specific combination with <strong>{{(detail.confidence * 100).toFixed(1)}}%</strong> confidence 
+                        based on <strong>{{detail.depth}}</strong> levels of decision tree analysis.
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <!-- Business Logic -->
+                  <div class="col-md-6">
+                    <div class="info-section">
+                      <h6 class="section-title"><i class="ph ph-gear text-primary"></i> BUSINESS LOGIC</h6>
+                      <ol class="small mb-0 ps-3">
+                        <li>Flag transaction as <span class="badge bg-danger">HIGH RISK</span></li>
+                        <li>Trigger manual review workflow</li>
+                        <li>Set fraud probability: {{(detail.confidence * 100).toFixed(1)}}%</li>
+                        <li>Assign risk score: {{(detail.confidence * 10).toFixed(1)}}/10</li>
+                        <li>Log activation for audit trail</li>
+                      </ol>
+                    </div>
+                  </div>
+                  
+                  <!-- Fraud Prevention Impact -->
+                  <div class="col-12">
+                    <div class="info-section">
+                      <h6 class="section-title"><i class="ph ph-shield-checkered text-success"></i> FRAUD PREVENTION IMPACT</h6>
+                      <div class="row g-2">
+                        <div class="col-md-3">
+                          <div class="impact-card">
+                            <i class="ph ph-prohibit text-danger"></i>
+                            <div class="small">Prevents fraudulent transactions</div>
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="impact-card">
+                            <i class="ph ph-user-focus text-primary"></i>
+                            <div class="small">Enables analyst intervention</div>
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="impact-card">
+                            <i class="ph ph-currency-dollar text-success"></i>
+                            <div class="small">Reduces financial losses</div>
+                          </div>
+                        </div>
+                        <div class="col-md-3">
+                          <div class="impact-card">
+                            <i class="ph ph-check-circle text-info"></i>
+                            <div class="small">Maintains compliance</div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <!-- View Raw Drools Code -->
+                  <div class="col-12">
+                    <button class="btn btn-sm btn-outline-secondary" (click)="toggleRuleCode(i)">
+                      <i class="ph" [class.ph-code]="!expandedRuleCode[i]" [class.ph-x]="expandedRuleCode[i]"></i>
+                      {{expandedRuleCode[i] ? 'Hide' : 'View'}} Drools Code
+                    </button>
+                    <div *ngIf="expandedRuleCode[i]" class="mt-2">
+                      <pre class="rule-content">{{rulesArray[i]}}</pre>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
