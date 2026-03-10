@@ -11,6 +11,7 @@ import {FormBuilder, FormGroup} from "@angular/forms";
 import {HttpErrorResponse} from "@angular/common/http";
 import {TransactionElementService} from "../../services/transaction-element/transaction-element.service";
 import {ToastrService} from "ngx-toastr";
+import Swal from 'sweetalert2';
 
 
 
@@ -196,6 +197,30 @@ export class RuleConfigurationPageComponent implements OnInit{
   resetFiled() {
     this.ruleFilterForm.reset();
     this.loadRules(this.pageIndex, this.pageSize);
+  }
+
+  deleteRule(ruleId: number): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this rule!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.ruleService.deleteRule(ruleId).subscribe({
+          next: (response: any) => {
+            Swal.fire('Deleted!', 'Rule has been deleted.', 'success');
+            this.loadRules(this.pageIndex, this.pageSize);
+          },
+          error: (error) => {
+            Swal.fire('Error!', 'Failed to delete rule.', 'error');
+          }
+        });
+      }
+    });
   }
 
 

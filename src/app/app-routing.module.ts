@@ -63,6 +63,11 @@ const routes: Routes = [
     data: { title: 'Validate Transaction' }
   },
   {
+    path: 'risk-matrix-management',
+    loadChildren: () => import('./risk-matrix-management/risk-matrix-management.module').then(m => m.RiskMatrixManagementModule),
+    data: { title: 'Risk Matrix Management' }
+  },
+  {
     path: 'components',
     loadChildren: () =>
       import('./components/components.module').then((m) => m.ComponentsModule),

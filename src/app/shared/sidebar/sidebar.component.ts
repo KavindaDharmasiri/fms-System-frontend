@@ -38,18 +38,19 @@ export class SidebarComponent {
         { label: 'Transaction Element ', route: '/configurations/transaction-element' },
         { label: 'Rule', route: '/configurations/rule-configuration' },
         { label: 'Rule Group', route: '/configurations/rule-group' },
+        { label: 'Risk Matrix', route: '/risk-matrix-management' },
       ],
       expanded: false
     },
-    {
-      label: 'Analysis & Testing',
-      icon: 'ph ph-flask',
-      submenu: [
-        { label: 'Live Simulation', route: '/analysis-testing/live-simulation' },
-        { label: 'Rule Testing & Validation', route: '/analysis-testing/rule-testing' },
-      ],
-      expanded: false
-    },
+    // {
+    //   label: 'Analysis & Testing',
+    //   icon: 'ph ph-flask',
+    //   submenu: [
+    //     { label: 'Live Simulation', route: '/analysis-testing/live-simulation' },
+    //     { label: 'Rule Testing & Validation', route: '/analysis-testing/rule-testing' },
+    //   ],
+    //   expanded: false
+    // },
     {
       label: 'High Risk Transaction',
       icon: 'ph ph-money',

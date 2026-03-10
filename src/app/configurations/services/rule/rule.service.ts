@@ -60,5 +60,9 @@ export class RuleService {
     return this.http.get<ApiResponseDTO<EfmsRuleDTO[]>>(HttpService.RULE_FILTER, { params });
   }
 
+  deleteRule(id: number): Observable<ApiResponseDTO<string>> {
+    return this.http.delete<ApiResponseDTO<string>>(HttpService.RULE_DELETE+`${id}`);
+  }
+
 
 }

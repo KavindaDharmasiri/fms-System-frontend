@@ -11,6 +11,7 @@ import {EfmsRuleDTO} from "../../shared/dto/EfmsRuleDTO";
 import {RuleService} from "../services/rule/rule.service";
 import {PaymentNetworkDTO} from "../../shared/dto/PaymentNetworkDTO";
 import {RoleDTO} from "../../shared/dto/RoleDTO";
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-rule-group',
@@ -172,6 +173,30 @@ loadRuleGroups(pageIndex: number, pageSize: number) {
 
       }, error: (error: HttpErrorResponse) => {
         console.error('Error loading landing details:', error.message);
+      }
+    });
+  }
+
+  deleteRuleGroup(ruleGroupId: number): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this rule group!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.ruleGroupService.deleteRuleGroup(ruleGroupId).subscribe({
+          next: (response: any) => {
+            Swal.fire('Deleted!', 'Rule group has been deleted.', 'success');
+            this.loadRuleGroups(this.pageIndex, this.pageSize);
+          },
+          error: (error) => {
+            Swal.fire('Error!', 'Failed to delete rule group.', 'error');
+          }
+        });
       }
     });
   }

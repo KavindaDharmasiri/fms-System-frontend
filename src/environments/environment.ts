@@ -87,12 +87,14 @@ export const environment = {
       GET_BY_ID: `${BASE_URL + CORE_CONTEXT_URL + API_RULE_GROUP}/get-rule-group/{id}`,
       FILTER: `${BASE_URL + CORE_CONTEXT_URL + API_RULE_GROUP}/filter-rule-groups`,
       TEST: `${BASE_URL + CORE_CONTEXT_URL + API_RULE_GROUP}/test-rule-group`,
+      DELETE: `${BASE_URL + CORE_CONTEXT_URL + API_RULE_GROUP}/delete-rule-group/`,
     },
     RULE: {
       SAVE: `${BASE_URL + CORE_CONTEXT_URL + API_RULE}/add-rule`,
       UPDATE: `${BASE_URL + CORE_CONTEXT_URL + API_RULE}/update-rule`,
       GET_BY_ID: `${BASE_URL + CORE_CONTEXT_URL + API_RULE}/get-rule/{id}`,
       FILTER: `${BASE_URL + CORE_CONTEXT_URL + API_RULE}/filter-rules`,
+      DELETE: `${BASE_URL + CORE_CONTEXT_URL + API_RULE}/delete-rule/`,
       TEST: `${BASE_URL + CORE_CONTEXT_URL + API_RULE}/test-rule`,
     },
     REACTION_TEMPLATE: {
@@ -106,6 +108,7 @@ export const environment = {
       ADD_PAYMENT_NETWORK:`${BASE_URL+CORE_CONTEXT_URL+API_PAYMENT_NETWORK}/add-payment-network`,
       LIST_PAYMENT_NETWORKS:`${BASE_URL+CORE_CONTEXT_URL+API_PAYMENT_NETWORK}/list-payment-networks`,
       GET_PAYMENT_NETWORK_BY_ID:`${BASE_URL+CORE_CONTEXT_URL+API_PAYMENT_NETWORK}/get-payment-network-by-id`,
+      PAYMENT_NETWORK_DELETE_PAYMENT_NETWORK_BY_ID:`${BASE_URL+CORE_CONTEXT_URL+API_PAYMENT_NETWORK}/delete-payment-network/`,
     },
     RULE_TESTING_VALIDATION:{
       ADD_TEST_TRANSACTION:`${BASE_URL+CORE_CONTEXT_URL+API_TRANSACTION}/save-tran`
@@ -126,6 +129,13 @@ export const environment = {
     },
     RISK_REAL_TIME: {
       SET_RULES:`${BASE_URL+CORE_CONTEXT_URL+API_RISK_CON}/set-rule`,
+    },
+    RISK_MATRIX: {
+      GET_ALL:`${BASE_URL+CORE_CONTEXT_URL}/api/v1/risk-matrix/get-all`,
+      GET_BY_ID:`${BASE_URL+CORE_CONTEXT_URL}/api/v1/risk-matrix/get-by-id`,
+      SAVE:`${BASE_URL+CORE_CONTEXT_URL}/api/v1/risk-matrix/save`,
+      UPDATE:`${BASE_URL+CORE_CONTEXT_URL}/api/v1/risk-matrix/update`,
+      DELETE:`${BASE_URL+CORE_CONTEXT_URL}/api/v1/risk-matrix/delete`,
     }
   },
 

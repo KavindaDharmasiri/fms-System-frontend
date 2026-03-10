@@ -180,9 +180,13 @@
                           type="button">
                     <i class="ph ph-eye"></i>
                   </button>
-                  <button [routerLink]="'/configurations/rule-group/edit-rule-group/'+element.ruleGroupId" class="btn btn-secondary btn-outline btn-sm flex-1" title="View"
+                  <button [routerLink]="'/configurations/rule-group/edit-rule-group/'+element.ruleGroupId" class="btn btn-secondary btn-outline btn-sm flex-1" title="Edit"
                           type="button">
                     <i class="ph ph-pencil"></i>
+                  </button>
+                  <button (click)="deleteRuleGroup(element.ruleGroupId)" class="btn btn-danger btn-outline btn-sm flex-1" title="Delete"
+                          type="button">
+                    <i class="ph ph-trash"></i>
                   </button>
                 </div>
               </td>

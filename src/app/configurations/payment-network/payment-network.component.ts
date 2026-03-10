@@ -4,6 +4,7 @@ import {MatPaginator, PageEvent} from '@angular/material/paginator';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import {PaymentNetworkService} from "./service/payment-network.service";
 import {ListPaymentNetworkRequestDTO} from "./dto/PaymentNetworkDTO";
+import Swal from 'sweetalert2';
 
 @Component({
   selector: 'app-payment-network',
@@ -56,14 +57,6 @@ export class PaymentNetworkComponent implements OnInit {
     this.loadPaymentNetworks(initialParams);
   }
 
-  // ngAfterViewInit() {
-  //   if (this.paginator) {
-  //     this.dataSource.paginator = this.paginator;
-  //   } else {
-  //     console.error("Paginator is undefined!");
-  //   }
-  // }
-
   loadPaymentNetworks(params: ListPaymentNetworkRequestDTO): void {
     this.paymentNetworkService.listPaymentNetwork(params).subscribe((response: any) => {
       if (response && response.content) {
@@ -111,12 +104,35 @@ export class PaymentNetworkComponent implements OnInit {
       pageSize: this.pageSize
     };
     this.loadPaymentNetworks(this.filterState);
-
   }
 
   resetFilter() {
     this.payment_network_filter.reset();
     this.applyFilter();
     this.isFilterOpen = true;
+  }
+
+  deletePaymentNetwork(networkId: number): void {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: 'You will not be able to recover this payment network!',
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#d33',
+      cancelButtonColor: '#3085d6',
+      confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+      if (result.isConfirmed) {
+        this.paymentNetworkService.deletePaymentNetwork(networkId).subscribe({
+          next: (response: any) => {
+            Swal.fire('Deleted!', 'Payment network has been deleted.', 'success');
+            this.loadPaymentNetworks(this.filterState!);
+          },
+          error: (error) => {
+            Swal.fire('Error!', 'Failed to delete payment network.', 'error');
+          }
+        });
+      }
+    });
   }
 }

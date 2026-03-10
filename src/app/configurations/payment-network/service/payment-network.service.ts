@@ -23,4 +23,8 @@ export class PaymentNetworkService {
       .set('paymentNetworkID', paymentNetworkID);
     return this.http.post(HttpService.PAYMENT_NETWORK_GET_PAYMENT_NETWORK_BY_ID,null,{params:params});
   }
+
+  deletePaymentNetwork(paymentNetworkID:number){
+    return this.http.delete(HttpService.PAYMENT_NETWORK_DELETE_PAYMENT_NETWORK_BY_ID+`${paymentNetworkID}`);
+  }
 }

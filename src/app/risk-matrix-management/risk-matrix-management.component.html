@@ -1,0 +1,98 @@
+<div class="container-fluid">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+          <h4 class="card-title">Risk Matrix Management</h4>
+          <button class="btn btn-primary" (click)="showAddForm()">
+            <i class="fas fa-plus"></i> Add Risk Matrix
+          </button>
+        </div>
+        <div class="card-body">
+          
+          <!-- Add/Edit Form -->
+          <div *ngIf="showForm" class="row mb-4">
+            <div class="col-12">
+              <div class="card border-primary">
+                <div class="card-header bg-primary text-white">
+                  <h5 class="mb-0">{{ isEditMode ? 'Edit' : 'Add' }} Risk Matrix</h5>
+                </div>
+                <div class="card-body">
+                  <form (ngSubmit)="saveRiskMatrix()">
+                    <div class="row">
+                      <div class="col-md-3">
+                        <label class="form-label">Risk Level</label>
+                        <select class="form-select" [(ngModel)]="selectedRiskMatrix.flag" name="flag" required>
+                          <option value="">Select Risk Level</option>
+                          <option value="LOW">Low</option>
+                          <option value="MEDIUM">Medium</option>
+                          <option value="HIGH">High</option>
+                        </select>
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Min Value</label>
+                        <input type="number" class="form-control" [(ngModel)]="selectedRiskMatrix.minValue" name="minValue" required>
+                      </div>
+                      <div class="col-md-3">
+                        <label class="form-label">Max Value</label>
+                        <input type="number" class="form-control" [(ngModel)]="selectedRiskMatrix.maxValue" name="maxValue" required>
+                      </div>
+                      <div class="col-md-3 d-flex align-items-end">
+                        <button type="submit" class="btn btn-success me-2">
+                          <i class="fas fa-save"></i> {{ isEditMode ? 'Update' : 'Save' }}
+                        </button>
+                        <button type="button" class="btn btn-secondary" (click)="cancelForm()">
+                          <i class="fas fa-times"></i> Cancel
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Risk Matrix Table -->
+          <div class="table-responsive">
+            <table class="table table-striped table-hover">
+              <thead class="table-dark">
+                <tr>
+                  <th>ID</th>
+                  <th>Risk Level</th>
+                  <th>Min Value</th>
+                  <th>Max Value</th>
+                  <th>Range</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                <tr *ngFor="let riskMatrix of riskMatrixList">
+                  <td>{{ riskMatrix.riskMetrixId }}</td>
+                  <td>
+                    <span [class]="getRiskLevelClass(riskMatrix.flag)">
+                      {{ riskMatrix.flag }}
+                    </span>
+                  </td>
+                  <td>{{ riskMatrix.minValue }}</td>
+                  <td>{{ riskMatrix.maxValue }}</td>
+                  <td>{{ riskMatrix.minValue }} - {{ riskMatrix.maxValue }}</td>
+                  <td>
+                    <button class="btn btn-sm btn-warning me-2" (click)="editRiskMatrix(riskMatrix)">
+                      <i class="fas fa-edit"></i> Edit
+                    </button>
+                    <button class="btn btn-sm btn-danger" (click)="deleteRiskMatrix(riskMatrix.riskMetrixId!)">
+                      <i class="fas fa-trash"></i> Delete
+                    </button>
+                  </td>
+                </tr>
+                <tr *ngIf="riskMatrixList.length === 0">
+                  <td colspan="6" class="text-center">No risk matrix found</td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

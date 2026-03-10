@@ -130,6 +130,8 @@
 
                 <div class="btn-group" role="group" aria-label="Basic outlined example">
                   <button type="button" class="btn btn-secondary btn-outline btn-sm" title="View" [routerLink]="['/configurations/payment-network/new-payment','view', element.Network_ID]"><i class="ph ph-eye"></i></button>
+                  <button type="button" class="btn btn-secondary btn-outline btn-sm" title="Edit" [routerLink]="['/configurations/payment-network/new-payment','edit', element.Network_ID]"><i class="ph ph-pencil"></i></button>
+                  <button type="button" class="btn btn-danger btn-outline btn-sm" title="Delete" (click)="deletePaymentNetwork(element.Network_ID)"><i class="ph ph-trash"></i></button>
                 </div>
               </td>
             </ng-container>

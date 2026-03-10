@@ -155,9 +155,13 @@
                           type="button">
                     <i class="ph ph-eye"></i>
                   </button>
-                  <button [routerLink]="'/configurations/rule-configuration/edit-rule/'+element.fmsRuleId" class="btn btn-secondary btn-outline btn-sm flex-1" title="View"
+                  <button [routerLink]="'/configurations/rule-configuration/edit-rule/'+element.fmsRuleId" class="btn btn-secondary btn-outline btn-sm flex-1" title="Edit"
                           type="button">
                     <i class="ph ph-pencil"></i>
+                  </button>
+                  <button (click)="deleteRule(element.fmsRuleId)" class="btn btn-danger btn-outline btn-sm flex-1" title="Delete"
+                          type="button">
+                    <i class="ph ph-trash"></i>
                   </button>
                 </div>
               </td>

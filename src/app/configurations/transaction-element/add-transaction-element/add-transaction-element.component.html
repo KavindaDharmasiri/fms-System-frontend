@@ -428,12 +428,12 @@
         </div>
       </div>
 
-      <form [formGroup]="fieldDependenciesForm">
+      <!--<form [formGroup]="fieldDependenciesForm">
         <div class="d-flex flex-column gap-2 w-100">
           <p class="font-16px fw-bold m-0">Field Dependencies</p>
 
           <div class="d-flex flex-wrap gap-2 w-100 align-items-start border-1 rounded-2 p-3">
-            <!-- Operators -->
+            &lt;!&ndash; Operators &ndash;&gt;
             <div class="flex-grow-1">
               <mat-label>Operators</mat-label>
               <mat-form-field appearance="outline" class="w-100 input-sm">
@@ -449,7 +449,7 @@
               </mat-form-field>
             </div>
 
-            <!-- Value 1 -->
+            &lt;!&ndash; Value 1 &ndash;&gt;
             <div class="flex-grow-1">
               <mat-label>Value</mat-label>
               <mat-form-field appearance="outline" class="w-100 input-sm">
@@ -462,7 +462,7 @@
               </mat-form-field>
             </div>
 
-            <!-- Element -->
+            &lt;!&ndash; Element &ndash;&gt;
             <div class="flex-grow-1">
               <mat-label>Element</mat-label>
               <mat-form-field appearance="outline" class="w-100 input-sm">
@@ -478,7 +478,7 @@
               </mat-form-field>
             </div>
 
-            <!-- Operator -->
+            &lt;!&ndash; Operator &ndash;&gt;
             <div class="flex-grow-1">
               <mat-label>Operator</mat-label>
               <mat-form-field appearance="outline" class="w-100 input-sm">
@@ -494,7 +494,7 @@
               </mat-form-field>
             </div>
 
-            <!-- Value 2 -->
+            &lt;!&ndash; Value 2 &ndash;&gt;
             <div class="flex-grow-1">
               <mat-label>Value</mat-label>
               <mat-form-field appearance="outline" class="w-100 input-sm">
@@ -507,7 +507,7 @@
               </mat-form-field>
             </div>
 
-            <!-- Aligned Button (like your example) -->
+            &lt;!&ndash; Aligned Button (like your example) &ndash;&gt;
             <div class="d-flex mt-3">
               <button
                 type="button"
@@ -522,9 +522,9 @@
 
 
 
-      </form>
+      </form>-->
 
-      <div class="row">
+      <!--<div class="row">
         <div class="mat-table">
           <table [dataSource]="dataSource2" mat-table>
             <ng-container matColumnDef="operators">
@@ -558,14 +558,14 @@
               </td>
             </ng-container>
             <ng-container matColumnDef="action">
-              <!--              <th *matHeaderCellDef mat-header-cell>Action</th>-->
-              <!--              <td *matCellDef="let element" class="text-center" mat-cell>-->
+              &lt;!&ndash;              <th *matHeaderCellDef mat-header-cell>Action</th>&ndash;&gt;
+              &lt;!&ndash;              <td *matCellDef="let element" class="text-center" mat-cell>&ndash;&gt;
 
-              <!--                <div aria-label="Basic outlined example" class="btn-group" role="group">-->
-              <!--                  <button (click)="deleteData1(element)" class="btn btn-secondary btn-outline btn-sm" title="Delete"-->
-              <!--                          type="button"><i class="ph ph-trash"></i></button>-->
-              <!--                </div>-->
-              <!--              </td>-->
+              &lt;!&ndash;                <div aria-label="Basic outlined example" class="btn-group" role="group">&ndash;&gt;
+              &lt;!&ndash;                  <button (click)="deleteData1(element)" class="btn btn-secondary btn-outline btn-sm" title="Delete"&ndash;&gt;
+              &lt;!&ndash;                          type="button"><i class="ph ph-trash"></i></button>&ndash;&gt;
+              &lt;!&ndash;                </div>&ndash;&gt;
+              &lt;!&ndash;              </td>&ndash;&gt;
 
               <th *matHeaderCellDef mat-header-cell>Action</th>
               <td *matCellDef="let element" mat-cell>
@@ -584,7 +584,7 @@
             <tr *matRowDef="let row; columns: displayedColumns2" mat-row></tr>
           </table>
         </div>
-      </div>
+      </div>-->
 
       <hr />
       <div *ngIf="mode != 'view'" class="row">

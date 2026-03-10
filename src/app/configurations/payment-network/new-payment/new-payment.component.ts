@@ -74,6 +74,59 @@ export class NewPaymentComponent implements OnInit {
       this.showResetButton = true;
       this.showEditButton = false;
       this.showBackButton = false;
+    } else if (this.actionType === "edit") {
+      this.title = "Edit Payment";
+      this.page_title = "Edit Payment Network";
+      this.showSaveButton = true;
+      this.showResetButton = true;
+      this.showEditButton = false;
+      this.showBackButton = true;
+      this.viewDateTime = false;
+      
+      if (this.id !== "new") {
+        const paymentNetworkId = parseInt(this.id, 10);
+        if (isNaN(paymentNetworkId)) {
+          console.error("Invalid ID format");
+          Swal.fire("Invalid ID", "Please provide a valid numeric ID.", "error");
+          return;
+        }
+
+        this.paymentNetworkService.getPaymentNetworkByID(paymentNetworkId)
+          .pipe(
+            catchError(err => {
+              console.error("Error fetching network:", err);
+              Swal.fire("" + err.error.message, '', 'error');
+              return throwError(err);
+            })
+          )
+          .subscribe((response: any) => {
+            this.paymentnetworkOriginalValues = {
+              paymentNetworkID: response.data.paymentNetworkId,
+              paymentNetworkName: response.data.networkName,
+              BINLength: response.data.binLength.toString(),
+              BIN: response.data.bin.toString(),
+              Status: response.data.status
+            };
+            
+            this.paymentNetworkForm.patchValue({
+              paymentNetworkID: response.data.paymentNetworkId,
+              paymentNetworkName: response.data.networkName,
+              BINLength: response.data.binLength.toString(),
+              BIN: response.data.bin.toString(),
+              Status: response.data.status === "ACTIVE"
+            });
+
+            this.updateNetworkID = response.data.paymentNetworkId;
+            this.selectedBINLength = response.data.binLength;
+            this.title = response.data.networkName;
+
+            const binControl = this.paymentNetworkForm.get('BIN');
+            if (binControl) {
+              binControl.setValidators(this.binLengthValidator(this.selectedBINLength));
+              binControl.updateValueAndValidity();
+            }
+          });
+      }
     } else if (this.actionType === "view") {
       this.viewDateTime = true;
       this.page_title = "View Payment Network";
@@ -174,12 +227,14 @@ export class NewPaymentComponent implements OnInit {
 
     const formData = this.paymentNetworkForm.value;
     const addPaymentNetworkDTO = new AddPaymentNetworkDTO(
-      this.actionType !== "add" ? this.updateNetworkID : 0,
+      (this.actionType === "edit" || this.actionType === "view") ? this.updateNetworkID : 0,
       formData.paymentNetworkName,
       Number(formData.BIN),
       Number(formData.BINLength),
       formData.Status
     );
+
+    const actionText = (this.actionType === "edit" || this.actionType === "view") ? "updated" : "added";
 
     this.paymentNetworkService.addPaymentNetwork(addPaymentNetworkDTO)
       .pipe(
@@ -191,10 +246,10 @@ export class NewPaymentComponent implements OnInit {
       )
       .subscribe((response: any) => {
         if (response.data?.success) {
-          Swal.fire(response.data.data, '', 'success');
+          Swal.fire(`Payment Network ${actionText} successfully!`, '', 'success');
           this.router.navigate(['/configurations/payment-network']);
         } else {
-          Swal.fire("Payment Network Adding Unsuccessful.", '', 'error');
+          Swal.fire(`Payment Network ${actionText} unsuccessful.`, '', 'error');
         }
       });
   }
@@ -229,13 +284,13 @@ export class NewPaymentComponent implements OnInit {
         BIN: "",
         Status: false
       })
-    }else {
+    } else {
       this.paymentNetworkForm.patchValue({
         paymentNetworkID: this.paymentnetworkOriginalValues.paymentNetworkID,
         paymentNetworkName: this.paymentnetworkOriginalValues.paymentNetworkName,
         BINLength: this.paymentnetworkOriginalValues.BINLength,
-        BIN: this.paymentnetworkOriginalValues.BIN, // Ensure string
-        Status: this.paymentnetworkOriginalValues.status === "ACTIVE"
+        BIN: this.paymentnetworkOriginalValues.BIN,
+        Status: this.paymentnetworkOriginalValues.Status === "ACTIVE"
       })
     }
   }

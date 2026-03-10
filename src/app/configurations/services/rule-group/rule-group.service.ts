@@ -51,4 +51,8 @@ export class RuleGroupService {
   loadRules():Observable<ApiResponseDTO<any>> {
     return this.http.get<ApiResponseDTO<any>>(HttpService.SET_RULES_FOR_REAL_TIME);
   }
+
+  deleteRuleGroup(id: number): Observable<ApiResponseDTO<string>> {
+    return this.http.delete<ApiResponseDTO<string>>(HttpService.RULE_GROUP_DELETE+`${id}`);
+  }
 }
