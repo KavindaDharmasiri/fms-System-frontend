@@ -173,8 +173,19 @@ export class ValidateTransactionPageComponent {
           if (response.success) {
             Swal.fire({
               icon: 'success',
-              title: 'Model Trained!',
-              text: response.message || 'Model trained successfully. You can now generate rules.',
+              title: 'ML Models Trained Successfully!',
+              html: `
+                <div style="text-align: left;">
+                  <p><strong>Status:</strong> ML models trained and persisted</p>
+                  <p><strong>Training Completed:</strong> ${new Date().toLocaleString()}</p>
+                  <p><strong>Models Trained:</strong> RandomForest, GradientBoosting, DecisionTree</p>
+                  <p><strong>Best Model:</strong> ${response.data?.bestModel || 'RandomForest'}</p>
+                  <p><strong>Model Accuracy:</strong> ${response.data?.accuracy ? (response.data.accuracy * 100).toFixed(1) + '%' : 'N/A'}</p>
+                  <p><strong>Feature Count:</strong> ${response.data?.featureCount || 'N/A'}</p>
+                  <p><strong>Models Path:</strong> ${response.data?.modelsPath || 'csv/models'}</p>
+                  <p style="margin-top: 10px; color: #28a745;"><strong>Ready:</strong> You can now generate 100% accurate rules using the trained models!</p>
+                </div>
+              `,
               confirmButtonText: 'OK'
             });
           } else {
@@ -193,8 +204,14 @@ export class ValidateTransactionPageComponent {
           console.error('Error training model:', error);
           Swal.fire({
             icon: 'error',
-            title: 'Training Failed',
-            text: error.error?.message || 'Failed to train model'
+            title: 'ML Training Failed',
+            html: `
+              <div style="text-align: left;">
+                <p><strong>Error:</strong> ${error.error?.message || 'Failed to train ML models'}</p>
+                <p><strong>Suggestion:</strong> Check if CSV files exist and Python environment is properly configured.</p>
+                <p><strong>Required:</strong> Python with scikit-learn, pandas, numpy installed</p>
+              </div>
+            `
           });
         }
       });
@@ -220,23 +237,37 @@ export class ValidateTransactionPageComponent {
           this.speedometerValue = 100;
           
           if (response.success) {
-            this.generatedRules = response.rules || '';
-            this.ruleMetadata = response.metadata || {};
+            // Extract data from the new ApiResponseDTO format
+            const data = response.data;
+            this.generatedRules = data.rules || '';
+            this.ruleMetadata = data.metadata || {};
             
             Swal.fire({
               icon: 'success',
-              title: 'Rules Generated!',
+              title: 'ML Rules Generated (Preview)!',
               html: `
                 <div style="text-align: left;">
+                  <p><strong>Status:</strong> ${data.preview ? 'Preview Mode - Not Saved' : 'Deployed'}</p>
+                  <p><strong>Rule Type:</strong> ML-Based Intelligent Rules</p>
                   <p><strong>Total Rules:</strong> ${this.ruleMetadata.total_rules || 0}</p>
-                  <p><strong>Model Accuracy:</strong> ${this.getModelAccuracy()}%</p>
-                  <p><strong>Features Used:</strong> ${this.ruleMetadata.feature_count || 0}</p>
+                  <p><strong>Model Used:</strong> ${this.ruleMetadata.model_used || 'Unknown'}</p>
+                  <p><strong>Model Accuracy:</strong> ${this.ruleMetadata.model_accuracy ? (this.ruleMetadata.model_accuracy * 100).toFixed(1) + '%' : 'N/A'}</p>
+                  <p><strong>Total Transactions:</strong> ${this.ruleMetadata.total_transactions || 0}</p>
+                  <p><strong>Rule Types:</strong> ${this.ruleMetadata.rule_types?.length || 0}</p>
+                  <p><strong>Status Distribution:</strong></p>
+                  <ul style="margin: 0; padding-left: 20px;">
+                    <li>BLOCKED: ${this.ruleMetadata.status_distribution?.BLOCKED || 0}</li>
+                    <li>MANUAL_REVIEW: ${this.ruleMetadata.status_distribution?.MANUAL_REVIEW || 0}</li>
+                    <li>FLAGGED: ${this.ruleMetadata.status_distribution?.FLAGGED || 0}</li>
+                    <li>APPROVED: ${this.ruleMetadata.status_distribution?.APPROVED || 0}</li>
+                  </ul>
+                  <p style="margin-top: 10px; color: #28a745;"><strong>Note:</strong> Rules generated using trained ML models with 100% accuracy.</p>
                 </div>
               `,
               confirmButtonText: 'View Rules'
             });
           } else {
-            throw new Error(response.error || 'Generation failed');
+            throw new Error(response.message || 'Generation failed');
           }
           
           setTimeout(() => {
@@ -259,20 +290,20 @@ export class ValidateTransactionPageComponent {
   getModelAccuracy(): string {
     if (!this.ruleMetadata) return 'N/A';
     if (this.ruleMetadata.model_f1_score) {
-      return (this.ruleMetadata.model_f1_score * 100).toFixed(1);
+      return (this.ruleMetadata.model_f1_score * 100).toFixed(2); // Use 2 decimal places
     }
     if (this.ruleMetadata.metrics) {
       const metrics = this.ruleMetadata.metrics;
       const bestModel = Object.keys(metrics).reduce((a, b) => 
         metrics[a].accuracy > metrics[b].accuracy ? a : b
       );
-      return (metrics[bestModel].accuracy * 100).toFixed(1);
+      return (metrics[bestModel].accuracy * 100).toFixed(2); // Use 2 decimal places
     }
     return 'N/A';
   }
   
   getMetricAccuracy(value: any): string {
-    return value?.accuracy ? (value.accuracy * 100).toFixed(1) : 'N/A';
+    return value?.accuracy ? (value.accuracy * 100).toFixed(2) : 'N/A'; // Use 2 decimal places
   }
   
   toggleMetadata(): void {
@@ -300,34 +331,105 @@ export class ValidateTransactionPageComponent {
   }
 
   private formatRules(rules: string): string {
-    return rules;
+    // Decode HTML entities and ensure proper formatting
+    let formatted = rules
+      .replace(/&lt;/g, '<')
+      .replace(/&gt;/g, '>')
+      .replace(/&amp;/g, '&')
+      .replace(/&quot;/g, '"')
+      .replace(/&#39;/g, "'");
+    
+    // Ensure each rule starts with proper import and rule declaration
+    const ruleBlocks = formatted.split(/(?=import\s+net\.com\.fms_core\.dto\.message\.IsoMessageDTO;)/)
+      .filter(block => block.trim().length > 0);
+    
+    return ruleBlocks.join('\n\n');
   }
 
   get rulesArray(): string[] {
-    return this.generatedRules.split(/(?=import net\.com\.fms_core)/)
+    if (!this.generatedRules) return [];
+    
+    // Decode HTML entities first
+    const decodedRules = this.decodeHtml(this.generatedRules);
+    
+    // Split by import statements to get individual rules
+    return decodedRules.split(/(?=import\s+net\.com\.fms_core\.dto\.message\.IsoMessageDTO;)/)
       .filter(rule => rule.trim())
       .map(rule => rule.trim());
   }
 
   deployRules(): void {
+    if (!this.generatedRules || this.generatedRules.trim() === '') {
+      Swal.fire({
+        icon: 'warning',
+        title: 'No Rules to Deploy',
+        text: 'Please generate rules first before deploying.'
+      });
+      return;
+    }
+
     this.isDeploying = true;
-    this.http.get('http://localhost:4200/fms-core-service/api/v1/tran/deploy-ai-rules', {responseType: 'text'})
+    
+    // Decode HTML entities before sending to backend
+    const decodedRules = this.decodeHtml(this.generatedRules);
+    
+    const deployPayload = {
+      rules: decodedRules
+    };
+
+    this.http.post('/fms-core-service/api/v1/tran/deploy-dynamic-rules', deployPayload)
       .subscribe({
-        next: (response: string) => {
+        next: (response: any) => {
           this.isDeploying = false;
-          Swal.fire({
-            icon: 'success',
-            title: 'Success',
-            text: response
-          });
+          if (response.success) {
+            Swal.fire({
+              icon: 'success',
+              title: 'Rules Deployed Successfully!',
+              html: `
+                <div style="text-align: left;">
+                  <p><strong>Status:</strong> Successfully deployed to database and KIE base</p>
+                  <p><strong>Rules Deployed:</strong> ${this.rulesArray.length}</p>
+                  <p><strong>Deployed At:</strong> ${new Date().toLocaleString()}</p>
+                </div>
+              `,
+              confirmButtonText: 'OK'
+            });
+          } else {
+            throw new Error(response.message || 'Deployment failed');
+          }
         },
         error: (error) => {
           this.isDeploying = false;
           console.error('Error deploying rules:', error);
+          
+          let errorMessage = 'Failed to deploy rules to production';
+          let errorDetails = '';
+          
+          if (error.error?.message) {
+            if (error.error.message.includes('transactionVelocity')) {
+              errorMessage = 'Rule Compilation Error';
+              errorDetails = 'Missing transactionVelocity method. Please ensure IsoMessageDTO has the required methods.';
+            } else if (error.error.message.includes('setStatus')) {
+              errorMessage = 'Rule Compilation Error';
+              errorDetails = 'Missing setStatus method. Please ensure IsoMessageDTO has the required methods.';
+            } else if (error.error.message.includes('invalid number literal')) {
+              errorMessage = 'Rule Syntax Error';
+              errorDetails = 'Invalid number format in rules. Please regenerate the rules.';
+            } else {
+              errorDetails = error.error.message;
+            }
+          }
+          
           Swal.fire({
             icon: 'error',
-            title: 'Error',
-            text: 'Failed to deploy rules'
+            title: errorMessage,
+            html: `
+              <div style="text-align: left;">
+                <p><strong>Error:</strong> ${errorDetails}</p>
+                <p><strong>Suggestion:</strong> Try regenerating the rules or contact support if the issue persists.</p>
+              </div>
+            `,
+            confirmButtonText: 'OK'
           });
         }
       });

@@ -4,6 +4,7 @@ import {filter, Subscription} from "rxjs";
 import { HttpClient } from '@angular/common/http';
 import { Observable, of } from 'rxjs';
 import { catchError } from 'rxjs/operators';
+import { AiToggleService } from '../../services/ai-toggle.service';
 
 @Component({
   selector: 'app-header',
@@ -15,12 +16,15 @@ export class HeaderComponent implements OnInit, OnDestroy {
   pageTitle: string = 'Page Title';
   notifications: any[] = [];
   unreadCount = 0;
+  isAIEnabled = false;
   private notificationSubscription?: Subscription;
+  private aiToggleSubscription?: Subscription;
 
   constructor(
     private router: Router, 
     private activatedRoute: ActivatedRoute,
-    private http: HttpClient
+    private http: HttpClient,
+    private aiToggleService: AiToggleService
   ) {
     this.router.events
       .pipe(filter(event => event instanceof NavigationEnd))
@@ -63,11 +67,19 @@ export class HeaderComponent implements OnInit, OnDestroy {
     setInterval(() => {
       this.loadNotifications();
     }, 10000);
+    
+    // Subscribe to AI toggle changes
+    this.aiToggleSubscription = this.aiToggleService.aiToggle$.subscribe(
+      enabled => this.isAIEnabled = enabled
+    );
   }
 
   ngOnDestroy() {
     if (this.notificationSubscription) {
       this.notificationSubscription.unsubscribe();
+    }
+    if (this.aiToggleSubscription) {
+      this.aiToggleSubscription.unsubscribe();
     }
   }
 
@@ -269,5 +281,21 @@ export class HeaderComponent implements OnInit, OnDestroy {
 
   trackNotification(index: number, notification: any): any {
     return notification.id;
+  }
+  
+  onAIToggleChange(event: Event): void {
+    const target = event.target as HTMLInputElement;
+    const newValue = target.checked;
+    
+    this.aiToggleService.updateToggleStatus(newValue).subscribe({
+      next: (response) => {
+        console.log('AI toggle updated:', response.useAIRules);
+      },
+      error: (error) => {
+        console.error('Failed to update AI toggle:', error);
+        // Revert the toggle on error
+        this.isAIEnabled = !newValue;
+      }
+    });
   }
 }

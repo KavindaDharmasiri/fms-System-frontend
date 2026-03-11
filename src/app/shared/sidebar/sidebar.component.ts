@@ -42,15 +42,15 @@ export class SidebarComponent {
       ],
       expanded: false
     },
-    // {
-    //   label: 'Analysis & Testing',
-    //   icon: 'ph ph-flask',
-    //   submenu: [
-    //     { label: 'Live Simulation', route: '/analysis-testing/live-simulation' },
-    //     { label: 'Rule Testing & Validation', route: '/analysis-testing/rule-testing' },
-    //   ],
-    //   expanded: false
-    // },
+    {
+      label: 'Analysis & Testing',
+      icon: 'ph ph-flask',
+      submenu: [
+        // { label: 'Live Simulation', route: '/analysis-testing/live-simulation' },
+        { label: 'Rule Testing & Validation', route: '/analysis-testing/rule-testing' },
+      ],
+      expanded: false
+    },
     {
       label: 'High Risk Transaction',
       icon: 'ph ph-money',

@@ -104,7 +104,7 @@
         </div>
         
         <!-- Enhanced Rule Cards with Structured Display -->
-        <div *ngIf="ruleMetadata?.rule_details" class="row g-3">
+        <div *ngIf="ruleMetadata?.rule_details && ruleMetadata.rule_details.length > 0; else simpleRulesDisplay" class="row g-3">
           <div class="col-12" *ngFor="let detail of ruleMetadata.rule_details; let i = index">
             <div class="card rule-detail-card">
               <div class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
@@ -141,8 +141,8 @@
                       <ul class="list-unstyled mb-0">
                         <li><strong>Fraud Probability:</strong> <span class="text-danger fw-bold">{{(detail.confidence * 100).toFixed(1)}}%</span></li>
                         <li><strong>Risk Score:</strong> {{(detail.confidence * 10).toFixed(1)}}/10</li>
-                        <li><strong>Action:</strong> <span class="badge bg-danger">FLAG & REVIEW</span></li>
-                        <li><strong>Priority:</strong> {{(detail.confidence * 100).toFixed(0)}} (salience)</li>
+                        <li><strong>Action:</strong> <span class="badge bg-danger">{{detail.status}}</span></li>
+                        <li><strong>Priority:</strong> {{detail.priority}} (salience)</li>
                       </ul>
                     </div>
                   </div>
@@ -160,7 +160,7 @@
                   </div>
                   
                   <!-- Detailed Condition Analysis -->
-                  <div class="col-12">
+                  <div class="col-12" *ngIf="detail.conditions && detail.conditions.length > 0">
                     <div class="info-section">
                       <h6 class="section-title"><i class="ph ph-list-checks text-success"></i> DETAILED CONDITION ANALYSIS</h6>
                       <div class="alert alert-info mb-2">
@@ -172,72 +172,12 @@
                             <span class="badge bg-success me-2">{{j + 1}}</span>
                             <div class="flex-grow-1">
                               <strong>{{cond.feature}}</strong> 
-                              <span class="text-muted">{{cond.operator === '>' ? 'greater than' : cond.operator === '<=' ? 'less than or equal to' : 'equals'}}</span>
-                              <code class="ms-1">{{cond.threshold.toFixed(2)}}</code>
+                              <span class="text-muted">{{cond.operator === '>' ? 'greater than' : cond.operator === '<=' ? 'less than or equal to' : cond.operator}}</span>
+                              <code class="ms-1">{{cond.threshold}}</code>
                               <div class="text-muted small mt-1" *ngIf="detail.detailed_explanations && detail.detailed_explanations[j]">
                                 <i class="ph ph-arrow-right"></i> {{detail.detailed_explanations[j]}}
                               </div>
                             </div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                  
-                  <!-- Historical Context -->
-                  <div class="col-md-6">
-                    <div class="info-section">
-                      <h6 class="section-title"><i class="ph ph-clock-counter-clockwise text-secondary"></i> HISTORICAL CONTEXT</h6>
-                      <p class="small mb-0">
-                        This pattern was learned from analyzing historical transactions that were previously 
-                        flagged by the <strong>{{detail.rule_name}}</strong> rule. The AI model identified this 
-                        specific combination with <strong>{{(detail.confidence * 100).toFixed(1)}}%</strong> confidence 
-                        based on <strong>{{detail.depth}}</strong> levels of decision tree analysis.
-                      </p>
-                    </div>
-                  </div>
-                  
-                  <!-- Business Logic -->
-                  <div class="col-md-6">
-                    <div class="info-section">
-                      <h6 class="section-title"><i class="ph ph-gear text-primary"></i> BUSINESS LOGIC</h6>
-                      <ol class="small mb-0 ps-3">
-                        <li>Flag transaction as <span class="badge bg-danger">HIGH RISK</span></li>
-                        <li>Trigger manual review workflow</li>
-                        <li>Set fraud probability: {{(detail.confidence * 100).toFixed(1)}}%</li>
-                        <li>Assign risk score: {{(detail.confidence * 10).toFixed(1)}}/10</li>
-                        <li>Log activation for audit trail</li>
-                      </ol>
-                    </div>
-                  </div>
-                  
-                  <!-- Fraud Prevention Impact -->
-                  <div class="col-12">
-                    <div class="info-section">
-                      <h6 class="section-title"><i class="ph ph-shield-checkered text-success"></i> FRAUD PREVENTION IMPACT</h6>
-                      <div class="row g-2">
-                        <div class="col-md-3">
-                          <div class="impact-card">
-                            <i class="ph ph-prohibit text-danger"></i>
-                            <div class="small">Prevents fraudulent transactions</div>
-                          </div>
-                        </div>
-                        <div class="col-md-3">
-                          <div class="impact-card">
-                            <i class="ph ph-user-focus text-primary"></i>
-                            <div class="small">Enables analyst intervention</div>
-                          </div>
-                        </div>
-                        <div class="col-md-3">
-                          <div class="impact-card">
-                            <i class="ph ph-currency-dollar text-success"></i>
-                            <div class="small">Reduces financial losses</div>
-                          </div>
-                        </div>
-                        <div class="col-md-3">
-                          <div class="impact-card">
-                            <i class="ph ph-check-circle text-info"></i>
-                            <div class="small">Maintains compliance</div>
                           </div>
                         </div>
                       </div>
@@ -259,6 +199,30 @@
             </div>
           </div>
         </div>
+        
+        <!-- Simple Rules Display (Fallback) -->
+        <ng-template #simpleRulesDisplay>
+          <div class="alert alert-info">
+            <i class="ph ph-info-circle"></i> 
+            <strong>Generated {{rulesArray.length}} Rules</strong> - Detailed view not available, showing raw rules:
+          </div>
+          <div class="row g-3">
+            <div class="col-12" *ngFor="let rule of rulesArray; let i = index">
+              <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                  <h6 class="mb-0">Rule {{i + 1}}</h6>
+                  <button class="btn btn-sm btn-outline-secondary" (click)="toggleRuleCode(i)">
+                    <i class="ph" [class.ph-code]="!expandedRuleCode[i]" [class.ph-x]="expandedRuleCode[i]"></i>
+                    {{expandedRuleCode[i] ? 'Hide' : 'View'}} Code
+                  </button>
+                </div>
+                <div class="card-body" *ngIf="expandedRuleCode[i]">
+                  <pre class="rule-content">{{rule}}</pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </ng-template>
       </div>
     </div>
   </div>

@@ -11,6 +11,7 @@ import { TransactionChartComponent } from './components/transaction-chart/transa
 import { NotificationPanelComponent } from './components/notification-panel/notification-panel.component';
 import { DashboardService } from './services/dashboard.service';
 import { NotificationService } from './services/notification.service';
+import { AiToggleService } from '../services/ai-toggle.service';
 
 
 //material
@@ -65,7 +66,8 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
   ],
   providers: [
     DashboardService,
-    NotificationService
+    NotificationService,
+    AiToggleService
   ]
 })
 export class DashboardModule { }

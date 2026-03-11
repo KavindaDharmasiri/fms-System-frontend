@@ -9,6 +9,19 @@
       </div>
 
       <div class="header-right">
+        <!-- AI Toggle -->
+        <div class="ai-toggle-container">
+          <label class="ai-toggle-label">
+            <input 
+              type="checkbox" 
+              [checked]="isAIEnabled" 
+              (change)="onAIToggleChange($event)"
+              class="ai-toggle-input">
+            <span class="ai-toggle-slider"></span>
+            <span class="ai-toggle-text">Use AI Rules</span>
+          </label>
+        </div>
+
         <!-- Search Bar -->
         <div class="search-container">
           <div class="search-input-wrapper">

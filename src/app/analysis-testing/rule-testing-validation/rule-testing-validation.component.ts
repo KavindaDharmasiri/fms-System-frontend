@@ -5,16 +5,28 @@ import {TransactionService} from "../service/transaction.service";
 import {catchError} from "rxjs/operators";
 import Swal from "sweetalert2";
 import {throwError} from "rxjs";
+import {HttpClient} from "@angular/common/http";
 
-export interface PeriodicElement {
-  name: string;
-  position: number;
+export interface AIRuleTestResult {
+  transactionId: number;
+  transactionUuid: string;
+  amount: number;
+  pan: string;
+  originalRiskLevel: string;
+  newRiskLevel: string;
+  firedAIRules: string[];
+  status: string;
+  transactionDate: string;
+  details: any;
 }
 
-const ELEMENT_DATA: PeriodicElement[] = [
-  { position: 1, name: 'Hydrogen' },
-  { position: 2, name: 'Helium' },
-];
+export interface AIRuleGroup {
+  aiRuleGroupId: number;
+  groupName: string;
+  groupCode: string;
+  description: string;
+  ruleCount: number;
+}
 
 @Component({
   selector: 'app-rule-testing-validation',
@@ -23,167 +35,121 @@ const ELEMENT_DATA: PeriodicElement[] = [
 })
 export class RuleTestingValidationComponent implements OnInit{
 
-  constructor(private tranService:TransactionService) {
+  constructor(private tranService: TransactionService, private http: HttpClient) {
   }
 
   displayedColumns: string[] = [
-    'position',
-    'name',
+    'transactionId',
+    'amount',
+    'pan',
+    'originalRiskLevel',
+    'newRiskLevel',
+    'status',
+    'firedAIRules',
     'action',
   ];
-  dataSource = new MatTableDataSource<PeriodicElement>(ELEMENT_DATA);
+  dataSource = new MatTableDataSource<AIRuleTestResult>([]);
 
-  selectedTransactionDataset: string | null = null;
-  upload:boolean = false;
-
-  fileUpload(){
-    this.upload = true;
-    console.log(this.upload);
-  }
-
+  aiRuleGroups: AIRuleGroup[] = [];
+  selectedRuleGroupId: number | null = null;
+  startDate: Date | null = null;
+  endDate: Date | null = null;
+  isLoading = false;
+  testResults: AIRuleTestResult[] = [];
+  selectedDetails: any = null;
 
   ngOnInit(): void {
-    console.log(this.upload);
+    this.loadAIRuleGroups();
   }
 
-
-  onFileSelected(event: any) {
-    const file: File = event.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onload = (e: any) => {
-        const csvText = e.target.result;
-        this.parseCSV(csvText);
-      };
-      reader.readAsText(file);
-    }
+  loadAIRuleGroups() {
+    this.http.get<any>('http://localhost:4200/fms-core-service/api/v1/ai-rules/groups')
+      .subscribe({
+        next: (response) => {
+          if (response.success) {
+            this.aiRuleGroups = response.data;
+          }
+        },
+        error: (error) => {
+          console.error('Error loading AI rule groups:', error);
+          Swal.fire('Error', 'Failed to load AI rule groups', 'error');
+        }
+      });
   }
 
-
-  parseCSV(csvText: string) {
-    const lines = csvText.split('\n').map(line => line.trim()).filter(line => line !== '');
-    const data: TransactionDto[] = [];
-
-    if (lines.length < 2) {
-      console.error('CSV must have headers and at least one row of data');
+  testAIRules() {
+    if (!this.selectedRuleGroupId || !this.startDate || !this.endDate) {
+      Swal.fire('Error', 'Please select rule group and date range', 'error');
       return;
     }
 
-    const headers = lines[0].split(',').map(h => h.trim()); // Extract column headers
-    const dataRows = lines.slice(1); // Exclude headers from data
+    this.isLoading = true;
+    const testRequest = {
+      aiRuleGroupId: this.selectedRuleGroupId,
+      startDate: this.startDate.toISOString(),
+      endDate: this.endDate.toISOString()
+    };
 
-    for (let line of dataRows) {
-      const values = line.split(',').map(value => value.trim());
-
-      const rowObject: any = {};
-      for (let i = 0; i < headers.length; i++) {
-        rowObject[headers[i]] = values[i] ?? ''; // Safely assign columns
-      }
-
-      let tran = new TransactionDto();
-      tran.transactionHistoryId = 0;
-      tran.tranUuid = '';
-      tran.status = "ACTIVE";
-
-      // You can either serialize the full row or pick specific columns
-      // Option 1: store full JSON string
-      tran.tranPacket = JSON.stringify(rowObject);
-
-      // Option 2: construct a string manually
-      // tran.tranPacket = `Amount: ${rowObject.Amount}, AccountNo: ${rowObject.AccountNo}, Date: ${rowObject.Date}`;
-
-      data.push(tran);
-    }
-
-    console.log(data);
-
-    this.tranService.saveTransaction(data).pipe(
-          catchError(
-              (err) =>{
-                console.log(err)
-                Swal.fire(
-                    ""+err.error.message,
-                    '' ,
-                    'error'
-                );
-                return throwError(err);
-              }
-          )
-      ).subscribe(
-          (res:any)=>{
-            if(res.success){
-              Swal.fire(
-                  res.data,
-                  '' ,
-                  'success'
-              );
-            }else {
-              Swal.fire(
-                  "Transaction Save Unsuccessful",
-                  '' ,
-                  'error'
-              );
-
-            }
+    this.http.post<any>('http://localhost:4200/fms-core-service/api/v1/ai-rules/test', testRequest)
+      .subscribe({
+        next: (response) => {
+          this.isLoading = false;
+          if (response.success) {
+            this.testResults = response.data;
+            this.dataSource.data = this.testResults;
+            Swal.fire('Success', `Tested ${this.testResults.length} transactions`, 'success');
+          } else {
+            Swal.fire('Error', 'Test failed', 'error');
           }
-
-      )
+        },
+        error: (error) => {
+          this.isLoading = false;
+          console.error('Error testing AI rules:', error);
+          Swal.fire('Error', 'Failed to test AI rules', 'error');
+        }
+      });
   }
 
+  viewDetails(result: AIRuleTestResult) {
+    this.selectedDetails = result.details;
+    // Show modal or navigate to details view
+    Swal.fire({
+      title: 'Transaction Details',
+      html: `
+        <div class="text-left">
+          <p><strong>Transaction ID:</strong> ${result.transactionId}</p>
+          <p><strong>Amount:</strong> $${result.amount}</p>
+          <p><strong>PAN:</strong> ${result.pan}</p>
+          <p><strong>Original Risk:</strong> ${result.originalRiskLevel}</p>
+          <p><strong>New Risk:</strong> ${result.newRiskLevel}</p>
+          <p><strong>Fired AI Rules:</strong> ${result.firedAIRules.join(', ')}</p>
+          <p><strong>Block Reason:</strong> ${result.details?.blockReason || 'None'}</p>
+          <p><strong>Risk Score:</strong> ${result.details?.riskScore || 'N/A'}</p>
+          <p><strong>Fraud Percentage:</strong> ${result.details?.fraudPercentage || 'N/A'}%</p>
+        </div>
+      `,
+      width: '600px',
+      confirmButtonText: 'Close'
+    });
+  }
 
+  reset() {
+    this.selectedRuleGroupId = null;
+    this.startDate = null;
+    this.endDate = null;
+    this.testResults = [];
+    this.dataSource.data = [];
+  }
 
+  getTotalTransactions(): number {
+    return this.testResults.length;
+  }
 
+  getFlaggedTransactions(): number {
+    return this.testResults.filter(r => r.status === 'FLAGGED').length;
+  }
 
-  // parseCSV(csvText: string) {
-  //   const lines = csvText.split('\n');
-  //   const data: any[] = [];
-  //   let tran=new TransactionDto();
-  //   let num = 1;
-  //   for (let line of lines) {
-  //     const trimmedLine = line.trim();
-  //     if (trimmedLine) {
-  //
-  //       let tran=new TransactionDto();
-  //        tran.transactionHistoryId=0;
-  //        tran.tranUuid='';
-  //        tran.tranPacket=trimmedLine;
-  //        tran.status="ACTIVE";
-  //        data.push(tran);
-  //     }
-  //   }
-  //   console.log(data)
-  //
-  //   // this.tranService.saveTransaction(data).pipe(
-  //   //     catchError(
-  //   //         (err) =>{
-  //   //           console.log(err)
-  //   //           Swal.fire(
-  //   //               ""+err.error.message,
-  //   //               '' ,
-  //   //               'error'
-  //   //           );
-  //   //           return throwError(err);
-  //   //         }
-  //   //     )
-  //   // ).subscribe(
-  //   //     (res:any)=>{
-  //   //       if(res.success){
-  //   //         Swal.fire(
-  //   //             res.data,
-  //   //             '' ,
-  //   //             'success'
-  //   //         );
-  //   //       }else {
-  //   //         Swal.fire(
-  //   //             "Transaction Save Unsuccessful",
-  //   //             '' ,
-  //   //             'error'
-  //   //         );
-  //   //
-  //   //       }
-  //   //     }
-  //   //
-  //   // )
-  //
-  // }
+  getSuccessfulTransactions(): number {
+    return this.testResults.filter(r => r.status === 'PASSED').length;
+  }
 }
