@@ -6,6 +6,7 @@ import {catchError} from "rxjs/operators";
 import Swal from "sweetalert2";
 import {throwError} from "rxjs";
 import {HttpClient} from "@angular/common/http";
+import {AIRuleReportService, ReportRequest} from "../services/ai-rule-report.service";
 
 export interface AIRuleTestResult {
   transactionId: number;
@@ -35,8 +36,11 @@ export interface AIRuleGroup {
 })
 export class RuleTestingValidationComponent implements OnInit{
 
-  constructor(private tranService: TransactionService, private http: HttpClient) {
-  }
+  constructor(
+    private tranService: TransactionService, 
+    private http: HttpClient,
+    private reportService: AIRuleReportService
+  ) {}
 
   displayedColumns: string[] = [
     'transactionId',
@@ -133,12 +137,163 @@ export class RuleTestingValidationComponent implements OnInit{
     });
   }
 
+  private createReportRequest(): ReportRequest {
+    const selectedGroup = this.aiRuleGroups.find(g => g.aiRuleGroupId === this.selectedRuleGroupId);
+    return {
+      testResults: this.testResults,
+      ruleGroupName: selectedGroup ? selectedGroup.groupName : 'Unknown Group',
+      startDate: this.startDate?.toISOString(),
+      endDate: this.endDate?.toISOString()
+    };
+  }
+
+  downloadReport() {
+    if (!this.reportService.validateReportRequest(this.testResults)) {
+      return;
+    }
+
+    const reportRequest = this.createReportRequest();
+    const filename = this.reportService.generateFilename('AI_Rule_Test_Report', reportRequest.ruleGroupName, 'xlsx');
+
+    this.reportService.downloadExcelReport(reportRequest).subscribe({
+      next: (blob) => {
+        this.reportService.handleBlobDownload(blob, {
+          filename,
+          successMessage: 'Excel report downloaded successfully',
+          errorMessage: 'Failed to download Excel report'
+        });
+      },
+      error: (error) => this.reportService.handleDownloadError(error, 'Excel report')
+    });
+  }
+
+  downloadPDFReport() {
+    if (!this.reportService.validateReportRequest(this.testResults)) {
+      return;
+    }
+
+    const reportRequest = this.createReportRequest();
+    const filename = this.reportService.generateFilename('AI_Rule_Comprehensive_Report', reportRequest.ruleGroupName, 'txt');
+
+    this.reportService.downloadTextReport(reportRequest).subscribe({
+      next: (blob) => {
+        this.reportService.handleBlobDownload(blob, {
+          filename,
+          successMessage: 'Comprehensive report downloaded successfully',
+          errorMessage: 'Failed to download comprehensive report'
+        });
+      },
+      error: (error) => this.reportService.handleDownloadError(error, 'comprehensive report')
+    });
+  }
+
+  downloadJasperPDFReport() {
+    if (!this.reportService.validateReportRequest(this.testResults)) {
+      return;
+    }
+
+    const reportRequest = this.createReportRequest();
+    const filename = this.reportService.generateFilename('AI_Rule_Professional_Report', reportRequest.ruleGroupName, 'pdf');
+
+    this.reportService.downloadJasperPDFReport(reportRequest).subscribe({
+      next: (blob) => {
+        this.reportService.handleBlobDownload(blob, {
+          filename,
+          successMessage: 'Professional PDF report downloaded successfully',
+          errorMessage: 'Failed to download professional PDF report'
+        });
+      },
+      error: (error) => this.reportService.handleDownloadError(error, 'professional PDF report')
+    });
+  }
+
+  downloadDetailedJasperReport() {
+    if (!this.reportService.validateReportRequest(this.testResults)) {
+      return;
+    }
+
+    const reportRequest = this.createReportRequest();
+    const filename = this.reportService.generateFilename('AI_Rule_Detailed_Analysis', reportRequest.ruleGroupName, 'pdf');
+
+    this.reportService.downloadDetailedJasperReport(reportRequest).subscribe({
+      next: (blob) => {
+        this.reportService.handleBlobDownload(blob, {
+          filename,
+          successMessage: 'Detailed analysis report downloaded successfully',
+          errorMessage: 'Failed to download detailed analysis report'
+        });
+      },
+      error: (error) => this.reportService.handleDownloadError(error, 'detailed analysis report')
+    });
+  }
+
+  downloadExecutiveJasperReport() {
+    if (!this.reportService.validateReportRequest(this.testResults)) {
+      return;
+    }
+
+    const reportRequest = this.createReportRequest();
+    const filename = this.reportService.generateFilename('AI_Rule_Executive_Summary', reportRequest.ruleGroupName, 'pdf');
+
+    this.reportService.downloadExecutiveJasperReport(reportRequest).subscribe({
+      next: (blob) => {
+        this.reportService.handleBlobDownload(blob, {
+          filename,
+          successMessage: 'Executive summary report downloaded successfully',
+          errorMessage: 'Failed to download executive summary report'
+        });
+      },
+      error: (error) => this.reportService.handleDownloadError(error, 'executive summary report')
+    });
+  }
+
   reset() {
     this.selectedRuleGroupId = null;
     this.startDate = null;
     this.endDate = null;
     this.testResults = [];
     this.dataSource.data = [];
+  }
+
+  getHighRiskTransactions(): number {
+    return this.testResults.filter(r => r.newRiskLevel === 'HIGH').length;
+  }
+
+  getAverageRiskScore(): number {
+    const scores = this.testResults
+      .filter(r => r.details?.riskScore)
+      .map(r => r.details!.riskScore!);
+    
+    if (scores.length === 0) return 0;
+    return Math.round(scores.reduce((a, b) => a + b, 0) / scores.length * 100) / 100;
+  }
+
+  getTotalAmount(): number {
+    return Math.round(this.testResults.reduce((sum, r) => sum + (r.amount || 0), 0) * 100) / 100;
+  }
+
+  getMostFiredRule(): string {
+    const ruleCount = new Map<string, number>();
+    
+    this.testResults.forEach(result => {
+      if (result.firedAIRules) {
+        result.firedAIRules.forEach(rule => {
+          ruleCount.set(rule, (ruleCount.get(rule) || 0) + 1);
+        });
+      }
+    });
+    
+    let maxCount = 0;
+    let mostFiredRule = 'None';
+    
+    ruleCount.forEach((count, rule) => {
+      if (count > maxCount) {
+        maxCount = count;
+        mostFiredRule = rule;
+      }
+    });
+    
+    return mostFiredRule;
   }
 
   getTotalTransactions(): number {

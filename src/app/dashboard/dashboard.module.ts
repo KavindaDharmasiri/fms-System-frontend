@@ -1,6 +1,7 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
+import { NgChartsModule } from 'ng2-charts';
 
 import { DashboardRoutingModule } from './dashboard-routing.module';
 import { DashboardComponent } from './dashboard.component';
@@ -46,6 +47,7 @@ import { MatSlideToggleModule } from '@angular/material/slide-toggle';
     CommonModule,
     HttpClientModule,
     DashboardRoutingModule,
+    NgChartsModule,
     MatFormFieldModule,
     MatInputModule,
     MatButtonModule,

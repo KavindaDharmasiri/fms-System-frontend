@@ -1,0 +1,147 @@
+// Rule Testing & Validation Component Styles
+
+.main-container {
+  .dropdown-menu {
+    min-width: 280px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    
+    .dropdown-header {
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: #6b7280;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+      padding: 0.5rem 1rem 0.25rem;
+    }
+    
+    .dropdown-item {
+      padding: 0.75rem 1rem;
+      font-size: 0.875rem;
+      transition: all 0.15s ease-in-out;
+      
+      &:hover {
+        background-color: #f3f4f6;
+        color: #1f2937;
+      }
+      
+      i {
+        font-size: 1rem;
+        width: 20px;
+      }
+    }
+    
+    .dropdown-divider {
+      margin: 0.5rem 0;
+      border-color: #e5e7eb;
+    }
+  }
+  
+  .btn-group {
+    .btn {
+      font-weight: 500;
+      
+      &.dropdown-toggle::after {
+        margin-left: 0.5rem;
+      }
+    }
+  }
+}
+
+// Analytics cards styling
+.analytics-card {
+  background: #f8f9fa;
+  border: 1px solid #e9ecef;
+  border-radius: 8px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  
+  .card-title {
+    font-size: 0.875rem;
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+  }
+  
+  .card-value {
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin: 0;
+    
+    &.text-danger { color: #dc3545 !important; }
+    &.text-success { color: #28a745 !important; }
+    &.text-warning { color: #ffc107 !important; }
+    &.text-info { color: #17a2b8 !important; }
+  }
+}
+
+// Table styling enhancements
+.table-container {
+  .mat-table {
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1), 0 1px 2px 0 rgba(0, 0, 0, 0.06);
+    
+    .mat-header-cell {
+      background-color: #f8f9fa;
+      font-weight: 600;
+      color: #495057;
+      border-bottom: 2px solid #dee2e6;
+    }
+    
+    .mat-cell {
+      border-bottom: 1px solid #e9ecef;
+    }
+    
+    .badge {
+      font-size: 0.75rem;
+      padding: 0.25rem 0.5rem;
+      border-radius: 4px;
+      
+      &.bg-success {
+        background-color: #d4edda !important;
+        color: #155724 !important;
+      }
+      
+      &.bg-warning {
+        background-color: #fff3cd !important;
+        color: #856404 !important;
+      }
+      
+      &.bg-danger {
+        background-color: #f8d7da !important;
+        color: #721c24 !important;
+      }
+    }
+  }
+}
+
+// Loading state
+.loading-overlay {
+  position: relative;
+  
+  &::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+  }
+}
+
+// Responsive design
+@media (max-width: 768px) {
+  .dropdown-menu {
+    min-width: 250px !important;
+  }
+  
+  .analytics-card {
+    margin-bottom: 0.5rem;
+  }
+}

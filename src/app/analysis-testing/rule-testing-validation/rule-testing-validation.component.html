@@ -94,19 +94,42 @@
           <span class="fw-semibold font-16px">Testing Analytics</span>
         </div>
       </div>
-      
+
       <div class="row mt-4">
-        <div class="col-4">
+        <div class="col-3">
           <p class="d-block">Total Number of Transactions Tested</p>
           <p class="font-bold">{{getTotalTransactions()}}</p>
         </div>
-        <div class="col-4">
+        <div class="col-3">
           <p class="d-block">Number of Flagged Transactions</p>
           <p class="font-bold text-danger">{{getFlaggedTransactions()}}</p>
         </div>
-        <div class="col-4">
+        <div class="col-3">
           <p class="d-block">Number of Successful Transactions</p>
           <p class="font-bold text-success">{{getSuccessfulTransactions()}}</p>
+        </div>
+        <div class="col-3">
+          <p class="d-block">High Risk Transactions</p>
+          <p class="font-bold text-warning">{{getHighRiskTransactions()}}</p>
+        </div>
+      </div>
+
+      <div class="row mt-3">
+        <div class="col-3">
+          <p class="d-block">Total Transaction Amount</p>
+          <p class="font-bold">${{getTotalAmount() | number:'1.2-2'}}</p>
+        </div>
+        <div class="col-3">
+          <p class="d-block">Average Risk Score</p>
+          <p class="font-bold">{{getAverageRiskScore()}}</p>
+        </div>
+        <div class="col-3">
+          <p class="d-block">Flag Rate</p>
+          <p class="font-bold">{{getTotalTransactions() > 0 ? (getFlaggedTransactions() / getTotalTransactions() * 100).toFixed(2) : 0}}%</p>
+        </div>
+        <div class="col-3">
+          <p class="d-block">Most Fired Rule</p>
+          <p class="font-bold text-info">{{getMostFiredRule()}}</p>
         </div>
       </div>
 
@@ -117,17 +140,17 @@
               <th mat-header-cell *matHeaderCellDef>Transaction ID</th>
               <td mat-cell *matCellDef="let element">{{element.transactionId}}</td>
             </ng-container>
-            
+
             <ng-container matColumnDef="amount">
               <th mat-header-cell *matHeaderCellDef>Amount</th>
               <td mat-cell *matCellDef="let element">${{element.amount}}</td>
             </ng-container>
-            
+
             <ng-container matColumnDef="pan">
               <th mat-header-cell *matHeaderCellDef>PAN</th>
               <td mat-cell *matCellDef="let element">{{element.pan}}</td>
             </ng-container>
-            
+
             <ng-container matColumnDef="originalRiskLevel">
               <th mat-header-cell *matHeaderCellDef>Original Risk</th>
               <td mat-cell *matCellDef="let element">
@@ -138,7 +161,7 @@
                 }">{{element.originalRiskLevel}}</span>
               </td>
             </ng-container>
-            
+
             <ng-container matColumnDef="newRiskLevel">
               <th mat-header-cell *matHeaderCellDef>New Risk</th>
               <td mat-cell *matCellDef="let element">
@@ -149,7 +172,7 @@
                 }">{{element.newRiskLevel}}</span>
               </td>
             </ng-container>
-            
+
             <ng-container matColumnDef="status">
               <th mat-header-cell *matHeaderCellDef>Status</th>
               <td mat-cell *matCellDef="let element">
@@ -159,7 +182,7 @@
                 }">{{element.status}}</span>
               </td>
             </ng-container>
-            
+
             <ng-container matColumnDef="firedAIRules">
               <th mat-header-cell *matHeaderCellDef>Fired AI Rules</th>
               <td mat-cell *matCellDef="let element">
@@ -169,17 +192,17 @@
                 </span>
               </td>
             </ng-container>
-            
+
             <ng-container matColumnDef="action">
               <th mat-header-cell *matHeaderCellDef>Action</th>
               <td mat-cell *matCellDef="let element">
-                <button type="button" class="btn btn-secondary btn-outline btn-sm" 
+                <button type="button" class="btn btn-secondary btn-outline btn-sm"
                         title="View Details" (click)="viewDetails(element)">
                   <i class="ph ph-eye"></i>
                 </button>
               </td>
             </ng-container>
-            
+
             <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
             <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
           </table>
@@ -188,9 +211,19 @@
       </div>
 
       <div class="d-flex justify-content-end mt-3">
-        <button class="btn btn-primary btn-outline">
-          <i class="ph ph-file-xls"></i>Download Report
-        </button>
+        <div class="btn-group" role="group">
+          <button type="button" class="btn btn-primary btn-outline dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+            <i class="ph ph-download"></i>Download Reports
+          </button>
+          <ul class="dropdown-menu">
+            <li><h6 class="dropdown-header">Professional PDF Reports</h6></li>
+            <li>
+              <a class="dropdown-item" href="#" (click)="downloadDetailedJasperReport(); $event.preventDefault()">
+                <i class="ph ph-chart-bar text-info me-2"></i>Detailed Analysis Report
+              </a>
+            </li>
+          </ul>
+        </div>
       </div>
     </div>
   </div>

@@ -40,3 +40,16 @@ testem.log
 # System files
 .DS_Store
 Thumbs.db
+
+# Data Files and Machine Learning Models
+*.pkl
+*.pickle
+*.csv
+*.json.bak
+*.data
+*.model
+
+# Additional log files
+*.log
+*.tmp
+*.temp

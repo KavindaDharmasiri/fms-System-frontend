@@ -1,6 +1,7 @@
 <div class="modern-dashboard-layout">
   <app-notification-panel></app-notification-panel>
-  <!-- Header Section -->
+  
+  <!-- Enhanced Header Section -->
   <div class="dashboard-header">
     <div class="header-content">
       <div class="header-left">
@@ -8,159 +9,383 @@
           <i class="ph ph-shield-check"></i>
         </div>
         <div class="header-text">
-          <span class="dashboard-title">Fraud Detection Dashboard</span>
-          <p class="dashboard-subtitle">Real-time overview of transaction activity and rule performance</p>
+          <span class="dashboard-title">FMS Real-Time Dashboard</span>
+          <p class="dashboard-subtitle">Comprehensive fraud monitoring and analytics</p>
         </div>
       </div>
-<!--      <div class="header-actions">-->
-<!--        <button class="action-btn secondary" (click)="exportReport()">-->
-<!--          <i class="ph ph-download"></i>-->
-<!--          <span>Export Report</span>-->
-<!--        </button>-->
-<!--        <button class="action-btn primary" (click)="createNewRule()">-->
-<!--          <i class="ph ph-plus"></i>-->
-<!--          <span>New Rule</span>-->
-<!--        </button>-->
-<!--      </div>-->
+      <div class="header-controls">
+        <div class="time-range-selector">
+          <button 
+            *ngFor="let range of ['1h', '24h', '7d', '30d']" 
+            class="time-btn"
+            [class.active]="selectedTimeRange === range"
+            (click)="changeTimeRange(range)">
+            {{range}}
+          </button>
+        </div>
+        <div class="view-mode-selector">
+          <button 
+            *ngFor="let mode of ['overview', 'analytics', 'monitoring']" 
+            class="view-btn"
+            [class.active]="viewMode === mode"
+            (click)="changeViewMode(mode)">
+            {{mode | titlecase}}
+          </button>
+        </div>
+        <div class="header-actions">
+          <button class="action-btn secondary" (click)="exportReport()">
+            <i class="ph ph-download"></i>
+            <span>Export</span>
+          </button>
+          <button class="action-btn primary" (click)="refreshData()">
+            <i class="ph ph-arrow-clockwise" [class.ph-spin]="loading"></i>
+            <span>Refresh</span>
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 
-  <!-- Stats Cards -->
+  <!-- Real-Time Metrics Bar -->
+  <div class="realtime-metrics">
+    <div class="metric-item">
+      <div class="metric-icon">
+        <i class="ph ph-pulse"></i>
+      </div>
+      <div class="metric-content">
+        <div class="metric-value">{{realTimeMetrics.transactionsPerSecond}}</div>
+        <div class="metric-label">TPS</div>
+      </div>
+    </div>
+    <div class="metric-item">
+      <div class="metric-icon">
+        <i class="ph ph-clock"></i>
+      </div>
+      <div class="metric-content">
+        <div class="metric-value">{{realTimeMetrics.averageProcessingTime | number:'1.0-0'}}ms</div>
+        <div class="metric-label">Avg Response</div>
+      </div>
+    </div>
+    <div class="metric-item">
+      <div class="metric-icon">
+        <i class="ph ph-activity"></i>
+      </div>
+      <div class="metric-content">
+        <div class="metric-value">{{realTimeMetrics.activeTransactions}}</div>
+        <div class="metric-label">Active</div>
+      </div>
+    </div>
+    <div class="metric-item">
+      <div class="metric-icon" [ngClass]="getHealthStatusClass(realTimeMetrics.systemHealth)">
+        <i class="ph ph-heart"></i>
+      </div>
+      <div class="metric-content">
+        <div class="metric-value">{{realTimeMetrics.systemHealth}}</div>
+        <div class="metric-label">System Health</div>
+      </div>
+    </div>
+    <div class="metric-item">
+      <div class="metric-content">
+        <div class="metric-value">{{realTimeMetrics.lastUpdated | date:'HH:mm:ss'}}</div>
+        <div class="metric-label">Last Update</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Enhanced Stats Grid -->
   <div class="stats-grid">
-    <div class="stat-card">
+    <div class="stat-card enhanced">
       <div class="stat-header">
         <div class="stat-icon primary">
           <i class="ph ph-chart-line-up"></i>
         </div>
-        <div class="stat-trend positive">
-          <i class="ph ph-arrow-up"></i>
-          <span>+{{stats.totalTransactionsChange}}%</span>
+        <div class="stat-trend" [class.positive]="stats.totalTransactionsChange > 0" [class.negative]="stats.totalTransactionsChange < 0">
+          <i class="ph" [class.ph-arrow-up]="stats.totalTransactionsChange > 0" [class.ph-arrow-down]="stats.totalTransactionsChange < 0"></i>
+          <span>{{stats.totalTransactionsChange | number:'1.1-1'}}%</span>
         </div>
       </div>
       <div class="stat-content">
         <div class="stat-value">{{stats.totalTransactions | number}}</div>
         <div class="stat-label">Total Transactions</div>
+        <div class="stat-sublabel">Last {{selectedTimeRange}}</div>
+      </div>
+      <div class="stat-progress">
+        <div class="progress-bar" [style.width.%]="75"></div>
       </div>
     </div>
 
-    <div class="stat-card">
+    <div class="stat-card enhanced">
       <div class="stat-header">
         <div class="stat-icon danger">
           <i class="ph ph-shield-warning"></i>
         </div>
-        <div class="stat-trend negative">
-          <i class="ph ph-arrow-down"></i>
-          <span>{{stats.blockedTransactionsChange}}%</span>
+        <div class="stat-trend" [class.positive]="stats.blockedTransactionsChange < 0" [class.negative]="stats.blockedTransactionsChange > 0">
+          <i class="ph" [class.ph-arrow-up]="stats.blockedTransactionsChange > 0" [class.ph-arrow-down]="stats.blockedTransactionsChange < 0"></i>
+          <span>{{stats.blockedTransactionsChange | number:'1.1-1'}}%</span>
         </div>
       </div>
       <div class="stat-content">
         <div class="stat-value">{{stats.blockedTransactions | number}}</div>
         <div class="stat-label">Blocked Transactions</div>
+        <div class="stat-sublabel">{{formatPercentage((stats.blockedTransactions / stats.totalTransactions) * 100)}} of total</div>
+      </div>
+      <div class="stat-progress danger">
+        <div class="progress-bar" [style.width.%]="(stats.blockedTransactions / stats.totalTransactions) * 100"></div>
       </div>
     </div>
 
-    <div class="stat-card">
+    <div class="stat-card enhanced">
       <div class="stat-header">
         <div class="stat-icon warning">
           <i class="ph ph-warning-circle"></i>
         </div>
-        <div class="stat-trend positive">
-          <i class="ph ph-arrow-up"></i>
-          <span>+{{stats.fraudRateChange}}%</span>
+        <div class="stat-trend" [class.positive]="fraudAnalytics.detectionRate > 85" [class.negative]="fraudAnalytics.detectionRate < 75">
+          <i class="ph ph-target"></i>
+          <span>{{formatPercentage(fraudAnalytics.detectionRate)}}</span>
         </div>
       </div>
       <div class="stat-content">
-        <div class="stat-value">{{stats.fraudRate}}%</div>
+        <div class="stat-value">{{formatPercentage(stats.fraudRate)}}</div>
         <div class="stat-label">Fraud Rate</div>
+        <div class="stat-sublabel">Detection: {{formatPercentage(fraudAnalytics.detectionRate)}}</div>
+      </div>
+      <div class="stat-progress warning">
+        <div class="progress-bar" [style.width.%]="stats.fraudRate"></div>
       </div>
     </div>
 
-    <div class="stat-card">
+    <div class="stat-card enhanced">
       <div class="stat-header">
         <div class="stat-icon success">
           <i class="ph ph-currency-dollar"></i>
         </div>
-        <div class="stat-trend negative">
-          <i class="ph ph-arrow-down"></i>
-          <span>{{stats.valueAtRiskChange}}%</span>
+        <div class="stat-trend" [class.positive]="stats.valueAtRiskChange < 0" [class.negative]="stats.valueAtRiskChange > 0">
+          <i class="ph" [class.ph-arrow-up]="stats.valueAtRiskChange > 0" [class.ph-arrow-down]="stats.valueAtRiskChange < 0"></i>
+          <span>{{stats.valueAtRiskChange | number:'1.1-1'}}%</span>
         </div>
       </div>
       <div class="stat-content">
-        <div class="stat-value">RS {{stats.valueAtRisk | number}}</div>
+        <div class="stat-value">{{formatCurrency(stats.valueAtRisk)}}</div>
         <div class="stat-label">Value at Risk</div>
+        <div class="stat-sublabel">Avg: {{formatCurrency(fraudAnalytics.avgFraudAmount)}}</div>
+      </div>
+      <div class="stat-progress success">
+        <div class="progress-bar" [style.width.%]="60"></div>
       </div>
     </div>
   </div>
 
-  <!-- Charts and Rules Section -->
-  <div class="content-grid">
-    <div class="chart-section">
-      <div class="chart-card">
-        <div class="card-header">
-          <div class="header-content">
-            <div class="header-text">
-              <h3 class="card-title">Transaction Volume</h3>
-              <p class="card-subtitle">Last 30 Days</p>
-            </div>
-            <div class="chart-legend">
-              <div class="legend-item">
-                <span class="legend-dot primary"></span>
-                <span>Total</span>
+  <!-- Main Content Area -->
+  <div class="main-content" [ngSwitch]="viewMode">
+    
+    <!-- Overview Mode -->
+    <div *ngSwitchCase="'overview'" class="overview-content">
+      <div class="content-grid">
+        <!-- Transaction Volume Chart -->
+        <div class="chart-section large">
+          <div class="chart-card">
+            <div class="card-header">
+              <div class="header-content">
+                <div class="header-text">
+                  <h3 class="card-title">Transaction Volume Trends</h3>
+                  <p class="card-subtitle">Hourly transaction patterns</p>
+                </div>
+                <div class="chart-controls">
+                  <button class="chart-btn active">Volume</button>
+                  <button class="chart-btn">Amount</button>
+                </div>
               </div>
-              <div class="legend-item">
-                <span class="legend-dot danger"></span>
-                <span>Fraudulent</span>
+            </div>
+            <div class="card-body">
+              <div class="chart-container" *ngIf="transactionVolumeChart && !loading; else loadingChart">
+                <canvas baseChart
+                  [datasets]="transactionVolumeChart.data.datasets"
+                  [labels]="transactionVolumeChart.data.labels"
+                  [options]="transactionVolumeChart.options"
+                  [type]="transactionVolumeChart.type">
+                </canvas>
+              </div>
+              <ng-template #loadingChart>
+                <div class="chart-placeholder">
+                  <div class="placeholder-content">
+                    <i class="ph ph-spinner ph-spin"></i>
+                    <p>Loading Chart Data...</p>
+                  </div>
+                </div>
+              </ng-template>
+            </div>
+          </div>
+        </div>
+
+        <!-- Fraud Trend Chart -->
+        <div class="chart-section medium">
+          <div class="chart-card">
+            <div class="card-header">
+              <h3 class="card-title">Fraud Detection Trends</h3>
+              <p class="card-subtitle">Weekly fraud patterns</p>
+            </div>
+            <div class="card-body">
+              <div class="chart-container" *ngIf="fraudTrendChart && !loading">
+                <canvas baseChart
+                  [datasets]="fraudTrendChart.data.datasets"
+                  [labels]="fraudTrendChart.data.labels"
+                  [options]="fraudTrendChart.options"
+                  [type]="fraudTrendChart.type">
+                </canvas>
               </div>
             </div>
           </div>
         </div>
-        <div class="card-body">
-          <div class="chart-container" *ngIf="!loading; else loadingChart">
-            <app-transaction-chart></app-transaction-chart>
-          </div>
-          <ng-template #loadingChart>
-            <div class="chart-placeholder">
-              <div class="placeholder-content">
-                <i class="ph ph-spinner ph-spin"></i>
-                <p>Loading Chart Data...</p>
+
+        <!-- Risk Distribution -->
+        <div class="chart-section medium">
+          <div class="chart-card">
+            <div class="card-header">
+              <h3 class="card-title">Risk Distribution</h3>
+              <p class="card-subtitle">Transaction risk levels</p>
+            </div>
+            <div class="card-body">
+              <div class="chart-container" *ngIf="riskDistributionChart && !loading">
+                <canvas baseChart
+                  [datasets]="riskDistributionChart.data.datasets"
+                  [labels]="riskDistributionChart.data.labels"
+                  [options]="riskDistributionChart.options"
+                  [type]="riskDistributionChart.type">
+                </canvas>
               </div>
             </div>
-          </ng-template>
+          </div>
         </div>
       </div>
     </div>
 
-    <div class="rules-section">
-      <div class="rules-card">
-        <div class="card-header">
-          <h3 class="card-title">Active Fraud Rules</h3>
-          <button class="add-rule-btn">
-            <i class="ph ph-plus"></i>
-          </button>
-        </div>
-        <div class="card-body">
-          <div class="rules-list">
-            <div *ngIf="fraudRules.length === 0 && !loading" class="empty-state">
-              <i class="ph ph-shield-slash"></i>
-              <p>No active rules configured</p>
-            </div>
-            <div *ngFor="let rule of fraudRules" class="rule-item">
-              <div class="rule-content">
-                <div class="rule-header">
-                  <div class="rule-name">{{rule.ruleName || rule.name}}</div>
-                  <div class="rule-status" [class]="rule.status === 'ACTIVE' ? 'active' : 'inactive'">
-                    {{rule.status || (rule.active ? 'Active' : 'Inactive')}}
-                  </div>
-                </div>
-                <div class="rule-meta">
-                  <span class="rule-triggers">{{rule.executionCount || 0}} executions</span>
-                  <span class="rule-separator">•</span>
-                  <span class="rule-updated">{{rule.updatedAt | date:'short' || 'Recently'}}</span>
+    <!-- Analytics Mode -->
+    <div *ngSwitchCase="'analytics'" class="analytics-content">
+      <div class="analytics-grid">
+        <!-- Fraud Analytics Panel -->
+        <div class="analytics-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Fraud Detection Analytics</h3>
+          </div>
+          <div class="panel-body">
+            <div class="analytics-metrics">
+              <div class="analytics-metric">
+                <div class="metric-label">Detection Rate</div>
+                <div class="metric-value large">{{formatPercentage(fraudAnalytics.detectionRate)}}</div>
+                <div class="metric-progress">
+                  <div class="progress-bar success" [style.width.%]="fraudAnalytics.detectionRate"></div>
                 </div>
               </div>
-<!--              <div class="rule-toggle">-->
-<!--                <mat-slide-toggle [checked]="rule.status === 'ACTIVE' || rule.active" (change)="toggleRule(rule)"></mat-slide-toggle>-->
-<!--              </div>-->
+              <div class="analytics-metric">
+                <div class="metric-label">False Positive Rate</div>
+                <div class="metric-value">{{formatPercentage(fraudAnalytics.falsePositiveRate)}}</div>
+                <div class="metric-progress">
+                  <div class="progress-bar warning" [style.width.%]="fraudAnalytics.falsePositiveRate"></div>
+                </div>
+              </div>
+              <div class="analytics-metric">
+                <div class="metric-label">True Positive Rate</div>
+                <div class="metric-value">{{formatPercentage(fraudAnalytics.truePositiveRate)}}</div>
+                <div class="metric-progress">
+                  <div class="progress-bar success" [style.width.%]="fraudAnalytics.truePositiveRate"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rule Performance Panel -->
+        <div class="analytics-panel">
+          <div class="panel-header">
+            <h3 class="panel-title">Rule Performance</h3>
+          </div>
+          <div class="panel-body">
+            <div class="rule-performance-list">
+              <div class="performance-item" *ngFor="let rule of rulePerformance.topPerformingRules">
+                <div class="rule-info">
+                  <div class="rule-name">{{rule.name}}</div>
+                  <div class="rule-stats">{{rule.fireCount}} executions</div>
+                </div>
+                <div class="rule-effectiveness">
+                  <div class="effectiveness-value">{{formatPercentage(rule.effectiveness)}}</div>
+                  <div class="effectiveness-bar">
+                    <div class="bar-fill" [style.width.%]="rule.effectiveness"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Monitoring Mode -->
+    <div *ngSwitchCase="'monitoring'" class="monitoring-content">
+      <!-- Active Rules Section -->
+      <div class="rules-section">
+        <div class="rules-card enhanced">
+          <div class="card-header">
+            <div class="header-content">
+              <h3 class="card-title">Active Fraud Rules</h3>
+              <div class="rule-summary">
+                <span class="rule-count">{{rulePerformance.totalActiveRules}} active rules</span>
+                <span class="rule-efficiency">{{formatPercentage(rulePerformance.overallEfficiency)}} efficiency</span>
+              </div>
+            </div>
+            <button class="add-rule-btn" (click)="createNewRule()">
+              <i class="ph ph-plus"></i>
+              <span>Add Rule</span>
+            </button>
+          </div>
+          <div class="card-body">
+            <div class="rules-list enhanced">
+              <div *ngIf="fraudRules.length === 0 && !loading" class="empty-state">
+                <i class="ph ph-shield-slash"></i>
+                <p>No active rules configured</p>
+                <button class="empty-action-btn" (click)="createNewRule()">Create First Rule</button>
+              </div>
+              <div *ngFor="let rule of fraudRules" class="rule-item enhanced">
+                <div class="rule-content">
+                  <div class="rule-header">
+                    <div class="rule-name">{{rule.ruleName || rule.name}}</div>
+                    <div class="rule-badges">
+                      <span class="rule-status" [class]="rule.status === 'ACTIVE' ? 'active' : 'inactive'">
+                        {{rule.status || (rule.active ? 'Active' : 'Inactive')}}
+                      </span>
+                      <span class="rule-priority" [class]="'priority-' + (rule.priority || 'medium')">
+                        {{rule.priority || 'Medium'}}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="rule-meta">
+                    <div class="rule-stats">
+                      <span class="stat-item">
+                        <i class="ph ph-lightning"></i>
+                        {{rule.executionCount || 0}} executions
+                      </span>
+                      <span class="stat-item">
+                        <i class="ph ph-target"></i>
+                        {{rule.accuracy || 85}}% accuracy
+                      </span>
+                      <span class="stat-item">
+                        <i class="ph ph-clock"></i>
+                        {{rule.updatedAt | date:'short' || 'Recently'}}
+                      </span>
+                    </div>
+                  </div>
+                  <div class="rule-description">
+                    {{rule.description || 'Advanced fraud detection rule'}}
+                  </div>
+                </div>
+                <div class="rule-actions">
+                  <button class="rule-action-btn" (click)="toggleRule(rule)">
+                    <i class="ph" [class.ph-play]="!rule.active" [class.ph-pause]="rule.active"></i>
+                  </button>
+                  <button class="rule-action-btn">
+                    <i class="ph ph-gear"></i>
+                  </button>
+                </div>
+              </div>
             </div>
           </div>
         </div>
