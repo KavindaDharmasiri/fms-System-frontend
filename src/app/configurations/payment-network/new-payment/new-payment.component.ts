@@ -235,6 +235,7 @@ export class NewPaymentComponent implements OnInit {
     );
 
     const actionText = (this.actionType === "edit" || this.actionType === "view") ? "updated" : "added";
+    const isNewNetwork = this.actionType === "add";
 
     this.paymentNetworkService.addPaymentNetwork(addPaymentNetworkDTO)
       .pipe(
@@ -246,8 +247,25 @@ export class NewPaymentComponent implements OnInit {
       )
       .subscribe((response: any) => {
         if (response.data?.success) {
-          Swal.fire(`Payment Network ${actionText} successfully!`, '', 'success');
-          this.router.navigate(['/configurations/payment-network']);
+          // If adding new network, display the generated ID
+          if (isNewNetwork && response.data?.paymentNetworkId) {
+            this.paymentNetworkForm.patchValue({
+              paymentNetworkID: response.data.paymentNetworkId
+            });
+            this.updateNetworkID = response.data.paymentNetworkId;
+            
+            Swal.fire({
+              title: `Payment Network ${actionText} successfully!`,
+              html: `<p>Payment Network ID: <strong>${response.data.paymentNetworkId}</strong></p>`,
+              icon: 'success',
+              confirmButtonText: 'OK'
+            }).then(() => {
+              this.router.navigate(['/configurations/payment-network']);
+            });
+          } else {
+            Swal.fire(`Payment Network ${actionText} successfully!`, '', 'success');
+            this.router.navigate(['/configurations/payment-network']);
+          }
         } else {
           Swal.fire(`Payment Network ${actionText} unsuccessful.`, '', 'error');
         }

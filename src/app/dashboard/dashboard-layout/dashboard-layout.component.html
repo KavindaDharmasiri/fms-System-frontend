@@ -1,51 +1,6 @@
 <div class="modern-dashboard-layout">
   <app-notification-panel></app-notification-panel>
   
-  <!-- Enhanced Header Section -->
-  <div class="dashboard-header">
-    <div class="header-content">
-      <div class="header-left">
-        <div class="dashboard-icon">
-          <i class="ph ph-shield-check"></i>
-        </div>
-        <div class="header-text">
-          <span class="dashboard-title">FMS Real-Time Dashboard</span>
-          <p class="dashboard-subtitle">Comprehensive fraud monitoring and analytics</p>
-        </div>
-      </div>
-      <div class="header-controls">
-        <div class="time-range-selector">
-          <button 
-            *ngFor="let range of ['1h', '24h', '7d', '30d']" 
-            class="time-btn"
-            [class.active]="selectedTimeRange === range"
-            (click)="changeTimeRange(range)">
-            {{range}}
-          </button>
-        </div>
-        <div class="view-mode-selector">
-          <button 
-            *ngFor="let mode of ['overview', 'analytics', 'monitoring']" 
-            class="view-btn"
-            [class.active]="viewMode === mode"
-            (click)="changeViewMode(mode)">
-            {{mode | titlecase}}
-          </button>
-        </div>
-        <div class="header-actions">
-          <button class="action-btn secondary" (click)="exportReport()">
-            <i class="ph ph-download"></i>
-            <span>Export</span>
-          </button>
-          <button class="action-btn primary" (click)="refreshData()">
-            <i class="ph ph-arrow-clockwise" [class.ph-spin]="loading"></i>
-            <span>Refresh</span>
-          </button>
-        </div>
-      </div>
-    </div>
-  </div>
-
   <!-- Real-Time Metrics Bar -->
   <div class="realtime-metrics">
     <div class="metric-item">

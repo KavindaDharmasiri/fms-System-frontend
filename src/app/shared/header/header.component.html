@@ -12,9 +12,9 @@
         <!-- AI Toggle -->
         <div class="ai-toggle-container">
           <label class="ai-toggle-label">
-            <input 
-              type="checkbox" 
-              [checked]="isAIEnabled" 
+            <input
+              type="checkbox"
+              [checked]="isAIEnabled"
               (change)="onAIToggleChange($event)"
               class="ai-toggle-input">
             <span class="ai-toggle-slider"></span>
@@ -23,22 +23,22 @@
         </div>
 
         <!-- Search Bar -->
-        <div class="search-container">
-          <div class="search-input-wrapper">
-            <i class="ph ph-magnifying-glass search-icon"></i>
-            <input type="text" class="search-input" placeholder="Search transactions..." />
-          </div>
-        </div>
+<!--        <div class="search-container">-->
+<!--          <div class="search-input-wrapper">-->
+<!--            <i class="ph ph-magnifying-glass search-icon"></i>-->
+<!--            <input type="text" class="search-input" placeholder="Search transactions..." />-->
+<!--          </div>-->
+<!--        </div>-->
 
-        <!-- Quick Actions -->
-        <div class="quick-actions">
-          <button class="action-btn" title="Refresh">
-            <i class="ph ph-arrow-clockwise"></i>
-          </button>
-          <button class="action-btn" title="Settings">
-            <i class="ph ph-gear"></i>
-          </button>
-        </div>
+<!--        &lt;!&ndash; Quick Actions &ndash;&gt;-->
+<!--        <div class="quick-actions">-->
+<!--          <button class="action-btn" title="Refresh">-->
+<!--            <i class="ph ph-arrow-clockwise"></i>-->
+<!--          </button>-->
+<!--          <button class="action-btn" title="Settings">-->
+<!--            <i class="ph ph-gear"></i>-->
+<!--          </button>-->
+<!--        </div>-->
 
         <!-- Notifications -->
         <div class="notification-wrapper" data-bs-toggle="offcanvas" data-bs-target="#notificationPanel">
@@ -117,26 +117,26 @@
       <i class="ph ph-x"></i>
     </button>
   </div>
-  
+
   <div class="notification-filters">
     <button class="filter-btn active">All Alerts</button>
   </div>
 
   <div class="offcanvas-body">
     <div class="notification-list">
-      <div *ngFor="let notification of notifications; trackBy: trackNotification" 
-           class="notification-item" 
+      <div *ngFor="let notification of notifications; trackBy: trackNotification"
+           class="notification-item"
            [class.high-priority]="notification.type === 'FRAUD_ALERT'"
            [class.unread]="notification.status === 'UNREAD'"
            [class.read]="notification.status === 'READ'"
            [class.marking-read]="notification.markingRead"
            (click)="onNotificationClick(notification)"
            [attr.data-notification-id]="notification.id">
-        <div class="notification-icon" 
+        <div class="notification-icon"
              [class.danger]="notification.type === 'FRAUD_ALERT'"
              [class.info]="notification.type === 'INFO'"
              [class.success]="notification.type === 'SYSTEM_ALERT'">
-          <i class="ph" 
+          <i class="ph"
              [class.ph-warning]="notification.type === 'FRAUD_ALERT'"
              [class.ph-info]="notification.type === 'INFO'"
              [class.ph-check-circle]="notification.type === 'SYSTEM_ALERT'"></i>
@@ -150,7 +150,7 @@
           </div>
         </div>
         <div class="notification-actions">
-          <div class="read-indicator" 
+          <div class="read-indicator"
                [class.unread]="notification.status === 'UNREAD'"
                [class.read]="notification.status === 'read'">
             <div class="pulse-ring" *ngIf="notification.status === 'UNREAD'"></div>
@@ -158,7 +158,7 @@
           </div>
         </div>
       </div>
-      
+
       <div *ngIf="notifications.length === 0" class="no-notifications">
         <div class="empty-state">
           <i class="ph ph-bell-slash"></i>
@@ -167,7 +167,7 @@
         </div>
       </div>
     </div>
-    
+
     <div class="notification-footer">
       <button class="btn-view-all">View All Notifications</button>
     </div>

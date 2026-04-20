@@ -1,0 +1,33 @@
+::ng-deep {
+  .generated-id-hint {
+    color: #22c55e !important;
+    font-weight: 600 !important;
+    font-size: 12px !important;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .mat-form-field-hint-wrapper {
+    padding-bottom: 0 !important;
+  }
+}
+
+.main-container {
+  .sub-container {
+    form {
+      .row {
+        .col-3 {
+          mat-form-field {
+            &.input-sm {
+              input[readonly] {
+                background-color: #f8fafc;
+                cursor: default;
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

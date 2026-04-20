@@ -41,6 +41,9 @@
           <mat-label>Payment Network ID</mat-label>
           <mat-form-field appearance="outline" class="w-100 input-sm">
             <input type="text" matInput placeholder="Auto Generated" formControlName="paymentNetworkID" readonly/>
+            <mat-hint *ngIf="paymentNetworkForm.get('paymentNetworkID')?.value" class="generated-id-hint">
+              ✓ Generated ID: {{ paymentNetworkForm.get('paymentNetworkID')?.value }}
+            </mat-hint>
           </mat-form-field>
         </div>
 

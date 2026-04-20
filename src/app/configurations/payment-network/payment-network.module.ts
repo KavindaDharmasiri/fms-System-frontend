@@ -13,7 +13,7 @@ import {
   MatHeaderRowDef,
   MatRow, MatRowDef, MatTable
 } from "@angular/material/table";
-import {MatError, MatFormField, MatLabel} from "@angular/material/form-field";
+import {MatError, MatFormField, MatLabel, MatHint} from "@angular/material/form-field";
 import {MatInput} from "@angular/material/input";
 import {MatPaginator, MatPaginatorModule} from "@angular/material/paginator";
 import {FormsModule, ReactiveFormsModule} from "@angular/forms";
@@ -57,6 +57,7 @@ import {MatCheckbox} from "@angular/material/checkbox";
     MatDivider,
     MatSlideToggle,
     MatError,
+    MatHint,
     CommonModule,
     RuleGroupRoutingModule,
     MatCell,
