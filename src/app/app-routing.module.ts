@@ -40,37 +40,41 @@ const routes: Routes = [
   },
   {
     path: 'user-management',
-    loadChildren: () => import('./user-management/user-management.module').then(m => m.UserManagementModule)
+    component: DashboardComponent,
+    children: [{ path: '', loadChildren: () => import('./user-management/user-management.module').then(m => m.UserManagementModule) }]
   },
   {
     path: 'configurations',
-    loadChildren: () => import('./configurations/configurations.module').then(m => m.ConfigurationsModule),
-
+    component: DashboardComponent,
+    children: [{ path: '', loadChildren: () => import('./configurations/configurations.module').then(m => m.ConfigurationsModule) }]
   },
   {
     path: 'analysis-testing',
-    loadChildren: () =>
-      import('./analysis-testing/analysis-testing.module').then((m) => m.AnalysisTestingModule),
+    component: DashboardComponent,
+    children: [{ path: '', loadChildren: () => import('./analysis-testing/analysis-testing.module').then((m) => m.AnalysisTestingModule) }]
   },
   {
     path: 'high-risk-transaction',
-    loadChildren: () => import('./high-risk-transaction/high-risk-transaction.module').then(m => m.HighRiskTransactionModule),
+    component: DashboardComponent,
+    children: [{ path: '', loadChildren: () => import('./high-risk-transaction/high-risk-transaction.module').then(m => m.HighRiskTransactionModule) }],
     data: { title: 'High Risk Transaction' }
   },
   {
     path: 'validate-transaction',
-    loadChildren: () => import('./validate-transaction/validate-transaction.module').then(m => m.ValidateTransactionModule),
+    component: DashboardComponent,
+    children: [{ path: '', loadChildren: () => import('./validate-transaction/validate-transaction.module').then(m => m.ValidateTransactionModule) }],
     data: { title: 'Validate Transaction' }
   },
   {
     path: 'risk-matrix-management',
-    loadChildren: () => import('./risk-matrix-management/risk-matrix-management.module').then(m => m.RiskMatrixManagementModule),
+    component: DashboardComponent,
+    children: [{ path: '', loadChildren: () => import('./risk-matrix-management/risk-matrix-management.module').then(m => m.RiskMatrixManagementModule) }],
     data: { title: 'Risk Matrix Management' }
   },
   {
     path: 'components',
-    loadChildren: () =>
-      import('./components/components.module').then((m) => m.ComponentsModule),
+    component: DashboardComponent,
+    children: [{ path: '', loadChildren: () => import('./components/components.module').then((m) => m.ComponentsModule) }]
   },
   {
     path: 'typography',
